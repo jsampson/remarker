@@ -16,29 +16,11 @@ import com.krasama.remarker.ElementDefinition.*;
 
 public class SpecificationParser
 {
-    private static Document load(String filename) throws Exception
-    {
-        InputStream in = SpecificationParser.class
-                .getResourceAsStream("/com/krasama/remarker/" + filename);
-        try
-        {
-            SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(in);
-            return document;
-        }
-        finally
-        {
-            in.close();
-        }
-    }
-
-    public static Map<String, CharacterDefinition> parseCharacters()
-            throws Exception
+    public static Map<String, CharacterDefinition> parseCharacters() throws Exception
     {
         Map<String, CharacterDefinition> characters = new HashMap<String, CharacterDefinition>();
         characters.put("apos", new CharacterDefinition("apos", '\''));
-        Pattern pattern = Pattern
-                .compile("<!ENTITY ([A-Za-z0-9]+) +CDATA \"&#([0-9]+);\"");
+        Pattern pattern = Pattern.compile("<!ENTITY ([A-Za-z0-9]+) +CDATA \"&#([0-9]+);\"");
         Document document = load("characters.html");
         List<?> nodes = XPath.selectNodes(document, "//pre");
         for (Object node : nodes)
@@ -57,106 +39,107 @@ public class SpecificationParser
         return characters;
     }
 
-    public static Map<String, ElementDefinition> parseElements()
-            throws Exception
+    public static Map<String, ElementDefinition> parseElements() throws Exception
     {
         HashMap<String, ElementDefinition> elements = new HashMap<String, ElementDefinition>();
         Document document = load("elements.html");
-        List<?> nodes = XPath
-                .selectNodes(document, "//tr[td[1]/@title='Name']");
+        List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
         for (Object node : nodes)
         {
             Element tr = (Element) node;
-            List<?> children = tr.getChildren();
-            String name = ((Element) children.get(0)).getValue().trim();
-            String empty = ((Element) children.get(3)).getValue().trim();
-            String dtd = ((Element) children.get(5)).getValue().trim();
-            elements.put(name.toLowerCase().intern(), new ElementDefinition(
-                    name, empty.equals("E"), dtd.equals("L") ? LOOSE : dtd
-                            .equals("F") ? FRAMESET : STRICT));
+            String name = getCellValue(tr, 0);
+            String empty = getCellValue(tr, 3);
+            String dtd = getCellValue(tr, 5);
+            elements.put(name.toLowerCase().intern(), new ElementDefinition(name, empty.equals("E"), parseDTD(dtd)));
         }
         return elements;
     }
 
-    public static Map<String, AttributeDefinition> parseAttributes()
-            throws Exception
+    public static Map<String, AttributeDefinition> parseAttributes() throws Exception
     {
-        // <td title="Name"><a
-        // href="../struct/tables.html#adef-abbr">abbr</a></td>
-        // <td align="center" title="Related Elements"><a href=
-        // "../struct/tables.html#edef-TD" class="noxref">TD</a>, <a href=
-        // "../struct/tables.html#edef-TH" class="noxref">TH</a></td>
-        // <td align="center" title="Type"><a
-        // href="../sgml/dtd.html#Text">%Text;</a></td>
-        // <td align="center" title="Default">#IMPLIED</td>
-        // <td align="center" title="Depr.">&#xA0;</td>
-        // <td align="center" title="DTD">&#xA0;</td>
-        // <td align="center" title="Comment">abbreviation for header cell</td>
-
+        String elementNamesRegex = "([A-Z0-9]+(,[ \n\r]+[A-Z0-9]+)*)";
+        Pattern elementNamesPattern = Pattern.compile("^" + elementNamesRegex + "$");
+        Pattern allButElementNamesPattern = Pattern.compile("^All elements but " + elementNamesRegex + "$");
         HashMap<String, AttributeDefinition> attributes = new HashMap<String, AttributeDefinition>();
         Document document = load("attributes.html");
-        List<?> nodes = XPath
-                .selectNodes(document, "//tr[td[1]/@title='Name']");
+        List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
         for (Object node : nodes)
         {
             Element tr = (Element) node;
-            List<?> children = tr.getChildren();
-            String name = ((Element) children.get(0)).getValue().trim()
-                    .toLowerCase().intern();
-            String elements = ((Element) children.get(1)).getValue().trim();
-            String typeCode = ((Element) children.get(2)).getValue().trim();
-            Type type = typeCode.equals("(" + name + ")") ? BOOLEAN : typeCode
-                    .equals("NUMBER") ? NUMBER : STRING;
-            String dtdCode = ((Element) children.get(5)).getValue().trim();
-            DTD dtd = dtdCode.equals("L") ? LOOSE
-                    : dtdCode.equals("F") ? FRAMESET : STRICT;
-            Map<String, Type> typesByElement;
-            Map<String, DTD> dtdsByElement;
+            String name = getCellValue(tr, 0).toLowerCase().intern();
+            String elements = getCellValue(tr, 1);
+            String typeCode = getCellValue(tr, 2);
+            String dtdCode = getCellValue(tr, 5);
+            Type type = typeCode.equals("(" + name + ")") ? BOOLEAN : typeCode.equals("NUMBER") ? NUMBER : STRING;
+            DTD dtd = parseDTD(dtdCode);
+            Map<String, Type> typesByElement = new HashMap<String, Type>();
+            Map<String, DTD> dtdsByElement = new HashMap<String, DTD>();
             if (attributes.containsKey(name))
             {
                 AttributeDefinition oldDefinition = attributes.get(name);
-                typesByElement = new HashMap<String, Type>(
-                        oldDefinition.typesByElement);
-                dtdsByElement = new HashMap<String, DTD>(
-                        oldDefinition.dtdsByElement);
+                typesByElement.putAll(oldDefinition.typesByElement);
+                dtdsByElement.putAll(oldDefinition.dtdsByElement);
             }
-            else
+            Matcher elementNamesMatcher = elementNamesPattern.matcher(elements);
+            Matcher allButElementNamesMatcher = allButElementNamesPattern.matcher(elements);
+            if (elementNamesMatcher.matches())
             {
-                typesByElement = new HashMap<String, Type>();
-                dtdsByElement = new HashMap<String, DTD>();
+                putTypeAndDTD(elementNamesMatcher, typesByElement, dtdsByElement, type, dtd);
             }
-            if (elements.matches("^[A-Z0-9]+(,[ \n\r]+[A-Z0-9]+)*$"))
+            else if (allButElementNamesMatcher.matches())
             {
-                String[] elementNames = elements.split(",[ \n\r]+");
-                for (String elementName : elementNames)
-                {
-                    typesByElement
-                            .put(elementName.toLowerCase().intern(), type);
-                    dtdsByElement.put(elementName.toLowerCase().intern(), dtd);
-                }
-            }
-            else if (elements
-                    .matches("^All elements but [A-Z0-9]+(,[ \n\r]+[A-Z0-9]+)*$"))
-            {
-                String[] elementNames = elements.substring(
-                        "All elements but ".length()).split(",[ \n\r]+");
                 typesByElement.put("*", type);
                 dtdsByElement.put("*", dtd);
-                for (String elementName : elementNames)
-                {
-                    typesByElement
-                            .put(elementName.toLowerCase().intern(), null);
-                    dtdsByElement.put(elementName.toLowerCase().intern(), null);
-                }
-
+                putTypeAndDTD(allButElementNamesMatcher, typesByElement, dtdsByElement, null, null);
             }
             else
             {
                 throw new IllegalStateException(elements);
             }
-            attributes.put(name, new AttributeDefinition(name, typesByElement,
-                    dtdsByElement));
+            attributes.put(name, new AttributeDefinition(name, typesByElement, dtdsByElement));
         }
         return attributes;
+    }
+
+    private static Document load(String filename) throws Exception
+    {
+        InputStream in = SpecificationParser.class.getResourceAsStream("/com/krasama/remarker/" + filename);
+        try
+        {
+            SAXBuilder builder = new SAXBuilder();
+            Document document = builder.build(in);
+            return document;
+        }
+        finally
+        {
+            in.close();
+        }
+    }
+
+    private static String getCellValue(Element tr, int i)
+    {
+        return ((Element) tr.getChildren().get(i)).getValue().trim();
+    }
+
+    private static DTD parseDTD(String dtd)
+    {
+        return dtd.equals("L") ? LOOSE : dtd.equals("F") ? FRAMESET : STRICT;
+    }
+
+    private static void putTypeAndDTD(Matcher elementNamesMatcher, Map<String, Type> typesByElement,
+            Map<String, DTD> dtdsByElement, Type type, DTD dtd)
+    {
+        String[] elementNames = getElementNames(elementNamesMatcher);
+        for (String elementName : elementNames)
+        {
+            String elementNameInterned = elementName.toLowerCase().intern();
+            typesByElement.put(elementNameInterned, type);
+            dtdsByElement.put(elementNameInterned, dtd);
+        }
+    }
+
+    private static String[] getElementNames(Matcher elementNamesMatcher)
+    {
+        return elementNamesMatcher.group(1).split(",[ \n\r]+");
     }
 }

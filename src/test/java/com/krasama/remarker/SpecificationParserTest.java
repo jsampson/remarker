@@ -14,8 +14,7 @@ public class SpecificationParserTest extends TestCase
 {
     public void testCharacters() throws Exception
     {
-        Map<String, CharacterDefinition> characters = SpecificationParser
-                .parseCharacters();
+        Map<String, CharacterDefinition> characters = SpecificationParser.parseCharacters();
         assertEquals(253, characters.size());
         // all standard XML characters
         checkCharacter(characters, "lt", '<');
@@ -42,8 +41,7 @@ public class SpecificationParserTest extends TestCase
         checkCharacter(characters, "euro", (char) 8364);
     }
 
-    private void checkCharacter(Map<String, CharacterDefinition> characters,
-            String name, char value)
+    private void checkCharacter(Map<String, CharacterDefinition> characters, String name, char value)
     {
         CharacterDefinition character = characters.get(name);
         assertSame(name, character.name);
@@ -52,8 +50,7 @@ public class SpecificationParserTest extends TestCase
 
     public void testElements() throws Exception
     {
-        Map<String, ElementDefinition> elements = SpecificationParser
-                .parseElements();
+        Map<String, ElementDefinition> elements = SpecificationParser.parseElements();
         assertEquals(91, elements.size());
         checkElement(elements, "a", "A", false, STRICT);
         checkElement(elements, "applet", "APPLET", false, LOOSE);
@@ -63,8 +60,7 @@ public class SpecificationParserTest extends TestCase
         checkElement(elements, "var", "VAR", false, STRICT);
     }
 
-    private void checkElement(Map<String, ElementDefinition> elements,
-            String lowercase, String uppercase, boolean empty, DTD dtd)
+    private void checkElement(Map<String, ElementDefinition> elements, String lowercase, String uppercase, boolean empty, DTD dtd)
     {
         ElementDefinition element = elements.get(lowercase);
         assertSame(lowercase, element.lowercase);
@@ -75,32 +71,24 @@ public class SpecificationParserTest extends TestCase
 
     public void testAttributes() throws Exception
     {
-        Map<String, AttributeDefinition> attributes = SpecificationParser
-                .parseAttributes();
+        Map<String, AttributeDefinition> attributes = SpecificationParser.parseAttributes();
         assertEquals(119, attributes.size());
-        checkAttribute(attributes, "abbr", new String[] { "td", "th" },
-                new Type[] { STRING, STRING }, new DTD[] { STRICT, STRICT });
-        checkAttribute(attributes, "border", new String[] { "table", "img",
-                "object" }, new Type[] { STRING, STRING, STRING }, new DTD[] {
-                STRICT, LOOSE, LOOSE });
-        checkAttribute(attributes, "checked", new String[] { "input" },
-                new Type[] { BOOLEAN }, new DTD[] { STRICT });
-        checkAttribute(attributes, "cols", new String[] { "frameset",
-                "textarea" }, new Type[] { STRING, NUMBER }, new DTD[] {
+        checkAttribute(attributes, "abbr", new String[] { "td", "th" }, new Type[] { STRING, STRING }, new DTD[] { STRICT, STRICT });
+        checkAttribute(attributes, "border", new String[] { "table", "img", "object" }, new Type[] { STRING, STRING, STRING },
+                new DTD[] { STRICT, LOOSE, LOOSE });
+        checkAttribute(attributes, "checked", new String[] { "input" }, new Type[] { BOOLEAN }, new DTD[] { STRICT });
+        checkAttribute(attributes, "cols", new String[] { "frameset", "textarea" }, new Type[] { STRING, NUMBER }, new DTD[] {
                 FRAMESET, STRICT });
-        checkAttribute(attributes, "colspan", new String[] { "td", "th" },
-                new Type[] { NUMBER, NUMBER }, new DTD[] { STRICT, STRICT });
-        checkAttribute(attributes, "class", new String[] { "*", "base",
-                "basefont", "head", "html", "meta", "param", "script", "style",
-                "title" }, new Type[] { STRING }, new DTD[] { STRICT });
-        checkAttribute(attributes, "dir", new String[] { "*", "bdo", "applet",
-                "base", "basefont", "br", "frame", "frameset", "iframe",
-                "param", "script" }, new Type[] { STRING, STRING }, new DTD[] {
-                STRICT, STRICT });
+        checkAttribute(attributes, "colspan", new String[] { "td", "th" }, new Type[] { NUMBER, NUMBER }, new DTD[] { STRICT,
+                STRICT });
+        checkAttribute(attributes, "class", new String[] { "*", "base", "basefont", "head", "html", "meta", "param", "script",
+                "style", "title" }, new Type[] { STRING }, new DTD[] { STRICT });
+        checkAttribute(attributes, "dir", new String[] { "*", "bdo", "applet", "base", "basefont", "br", "frame", "frameset",
+                "iframe", "param", "script" }, new Type[] { STRING, STRING }, new DTD[] { STRICT, STRICT });
     }
 
-    private void checkAttribute(Map<String, AttributeDefinition> attributes,
-            String name, String[] elements, Type[] types, DTD[] dtds)
+    private void checkAttribute(Map<String, AttributeDefinition> attributes, String name, String[] elements, Type[] types,
+            DTD[] dtds)
     {
         AttributeDefinition attribute = attributes.get(name);
         assertSame(name, attribute.name);
