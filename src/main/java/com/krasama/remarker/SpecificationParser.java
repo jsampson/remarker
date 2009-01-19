@@ -18,7 +18,7 @@ public class SpecificationParser
 {
     public static Map<String, CharacterDefinition> parseCharacters() throws Exception
     {
-        Map<String, CharacterDefinition> characters = new HashMap<String, CharacterDefinition>();
+        Map<String, CharacterDefinition> characters = new TreeMap<String, CharacterDefinition>();
         characters.put("apos", new CharacterDefinition("apos", '\''));
         Pattern pattern = Pattern.compile("<!ENTITY ([A-Za-z0-9]+) +CDATA \"&#([0-9]+);\"");
         Document document = load("characters.html");
@@ -41,7 +41,7 @@ public class SpecificationParser
 
     public static Map<String, ElementDefinition> parseElements() throws Exception
     {
-        HashMap<String, ElementDefinition> elements = new HashMap<String, ElementDefinition>();
+        Map<String, ElementDefinition> elements = new TreeMap<String, ElementDefinition>();
         Document document = load("elements.html");
         List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
         for (Object node : nodes)
@@ -60,7 +60,7 @@ public class SpecificationParser
         String elementNamesRegex = "([A-Z0-9]+(,[ \n\r]+[A-Z0-9]+)*)";
         Pattern elementNamesPattern = Pattern.compile("^" + elementNamesRegex + "$");
         Pattern allButElementNamesPattern = Pattern.compile("^All elements but " + elementNamesRegex + "$");
-        HashMap<String, AttributeDefinition> attributes = new HashMap<String, AttributeDefinition>();
+        Map<String, AttributeDefinition> attributes = new TreeMap<String, AttributeDefinition>();
         Document document = load("attributes.html");
         List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
         for (Object node : nodes)

@@ -19,4 +19,23 @@ public class ElementDefinition
         this.empty = empty;
         this.dtd = dtd;
     }
+
+    public String javaName()
+    {
+        return uppercase;
+    }
+
+    public String xmlName()
+    {
+        return lowercase;
+    }
+
+    public void generateCode()
+    {
+        String emptyParam = empty ? ", true" : ", false";
+        System.out.println("    public static Element " + javaName() + "(Object... contents)");
+        System.out.println("    {");
+        System.out.println("        return element(\"" + xmlName() + "\", contents" + emptyParam + ");");
+        System.out.println("    }");
+    }
 }
