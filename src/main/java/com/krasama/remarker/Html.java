@@ -2,6 +2,7 @@ package com.krasama.remarker;
 
 import static com.krasama.remarker.AttributeDefinition.Type.*;
 
+import java.util.*;
 import java.util.regex.*;
 
 import org.jdom.*;
@@ -15,7 +16,74 @@ public final class Html
 
     private static Element element(String name, Object[] contents, boolean empty)
     {
-        return new Element(name);
+        Element element = new Element(name);
+        addContents(element, contents);
+        return element;
+    }
+
+    private static void addContents(Element element, Object[] contents)
+    {
+        for (Object content : contents)
+        {
+            addContent(element, content);
+        }
+    }
+
+    private static void addContents(Element element, Iterable<?> contents)
+    {
+        for (Object content : contents)
+        {
+            addContent(element, content);
+        }
+    }
+
+    private static void addContents(Element element, Iterator<?> contents)
+    {
+        while (contents.hasNext())
+        {
+            addContent(element, contents.next());
+        }
+    }
+
+    private static void addContent(Element element, Object content)
+    {
+        if (content == null)
+        {
+            return;
+        }
+        else if (content instanceof String)
+        {
+            element.addContent((String) content);
+        }
+        else if (content instanceof Content)
+        {
+            element.addContent((Content) content);
+        }
+        else if (content instanceof Attribute)
+        {
+            element.setAttribute((Attribute) content);
+        }
+        else if (content.getClass().isArray() && !content.getClass().getComponentType().isPrimitive())
+        {
+            addContents(element, (Object[]) content);
+        }
+        else if (content instanceof Iterable)
+        {
+            addContents(element, (Iterable<?>) content);
+        }
+        else if (content instanceof Iterator)
+        {
+            addContents(element, (Iterator<?>) content);
+        }
+        else if (content instanceof Enum || content instanceof CharSequence || content instanceof Boolean ||
+                content instanceof Character || content instanceof Number)
+        {
+            element.addContent(content.toString());
+        }
+        else
+        {
+            throw new IllegalArgumentException(content.getClass().getSimpleName());
+        }
     }
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("^-?[0-9]+$");
