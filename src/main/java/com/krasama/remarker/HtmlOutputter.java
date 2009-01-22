@@ -1,5 +1,6 @@
 package com.krasama.remarker;
 
+import static com.krasama.remarker.AttributeDefinition.Type.*;
 import static com.krasama.remarker.SpecificationParser.*;
 
 import java.io.*;
@@ -31,16 +32,23 @@ public class HtmlOutputter
         writer.write(elementDefinition.uppercase);
         for (Object attribute : element.getAttributes())
         {
-            output((Attribute) attribute, writer);
+            output((Attribute) attribute, elementDefinition, writer);
         }
-        writer.write('>');
-        for (Object content : element.getContent())
+        if (elementDefinition.empty)
         {
-            output((Content) content, writer);
+            writer.write(">");
         }
-        writer.write("</");
-        writer.write(elementDefinition.uppercase);
-        writer.write('>');
+        else
+        {
+            writer.write('>');
+            for (Object content : element.getContent())
+            {
+                output((Content) content, writer);
+            }
+            writer.write("</");
+            writer.write(elementDefinition.uppercase);
+            writer.write('>');
+        }
     }
 
     public void output(Text text, Writer writer) throws IOException
@@ -48,14 +56,17 @@ public class HtmlOutputter
         escape(text.getText(), writer, false);
     }
 
-    private void output(Attribute attribute, Writer writer) throws IOException
+    private void output(Attribute attribute, ElementDefinition elementDefinition, Writer writer) throws IOException
     {
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
         writer.write(" ");
         writer.write(attributeDefinition.name);
-        writer.write("=\"");
-        escape(attribute.getValue(), writer, true);
-        writer.write('"');
+        if (attributeDefinition.typesByElement.get(elementDefinition.lowercase) != BOOLEAN)
+        {
+            writer.write("=\"");
+            escape(attribute.getValue(), writer, true);
+            writer.write('"');
+        }
     }
 
     private void escape(String string, Writer writer, boolean escapeQuotes) throws IOException

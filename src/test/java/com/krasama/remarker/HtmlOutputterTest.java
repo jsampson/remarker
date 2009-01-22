@@ -20,9 +20,18 @@ public class HtmlOutputterTest extends TestCase
 
     public void testEscaping() throws Exception
     {
-        checkHtml(
-                P(Class("'\"<>&"), "'\"<>&"),
-                "<P class=\"'&quot;&lt;&gt;&amp;\">'\"&lt;&gt;&amp;</P>");
+        checkHtml(P(Class("'\"<>&"), "'\"<>&"), "<P class=\"'&quot;&lt;&gt;&amp;\">'\"&lt;&gt;&amp;</P>");
+    }
+
+    public void testEmptyTags() throws Exception
+    {
+        checkHtml(P(B(), BR(), INPUT(Type("text"))), "<P><B></B><BR><INPUT type=\"text\"></P>");
+    }
+
+    public void testBooleanAttributes() throws Exception
+    {
+        checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked("checked"))),
+                "<P class=\"class\"><INPUT type=\"checkbox\" checked></P>");
     }
 
     private void checkHtml(Element html, String expected) throws IOException
