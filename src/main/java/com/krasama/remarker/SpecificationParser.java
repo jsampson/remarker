@@ -16,6 +16,24 @@ import com.krasama.remarker.ElementDefinition.*;
 
 public class SpecificationParser
 {
+    public static final Map<String, CharacterDefinition> CHARACTERS;
+    public static final Map<String, ElementDefinition> ELEMENTS;
+    public static final Map<String, AttributeDefinition> ATTRIBUTES;
+
+    static
+    {
+        try
+        {
+            CHARACTERS = Collections.unmodifiableMap(parseCharacters());
+            ELEMENTS = Collections.unmodifiableMap(parseElements());
+            ATTRIBUTES = Collections.unmodifiableMap(parseAttributes());
+        }
+        catch (Exception impossible)
+        {
+            throw new AssertionError(impossible);
+        }
+    }
+
     public static Map<String, CharacterDefinition> parseCharacters() throws Exception
     {
         Map<String, CharacterDefinition> characters = new TreeMap<String, CharacterDefinition>();
