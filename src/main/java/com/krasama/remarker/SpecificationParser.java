@@ -2,6 +2,7 @@ package com.krasama.remarker;
 
 import static com.krasama.remarker.AttributeDefinition.Type.*;
 import static com.krasama.remarker.ElementDefinition.DTD.*;
+import static java.util.Arrays.*;
 
 import java.io.*;
 import java.util.*;
@@ -59,6 +60,22 @@ public class SpecificationParser
 
     public static Map<String, ElementDefinition> parseElements() throws Exception
     {
+        // definition of "inline" elements from the HTML 4.01 DTD
+        Set<String> fontstyle = new HashSet<String>(asList("TT", "I", "B", "BIG", "SMALL"));
+        Set<String> phrase = new HashSet<String>(asList("EM", "STRONG", "DFN", "CODE", "SAMP", "KBD", "VAR", "CITE", "ABBR",
+                "ACRONYM"));
+        Set<String> special = new HashSet<String>(asList("A", "IMG", "OBJECT", "BR", "SCRIPT", "MAP", "Q", "SUB", "SUP", "SPAN",
+                "BDO"));
+        Set<String> formctrl = new HashSet<String>(asList("INPUT", "SELECT", "TEXTAREA", "LABEL", "BUTTON"));
+
+        Set<String> inline = new HashSet<String>();
+        inline.addAll(fontstyle);
+        inline.addAll(phrase);
+        inline.addAll(special);
+        inline.addAll(formctrl);
+        // remove BR so that it is formatted on its own line
+        inline.remove("BR");
+
         Map<String, ElementDefinition> elements = new TreeMap<String, ElementDefinition>();
         Document document = load("elements.html");
         List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
@@ -68,7 +85,8 @@ public class SpecificationParser
             String name = getCellValue(tr, 0);
             String empty = getCellValue(tr, 3);
             String dtd = getCellValue(tr, 5);
-            elements.put(name.toLowerCase().intern(), new ElementDefinition(name, empty.equals("E"), parseDTD(dtd)));
+            elements.put(name.toLowerCase().intern(), new ElementDefinition(name, inline.contains(name), empty.equals("E"),
+                    parseDTD(dtd)));
         }
         return elements;
     }

@@ -4,20 +4,30 @@ import static com.krasama.remarker.AttributeDefinition.Type.*;
 import static com.krasama.remarker.SpecificationParser.*;
 
 import java.io.*;
+import java.util.*;
 
 import org.jdom.*;
 
 public class HtmlOutputter
 {
-    public void output(Content content, Writer writer) throws IOException
+    private final Writer writer;
+    private boolean atStartOfLine = true;
+    private int indentLevel = 0;
+
+    public HtmlOutputter(Writer writer)
+    {
+        this.writer = writer;
+    }
+
+    public void output(Content content) throws IOException
     {
         if (content instanceof Element)
         {
-            output((Element) content, writer);
+            output((Element) content);
         }
         else if (content instanceof Text)
         {
-            output((Text) content, writer);
+            output((Text) content);
         }
         else
         {
@@ -25,51 +35,123 @@ public class HtmlOutputter
         }
     }
 
-    public void output(Element element, Writer writer) throws IOException
+    public void output(Element element) throws IOException
     {
         ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
-        writer.write('<');
-        writer.write(elementDefinition.uppercase);
+        boolean newLinesOutside = !elementDefinition.inline;
+        boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getChildren());
+        if (newLinesOutside)
+        {
+            newLine();
+        }
+        raw('<');
+        raw(elementDefinition.uppercase);
         for (Object attribute : element.getAttributes())
         {
-            output((Attribute) attribute, elementDefinition, writer);
+            output((Attribute) attribute, elementDefinition);
         }
         if (elementDefinition.empty)
         {
-            writer.write(">");
+            raw(">");
         }
         else
         {
-            writer.write('>');
+            raw('>');
+            if (newLinesInside)
+            {
+                indentLevel++;
+                newLine();
+            }
             for (Object content : element.getContent())
             {
-                output((Content) content, writer);
+                output((Content) content);
             }
-            writer.write("</");
-            writer.write(elementDefinition.uppercase);
-            writer.write('>');
+            if (newLinesInside)
+            {
+                newLine();
+                indentLevel--;
+            }
+            raw("</");
+            raw(elementDefinition.uppercase);
+            raw('>');
+        }
+        if (newLinesOutside)
+        {
+            newLine();
         }
     }
 
-    public void output(Text text, Writer writer) throws IOException
+    private boolean hasNonInlineContents(List<?> children)
     {
-        escape(text.getText(), writer, false);
+        for (Object child : children)
+        {
+            Element element = (Element) child;
+            ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
+            if (!elementDefinition.inline || hasNonInlineContents(element.getChildren()))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private void output(Attribute attribute, ElementDefinition elementDefinition, Writer writer) throws IOException
+    public void output(Text text) throws IOException
+    {
+        escape(text.getText(), false);
+    }
+
+    private void output(Attribute attribute, ElementDefinition elementDefinition) throws IOException
     {
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
-        writer.write(" ");
-        writer.write(attributeDefinition.name);
+        raw(" ");
+        raw(attributeDefinition.name);
         if (attributeDefinition.typesByElement.get(elementDefinition.lowercase) != BOOLEAN)
         {
-            writer.write("=\"");
-            escape(attribute.getValue(), writer, true);
-            writer.write('"');
+            raw("=\"");
+            escape(attribute.getValue(), true);
+            raw('"');
         }
     }
 
-    private void escape(String string, Writer writer, boolean escapeQuotes) throws IOException
+    private void raw(String string) throws IOException
+    {
+        if (string.length() != 0)
+        {
+            writeIndent();
+            writer.write(string);
+            atStartOfLine = false;
+        }
+    }
+
+    private void raw(char character) throws IOException
+    {
+        writeIndent();
+        writer.write(character);
+        atStartOfLine = false;
+    }
+
+    private void writeIndent() throws IOException
+    {
+        if (atStartOfLine && indentLevel > 0)
+        {
+            for (int i = 0; i < indentLevel; i++)
+            {
+                writer.write("  ");
+            }
+            atStartOfLine = false;
+        }
+    }
+
+    private void newLine() throws IOException
+    {
+        if (!atStartOfLine)
+        {
+            writer.write("\r\n");
+            atStartOfLine = true;
+        }
+    }
+
+    private void escape(String string, boolean escapeQuotes) throws IOException
     {
         for (int i = 0; i < string.length(); i++)
         {
@@ -77,22 +159,22 @@ public class HtmlOutputter
             switch (c)
             {
             case '<':
-                writer.write("&lt;");
+                raw("&lt;");
                 continue;
             case '>':
-                writer.write("&gt;");
+                raw("&gt;");
                 continue;
             case '&':
-                writer.write("&amp;");
+                raw("&amp;");
                 continue;
             case '"':
                 if (escapeQuotes)
                 {
-                    writer.write("&quot;");
+                    raw("&quot;");
                     continue;
                 }
             default:
-                writer.write(c);
+                raw(c);
                 continue;
             }
         }
