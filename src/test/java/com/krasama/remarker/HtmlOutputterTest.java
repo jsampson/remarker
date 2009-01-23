@@ -41,6 +41,20 @@ public class HtmlOutputterTest extends TestCase
                 "<HTML>\r\n  <BODY>\r\n    <TABLE>\r\n      <TR>\r\n        <TD>Hello.</TD>\r\n        <TD>\r\n          <P>Goodbye.</P>\r\n        </TD>\r\n      </TR>\r\n    </TABLE>\r\n  </BODY>\r\n</HTML>\r\n");
     }
 
+    public void testTextIndentation() throws Exception
+    {
+        checkHtml(
+                HTML(BODY(P("First line.\nSecond line.\rThird line.\r\nFourth line."))),
+                "<HTML>\r\n  <BODY>\r\n    <P>\r\n      First line.\r\n      Second line.\r\n      Third line.\r\n      Fourth line.\r\n    </P>\r\n  </BODY>\r\n</HTML>\r\n");
+    }
+    
+    public void testNewlinesInAttribute() throws Exception
+    {
+        checkHtml(
+                INPUT(Type("hidden"), Value("first line\r\nsecond line")),
+                "<INPUT type=\"hidden\" value=\"first line&#13;&#10;second line\">");
+    }
+
     private void checkHtml(Element html, String expected) throws IOException
     {
         StringWriter writer = new StringWriter();

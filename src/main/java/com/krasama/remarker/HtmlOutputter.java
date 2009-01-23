@@ -39,7 +39,7 @@ public class HtmlOutputter
     {
         ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
         boolean newLinesOutside = !elementDefinition.inline;
-        boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getChildren());
+        boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getContent());
         if (newLinesOutside)
         {
             newLine();
@@ -85,11 +85,22 @@ public class HtmlOutputter
     {
         for (Object child : children)
         {
-            Element element = (Element) child;
-            ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
-            if (!elementDefinition.inline || hasNonInlineContents(element.getChildren()))
+            if (child instanceof Element)
             {
-                return true;
+                Element element = (Element) child;
+                ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
+                if (!elementDefinition.inline || hasNonInlineContents(element.getContent()))
+                {
+                    return true;
+                }
+            }
+            else if (child instanceof Text)
+            {
+                Text text = (Text) child;
+                if (text.getText().indexOf('\r') != -1 || text.getText().indexOf('\r') != -1)
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -151,7 +162,7 @@ public class HtmlOutputter
         }
     }
 
-    private void escape(String string, boolean escapeQuotes) throws IOException
+    private void escape(String string, boolean inAttributeValue) throws IOException
     {
         for (int i = 0; i < string.length(); i++)
         {
@@ -167,8 +178,21 @@ public class HtmlOutputter
             case '&':
                 raw("&amp;");
                 continue;
+            case '\r':
+            case '\n':
+                if (inAttributeValue)
+                {
+                    raw("&#");
+                    raw(Integer.toString(c));
+                    raw(";");
+                }
+                else
+                {
+                    newLine();
+                }
+                continue;
             case '"':
-                if (escapeQuotes)
+                if (inAttributeValue)
                 {
                     raw("&quot;");
                     continue;
