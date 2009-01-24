@@ -198,7 +198,16 @@ public class HtmlOutputter
                     continue;
                 }
             default:
-                raw(c);
+                if (c >= ' ' && c <= '~')
+                {
+                    raw(c);
+                }
+                else
+                {
+                    raw("&#");
+                    raw(Integer.toString(c));
+                    raw(";");
+                }
                 continue;
             }
         }
