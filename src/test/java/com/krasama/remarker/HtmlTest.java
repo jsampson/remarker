@@ -56,7 +56,7 @@ public class HtmlTest extends TestCase
         }
         catch (IllegalArgumentException expected)
         {
-            assertEquals("Pattern", expected.getMessage());
+            assertEquals("java.util.regex.Pattern", expected.getMessage());
         }
         try
         {

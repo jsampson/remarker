@@ -14,7 +14,7 @@ public final class Html
         // to prevent instantiation
     }
 
-    private static Element element(String name, Object[] contents, boolean empty)
+    static Element element(String name, Object[] contents)
     {
         Element element = new Element(name);
         addContents(element, contents);
@@ -82,7 +82,7 @@ public final class Html
         }
         else
         {
-            throw new IllegalArgumentException(content.getClass().getSimpleName());
+            throw new IllegalArgumentException(content.getClass().getCanonicalName());
         }
     }
 
@@ -138,457 +138,457 @@ public final class Html
 
     public static Element A(Object... contents)
     {
-        return element("a", contents, false);
+        return element("a", contents);
     }
 
     public static Element ABBR(Object... contents)
     {
-        return element("abbr", contents, false);
+        return element("abbr", contents);
     }
 
     public static Element ACRONYM(Object... contents)
     {
-        return element("acronym", contents, false);
+        return element("acronym", contents);
     }
 
     public static Element ADDRESS(Object... contents)
     {
-        return element("address", contents, false);
+        return element("address", contents);
     }
 
     public static Element APPLET(Object... contents)
     {
-        return element("applet", contents, false);
+        return element("applet", contents);
     }
 
     public static Element AREA(Object... contents)
     {
-        return element("area", contents, true);
+        return element("area", contents);
     }
 
     public static Element B(Object... contents)
     {
-        return element("b", contents, false);
+        return element("b", contents);
     }
 
     public static Element BASE(Object... contents)
     {
-        return element("base", contents, true);
+        return element("base", contents);
     }
 
     public static Element BASEFONT(Object... contents)
     {
-        return element("basefont", contents, true);
+        return element("basefont", contents);
     }
 
     public static Element BDO(Object... contents)
     {
-        return element("bdo", contents, false);
+        return element("bdo", contents);
     }
 
     public static Element BIG(Object... contents)
     {
-        return element("big", contents, false);
+        return element("big", contents);
     }
 
     public static Element BLOCKQUOTE(Object... contents)
     {
-        return element("blockquote", contents, false);
+        return element("blockquote", contents);
     }
 
     public static Element BODY(Object... contents)
     {
-        return element("body", contents, false);
+        return element("body", contents);
     }
 
     public static Element BR(Object... contents)
     {
-        return element("br", contents, true);
+        return element("br", contents);
     }
 
     public static Element BUTTON(Object... contents)
     {
-        return element("button", contents, false);
+        return element("button", contents);
     }
 
     public static Element CAPTION(Object... contents)
     {
-        return element("caption", contents, false);
+        return element("caption", contents);
     }
 
     public static Element CENTER(Object... contents)
     {
-        return element("center", contents, false);
+        return element("center", contents);
     }
 
     public static Element CITE(Object... contents)
     {
-        return element("cite", contents, false);
+        return element("cite", contents);
     }
 
     public static Element CODE(Object... contents)
     {
-        return element("code", contents, false);
+        return element("code", contents);
     }
 
     public static Element COL(Object... contents)
     {
-        return element("col", contents, true);
+        return element("col", contents);
     }
 
     public static Element COLGROUP(Object... contents)
     {
-        return element("colgroup", contents, false);
+        return element("colgroup", contents);
     }
 
     public static Element DD(Object... contents)
     {
-        return element("dd", contents, false);
+        return element("dd", contents);
     }
 
     public static Element DEL(Object... contents)
     {
-        return element("del", contents, false);
+        return element("del", contents);
     }
 
     public static Element DFN(Object... contents)
     {
-        return element("dfn", contents, false);
+        return element("dfn", contents);
     }
 
     public static Element DIR(Object... contents)
     {
-        return element("dir", contents, false);
+        return element("dir", contents);
     }
 
     public static Element DIV(Object... contents)
     {
-        return element("div", contents, false);
+        return element("div", contents);
     }
 
     public static Element DL(Object... contents)
     {
-        return element("dl", contents, false);
+        return element("dl", contents);
     }
 
     public static Element DT(Object... contents)
     {
-        return element("dt", contents, false);
+        return element("dt", contents);
     }
 
     public static Element EM(Object... contents)
     {
-        return element("em", contents, false);
+        return element("em", contents);
     }
 
     public static Element FIELDSET(Object... contents)
     {
-        return element("fieldset", contents, false);
+        return element("fieldset", contents);
     }
 
     public static Element FONT(Object... contents)
     {
-        return element("font", contents, false);
+        return element("font", contents);
     }
 
     public static Element FORM(Object... contents)
     {
-        return element("form", contents, false);
+        return element("form", contents);
     }
 
     public static Element FRAME(Object... contents)
     {
-        return element("frame", contents, true);
+        return element("frame", contents);
     }
 
     public static Element FRAMESET(Object... contents)
     {
-        return element("frameset", contents, false);
+        return element("frameset", contents);
     }
 
     public static Element H1(Object... contents)
     {
-        return element("h1", contents, false);
+        return element("h1", contents);
     }
 
     public static Element H2(Object... contents)
     {
-        return element("h2", contents, false);
+        return element("h2", contents);
     }
 
     public static Element H3(Object... contents)
     {
-        return element("h3", contents, false);
+        return element("h3", contents);
     }
 
     public static Element H4(Object... contents)
     {
-        return element("h4", contents, false);
+        return element("h4", contents);
     }
 
     public static Element H5(Object... contents)
     {
-        return element("h5", contents, false);
+        return element("h5", contents);
     }
 
     public static Element H6(Object... contents)
     {
-        return element("h6", contents, false);
+        return element("h6", contents);
     }
 
     public static Element HEAD(Object... contents)
     {
-        return element("head", contents, false);
+        return element("head", contents);
     }
 
     public static Element HR(Object... contents)
     {
-        return element("hr", contents, true);
+        return element("hr", contents);
     }
 
     public static Element HTML(Object... contents)
     {
-        return element("html", contents, false);
+        return element("html", contents);
     }
 
     public static Element I(Object... contents)
     {
-        return element("i", contents, false);
+        return element("i", contents);
     }
 
     public static Element IFRAME(Object... contents)
     {
-        return element("iframe", contents, false);
+        return element("iframe", contents);
     }
 
     public static Element IMG(Object... contents)
     {
-        return element("img", contents, true);
+        return element("img", contents);
     }
 
     public static Element INPUT(Object... contents)
     {
-        return element("input", contents, true);
+        return element("input", contents);
     }
 
     public static Element INS(Object... contents)
     {
-        return element("ins", contents, false);
+        return element("ins", contents);
     }
 
     public static Element ISINDEX(Object... contents)
     {
-        return element("isindex", contents, true);
+        return element("isindex", contents);
     }
 
     public static Element KBD(Object... contents)
     {
-        return element("kbd", contents, false);
+        return element("kbd", contents);
     }
 
     public static Element LABEL(Object... contents)
     {
-        return element("label", contents, false);
+        return element("label", contents);
     }
 
     public static Element LEGEND(Object... contents)
     {
-        return element("legend", contents, false);
+        return element("legend", contents);
     }
 
     public static Element LI(Object... contents)
     {
-        return element("li", contents, false);
+        return element("li", contents);
     }
 
     public static Element LINK(Object... contents)
     {
-        return element("link", contents, true);
+        return element("link", contents);
     }
 
     public static Element MAP(Object... contents)
     {
-        return element("map", contents, false);
+        return element("map", contents);
     }
 
     public static Element MENU(Object... contents)
     {
-        return element("menu", contents, false);
+        return element("menu", contents);
     }
 
     public static Element META(Object... contents)
     {
-        return element("meta", contents, true);
+        return element("meta", contents);
     }
 
     public static Element NOFRAMES(Object... contents)
     {
-        return element("noframes", contents, false);
+        return element("noframes", contents);
     }
 
     public static Element NOSCRIPT(Object... contents)
     {
-        return element("noscript", contents, false);
+        return element("noscript", contents);
     }
 
     public static Element OBJECT(Object... contents)
     {
-        return element("object", contents, false);
+        return element("object", contents);
     }
 
     public static Element OL(Object... contents)
     {
-        return element("ol", contents, false);
+        return element("ol", contents);
     }
 
     public static Element OPTGROUP(Object... contents)
     {
-        return element("optgroup", contents, false);
+        return element("optgroup", contents);
     }
 
     public static Element OPTION(Object... contents)
     {
-        return element("option", contents, false);
+        return element("option", contents);
     }
 
     public static Element P(Object... contents)
     {
-        return element("p", contents, false);
+        return element("p", contents);
     }
 
     public static Element PARAM(Object... contents)
     {
-        return element("param", contents, true);
+        return element("param", contents);
     }
 
     public static Element PRE(Object... contents)
     {
-        return element("pre", contents, false);
+        return element("pre", contents);
     }
 
     public static Element Q(Object... contents)
     {
-        return element("q", contents, false);
+        return element("q", contents);
     }
 
     public static Element S(Object... contents)
     {
-        return element("s", contents, false);
+        return element("s", contents);
     }
 
     public static Element SAMP(Object... contents)
     {
-        return element("samp", contents, false);
+        return element("samp", contents);
     }
 
     public static Element SCRIPT(Object... contents)
     {
-        return element("script", contents, false);
+        return element("script", contents);
     }
 
     public static Element SELECT(Object... contents)
     {
-        return element("select", contents, false);
+        return element("select", contents);
     }
 
     public static Element SMALL(Object... contents)
     {
-        return element("small", contents, false);
+        return element("small", contents);
     }
 
     public static Element SPAN(Object... contents)
     {
-        return element("span", contents, false);
+        return element("span", contents);
     }
 
     public static Element STRIKE(Object... contents)
     {
-        return element("strike", contents, false);
+        return element("strike", contents);
     }
 
     public static Element STRONG(Object... contents)
     {
-        return element("strong", contents, false);
+        return element("strong", contents);
     }
 
     public static Element STYLE(Object... contents)
     {
-        return element("style", contents, false);
+        return element("style", contents);
     }
 
     public static Element SUB(Object... contents)
     {
-        return element("sub", contents, false);
+        return element("sub", contents);
     }
 
     public static Element SUP(Object... contents)
     {
-        return element("sup", contents, false);
+        return element("sup", contents);
     }
 
     public static Element TABLE(Object... contents)
     {
-        return element("table", contents, false);
+        return element("table", contents);
     }
 
     public static Element TBODY(Object... contents)
     {
-        return element("tbody", contents, false);
+        return element("tbody", contents);
     }
 
     public static Element TD(Object... contents)
     {
-        return element("td", contents, false);
+        return element("td", contents);
     }
 
     public static Element TEXTAREA(Object... contents)
     {
-        return element("textarea", contents, false);
+        return element("textarea", contents);
     }
 
     public static Element TFOOT(Object... contents)
     {
-        return element("tfoot", contents, false);
+        return element("tfoot", contents);
     }
 
     public static Element TH(Object... contents)
     {
-        return element("th", contents, false);
+        return element("th", contents);
     }
 
     public static Element THEAD(Object... contents)
     {
-        return element("thead", contents, false);
+        return element("thead", contents);
     }
 
     public static Element TITLE(Object... contents)
     {
-        return element("title", contents, false);
+        return element("title", contents);
     }
 
     public static Element TR(Object... contents)
     {
-        return element("tr", contents, false);
+        return element("tr", contents);
     }
 
     public static Element TT(Object... contents)
     {
-        return element("tt", contents, false);
+        return element("tt", contents);
     }
 
     public static Element U(Object... contents)
     {
-        return element("u", contents, false);
+        return element("u", contents);
     }
 
     public static Element UL(Object... contents)
     {
-        return element("ul", contents, false);
+        return element("ul", contents);
     }
 
     public static Element VAR(Object... contents)
     {
-        return element("var", contents, false);
+        return element("var", contents);
     }
 
     public static Attribute Abbr(String value)

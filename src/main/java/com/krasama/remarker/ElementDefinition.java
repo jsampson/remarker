@@ -34,10 +34,9 @@ public class ElementDefinition
 
     public void generateCode()
     {
-        String emptyParam = empty ? ", true" : ", false";
         System.out.println("    public static Element " + javaName() + "(Object... contents)");
         System.out.println("    {");
-        System.out.println("        return element(\"" + xmlName() + "\", contents" + emptyParam + ");");
+        System.out.println("        return element(\"" + xmlName() + "\", contents);");
         System.out.println("    }");
     }
 }

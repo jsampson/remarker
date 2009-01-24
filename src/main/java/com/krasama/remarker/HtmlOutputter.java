@@ -19,15 +19,29 @@ public class HtmlOutputter
         this.writer = writer;
     }
 
-    public void output(Content content) throws IOException
+    public void output(Object... contents) throws IOException
+    {
+        Element dummy = Html.element("_", contents);
+        if (!dummy.getAttributes().isEmpty())
+        {
+            throw new IllegalArgumentException("Attribute '" + ((Attribute) dummy.getAttributes().get(0)).getName() +
+                    "' must be contained in an element");
+        }
+        for (Object content : dummy.getContent())
+        {
+            dispatch(content);
+        }
+    }
+
+    private void dispatch(Object content) throws IOException
     {
         if (content instanceof Element)
         {
-            output((Element) content);
+            element((Element) content);
         }
         else if (content instanceof Text)
         {
-            output((Text) content);
+            text((Text) content);
         }
         else
         {
@@ -35,7 +49,7 @@ public class HtmlOutputter
         }
     }
 
-    public void output(Element element) throws IOException
+    private void element(Element element) throws IOException
     {
         ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
         boolean newLinesOutside = !elementDefinition.inline;
@@ -48,7 +62,7 @@ public class HtmlOutputter
         raw(elementDefinition.uppercase);
         for (Object attribute : element.getAttributes())
         {
-            output((Attribute) attribute, elementDefinition);
+            attribute((Attribute) attribute, elementDefinition);
         }
         if (elementDefinition.empty)
         {
@@ -64,7 +78,7 @@ public class HtmlOutputter
             }
             for (Object content : element.getContent())
             {
-                output((Content) content);
+                dispatch((Content) content);
             }
             if (newLinesInside)
             {
@@ -106,12 +120,12 @@ public class HtmlOutputter
         return false;
     }
 
-    public void output(Text text) throws IOException
+    private void text(Text text) throws IOException
     {
         escape(text.getText(), false);
     }
 
-    private void output(Attribute attribute, ElementDefinition elementDefinition) throws IOException
+    private void attribute(Attribute attribute, ElementDefinition elementDefinition) throws IOException
     {
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
         raw(" ");
@@ -182,9 +196,7 @@ public class HtmlOutputter
             case '\n':
                 if (inAttributeValue)
                 {
-                    raw("&#");
-                    raw(Integer.toString(c));
-                    raw(";");
+                    numericCharacterReference(c);
                 }
                 else
                 {
@@ -204,12 +216,17 @@ public class HtmlOutputter
                 }
                 else
                 {
-                    raw("&#");
-                    raw(Integer.toString(c));
-                    raw(";");
+                    numericCharacterReference(c);
                 }
                 continue;
             }
         }
+    }
+
+    private void numericCharacterReference(char c) throws IOException
+    {
+        raw("&#");
+        raw(Integer.toString(c));
+        raw(";");
     }
 }
