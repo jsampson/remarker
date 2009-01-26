@@ -13,6 +13,8 @@ public class HtmlOutputter
     private final Writer writer;
     private boolean atStartOfLine = true;
     private int indentLevel = 0;
+    private char[] buffer = new char[8192];
+    private int index = 0;
 
     public HtmlOutputter(Writer writer)
     {
@@ -25,6 +27,7 @@ public class HtmlOutputter
         {
             dispatch(content);
         }
+        flush();
     }
 
     private void dispatch(Content content) throws IOException
@@ -137,7 +140,7 @@ public class HtmlOutputter
         if (string.length() != 0)
         {
             writeIndent();
-            writer.write(string);
+            append(string);
             atStartOfLine = false;
         }
     }
@@ -145,7 +148,7 @@ public class HtmlOutputter
     private void raw(char character) throws IOException
     {
         writeIndent();
-        writer.write(character);
+        append(character);
         atStartOfLine = false;
     }
 
@@ -155,7 +158,7 @@ public class HtmlOutputter
         {
             for (int i = 0; i < indentLevel; i++)
             {
-                writer.write("  ");
+                append("  ");
             }
             atStartOfLine = false;
         }
@@ -165,8 +168,35 @@ public class HtmlOutputter
     {
         if (!atStartOfLine)
         {
-            writer.write("\r\n");
+            append("\r\n");
             atStartOfLine = true;
+        }
+    }
+
+    private void append(String s) throws IOException
+    {
+        int n = s.length();
+        for (int i = 0; i < n; i++)
+        {
+            append(s.charAt(i));
+        }
+    }
+
+    private void append(char c) throws IOException
+    {
+        buffer[index++] = c;
+        if (index == buffer.length)
+        {
+            flush();
+        }
+    }
+
+    private void flush() throws IOException
+    {
+        if (index > 0)
+        {
+            writer.write(buffer, 0, index);
+            index = 0;
         }
     }
 
