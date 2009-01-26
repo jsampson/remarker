@@ -85,4 +85,16 @@ public class AttributeDefinition
         System.out.println("        return attribute(\"" + xmlName() + "\", value" + typeParam + ");");
         System.out.println("    }");
     }
+
+    public Type getType(String elementName)
+    {
+        if (typesByElement.containsKey(elementName))
+        {
+            return typesByElement.get(elementName);
+        }
+        else
+        {
+            return typesByElement.get("*");
+        }
+    }
 }

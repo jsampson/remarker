@@ -3,7 +3,6 @@ package com.krasama.remarker;
 import static com.krasama.remarker.AttributeDefinition.Type.*;
 
 import java.util.*;
-import java.util.regex.*;
 
 import org.jdom.*;
 
@@ -73,6 +72,7 @@ public final class Html
         }
         else if (content instanceof Attribute)
         {
+            validateAttribute(element, (Attribute) content);
             element.setAttribute((Attribute) content);
         }
         else if (content.getClass().isArray() && !content.getClass().getComponentType().isPrimitive())
@@ -98,7 +98,54 @@ public final class Html
         }
     }
 
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("^-?[0-9]+$");
+    private static void validateAttribute(Element element, Attribute attribute)
+    {
+        AttributeDefinition definition = SpecificationParser.ATTRIBUTES.get(attribute.getName());
+        AttributeDefinition.Type type = definition.getType(element.getName());
+        if (type == null)
+        {
+            throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
+                    element.getName() + "' element");
+        }
+        else if (type == NUMBER)
+        {
+            if (!isNumber(attribute.getValue()))
+            {
+                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be a number for the '" +
+                        element.getName() + "' element; got \"" + attribute.getValue() + "\"");
+            }
+        }
+        else if (type == BOOLEAN)
+        {
+            if (!attribute.getValue().equals(attribute.getName()))
+            {
+                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be boolean for the '" +
+                        element.getName() + "' element; got \"" + attribute.getValue() + "\"");
+            }
+        }
+    }
+
+    private static boolean isNumber(String value)
+    {
+        int n = value.length();
+        if (n == 0)
+        {
+            return false;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            char c = value.charAt(i);
+            if (i == 0 && c == '-' && n > 1)
+            {
+                continue;
+            }
+            if (c < '0' || c > '9')
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private static Attribute attribute(String name, String value, AttributeDefinition.Type loosestType)
     {
@@ -113,7 +160,7 @@ public final class Html
                 throw new IllegalArgumentException("Value for boolean attribute '" + name + "' must be either \"" + name +
                         "\" or null; got \"" + value + "\"");
             }
-            if (loosestType == NUMBER && !NUMBER_PATTERN.matcher(value).matches())
+            if (loosestType == NUMBER && !isNumber(value))
             {
                 throw new IllegalArgumentException("Value for number attribute '" + name + "' must be an integer or null; got \"" +
                         value + "\"");

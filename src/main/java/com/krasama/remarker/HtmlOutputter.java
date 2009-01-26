@@ -127,7 +127,7 @@ public class HtmlOutputter
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
         raw(" ");
         raw(attributeDefinition.name);
-        if (attributeDefinition.typesByElement.get(elementDefinition.lowercase) != BOOLEAN)
+        if (attributeDefinition.getType(elementDefinition.lowercase) != BOOLEAN)
         {
             raw("=\"");
             escape(attribute.getValue(), true);

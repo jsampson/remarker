@@ -71,14 +71,14 @@ public class HtmlTest extends TestCase
 
     public void testBooleanAttribute() throws Exception
     {
-        checkHtml(P(Checked(true)), "<p checked=\"checked\" />");
-        checkHtml(P(Checked(false)), "<p />");
-        checkHtml(P(Checked((Boolean) null)), "<p />");
-        checkHtml(P(Checked("checked")), "<p checked=\"checked\" />");
-        checkHtml(P(Checked((String) null)), "<p />");
+        checkHtml(INPUT(Checked(true)), "<input checked=\"checked\" />");
+        checkHtml(INPUT(Checked(false)), "<input />");
+        checkHtml(INPUT(Checked((Boolean) null)), "<input />");
+        checkHtml(INPUT(Checked("checked")), "<input checked=\"checked\" />");
+        checkHtml(INPUT(Checked((String) null)), "<input />");
         try
         {
-            P(Checked("foo"));
+            INPUT(Checked("foo"));
             fail();
         }
         catch (IllegalArgumentException expected)
@@ -90,20 +90,69 @@ public class HtmlTest extends TestCase
 
     public void testNumberAttribute() throws Exception
     {
-        checkHtml(P(Colspan(42)), "<p colspan=\"42\" />");
-        checkHtml(P(Colspan(-17)), "<p colspan=\"-17\" />");
-        checkHtml(P(Colspan((Integer) null)), "<p />");
-        checkHtml(P(Colspan("42")), "<p colspan=\"42\" />");
-        checkHtml(P(Colspan("-17")), "<p colspan=\"-17\" />");
-        checkHtml(P(Colspan((String) null)), "<p />");
+        checkHtml(TD(Colspan(42)), "<td colspan=\"42\" />");
+        checkHtml(TD(Colspan(-17)), "<td colspan=\"-17\" />");
+        checkHtml(TD(Colspan((Integer) null)), "<td />");
+        checkHtml(TD(Colspan("42")), "<td colspan=\"42\" />");
+        checkHtml(TD(Colspan("-17")), "<td colspan=\"-17\" />");
+        checkHtml(TD(Colspan((String) null)), "<td />");
         try
         {
-            P(Colspan("foo"));
+            TD(Colspan("foo"));
             fail();
         }
         catch (IllegalArgumentException expected)
         {
             assertEquals("Value for number attribute 'colspan' must be an integer or null; got \"foo\"", expected.getMessage());
+        }
+    }
+
+    public void testAllowedAttributes() throws Exception
+    {
+        // "action" is allowed only for "form"
+        checkHtml(FORM(Action("...")), "<form action=\"...\" />");
+        try
+        {
+            BODY(Action("..."));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'action' attribute is not allowed for the 'body' element", expected.getMessage());
+        }
+        // "onclick" is allowed for *all elements but* a certain list
+        checkHtml(BODY(Onclick("...")), "<body onclick=\"...\" />");
+        try
+        {
+            HEAD(Onclick("..."));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'onclick' attribute is not allowed for the 'head' element", expected.getMessage());
+        }
+        // "cols" has a different type for "frameset" than for "textarea"
+        checkHtml(FRAMESET(Cols("1,2,3")), "<frameset cols=\"1,2,3\" />");
+        checkHtml(TEXTAREA(Cols("123")), "<textarea cols=\"123\" />");
+        try
+        {
+            TEXTAREA(Cols("1,2,3"));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'cols' attribute must be a number for the 'textarea' element; got \"1,2,3\"", expected.getMessage());
+        }
+        // boolean attributes are otherwise checked already, but might be
+        // slipped in via hand-made JDOM objects
+        try
+        {
+            INPUT(new Attribute("checked", "foo"));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'checked' attribute must be boolean for the 'input' element; got \"foo\"", expected.getMessage());
         }
     }
 
