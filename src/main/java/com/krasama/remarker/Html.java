@@ -101,7 +101,7 @@ public final class Html
     private static void validateAttribute(Element element, Attribute attribute)
     {
         AttributeDefinition definition = SpecificationParser.ATTRIBUTES.get(attribute.getName());
-        AttributeDefinition.Type type = definition.getType(element.getName());
+        AttributeDefinition.Type type = definition == null ? null : definition.getType(element.getName());
         if (type == null)
         {
             throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +

@@ -96,4 +96,16 @@ public class AttributeDefinition
             return typesByElement.get("*");
         }
     }
+
+    public DTD getDTD(String elementName)
+    {
+        if (dtdsByElement.containsKey(elementName))
+        {
+            return dtdsByElement.get(elementName);
+        }
+        else
+        {
+            return dtdsByElement.get("*");
+        }
+    }
 }

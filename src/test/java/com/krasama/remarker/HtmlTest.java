@@ -144,6 +144,19 @@ public class HtmlTest extends TestCase
         }
     }
 
+    public void testBogusAttribute() throws Exception
+    {
+        try
+        {
+            P(new Attribute("foo", "bar"));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'foo' attribute is not allowed for the 'p' element", expected.getMessage());
+        }
+    }
+
     private void checkHtml(Element html, String expected) throws IOException
     {
         XMLOutputter outputter = new XMLOutputter();

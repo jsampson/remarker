@@ -1,5 +1,6 @@
 package com.krasama.remarker;
 
+import static com.krasama.remarker.ElementDefinition.DTD.*;
 import static com.krasama.remarker.Html.*;
 
 import java.io.*;
@@ -88,6 +89,132 @@ public class HtmlOutputterTest extends TestCase
         catch (IllegalArgumentException expected)
         {
             assertEquals("Attribute 'class' must be contained in an element", expected.getMessage());
+        }
+    }
+
+    public void testElementDTDValidation() throws IOException
+    {
+        StringWriter writer = new StringWriter();
+        HtmlOutputter strict = new HtmlOutputter(writer, STRICT);
+        HtmlOutputter loose = new HtmlOutputter(writer, LOOSE);
+        HtmlOutputter frameset = new HtmlOutputter(writer, FRAMESET);
+        // P is okay in all DTDs
+        strict.output(P("foo"));
+        loose.output(P("foo"));
+        frameset.output(P("foo"));
+        // CENTER is not allowed in the strict DTD
+        loose.output(CENTER("foo"));
+        frameset.output(CENTER("foo"));
+        try
+        {
+            strict.output(CENTER("foo"));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'center' element is not allowed with the strict DTD", expected.getMessage());
+        }
+        // FRAME is only allowed in the frameset DTD
+        frameset.output(FRAME("foo"));
+        try
+        {
+            strict.output(FRAME("foo"));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'frame' element is not allowed with the strict DTD", expected.getMessage());
+        }
+        try
+        {
+            loose.output(FRAME("foo"));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'frame' element is not allowed with the loose DTD", expected.getMessage());
+        }
+        // don't throw a NullPointerException if the element isn't found at all
+        try
+        {
+            loose.output(new Element("foo"));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'foo' element is not allowed with the loose DTD", expected.getMessage());
+        }
+    }
+
+    public void testAttributeDTDValidation() throws IOException
+    {
+        StringWriter writer = new StringWriter();
+        HtmlOutputter strict = new HtmlOutputter(writer, STRICT);
+        HtmlOutputter loose = new HtmlOutputter(writer, LOOSE);
+        HtmlOutputter frameset = new HtmlOutputter(writer, FRAMESET);
+        // Id is okay in all DTDs
+        strict.output(P(Id("foo")));
+        loose.output(P(Id("foo")));
+        frameset.output(P(Id("foo")));
+        // Align is not allowed in the strict DTD
+        loose.output(P(Align("center")));
+        frameset.output(P(Align("center")));
+        try
+        {
+            strict.output(P(Align("center")));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'align' attribute is not allowed for the 'p' element with the strict DTD", expected.getMessage());
+        }
+        // Name is allowed on A in the strict DTD, but on IFRAME only in the
+        // frameset DTD
+        strict.output(A(Name("foo")));
+        loose.output(A(Name("foo")));
+        frameset.output(A(Name("foo")));
+        frameset.output(IFRAME(Name("foo")));
+        try
+        {
+            strict.output(IFRAME(Name("foo")));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'iframe' element is not allowed with the strict DTD", expected.getMessage());
+        }
+        try
+        {
+            loose.output(IFRAME(Name("foo")));
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'name' attribute is not allowed for the 'iframe' element with the loose DTD", expected.getMessage());
+        }
+        // don't throw a NullPointerException if the attribute isn't allowed at
+        // all
+        try
+        {
+            Element element = new Element("p");
+            element.setAttribute(new Attribute("checked", "checked"));
+            loose.output(element);
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'checked' attribute is not allowed for the 'p' element with the loose DTD", expected.getMessage());
+        }
+        try
+        {
+            Element element = new Element("p");
+            element.setAttribute(new Attribute("foo", "bar"));
+            loose.output(element);
+            fail();
+        }
+        catch (IllegalArgumentException expected)
+        {
+            assertEquals("The 'foo' attribute is not allowed for the 'p' element with the loose DTD", expected.getMessage());
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.krasama.remarker;
 
 import static com.krasama.remarker.AttributeDefinition.Type.*;
+import static com.krasama.remarker.ElementDefinition.DTD.*;
 import static com.krasama.remarker.SpecificationParser.*;
 
 import java.io.*;
@@ -8,9 +9,12 @@ import java.util.*;
 
 import org.jdom.*;
 
+import com.krasama.remarker.ElementDefinition.*;
+
 public class HtmlOutputter
 {
     private final Writer writer;
+    private final DTD dtd;
     private boolean atStartOfLine = true;
     private int indentLevel = 0;
     private char[] buffer = new char[8192];
@@ -18,7 +22,13 @@ public class HtmlOutputter
 
     public HtmlOutputter(Writer writer)
     {
+        this(writer, LOOSE);
+    }
+
+    public HtmlOutputter(Writer writer, DTD dtd)
+    {
         this.writer = writer;
+        this.dtd = dtd;
     }
 
     public void output(Object... contents) throws IOException
@@ -49,6 +59,11 @@ public class HtmlOutputter
     private void element(Element element) throws IOException
     {
         ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
+        if (elementDefinition == null || elementDefinition.dtd.compareTo(this.dtd) > 0)
+        {
+            throw new IllegalArgumentException("The '" + element.getName() + "' element is not allowed with the " +
+                    this.dtd.name().toLowerCase() + " DTD");
+        }
         boolean newLinesOutside = !elementDefinition.inline;
         boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getContent());
         if (newLinesOutside)
@@ -125,6 +140,12 @@ public class HtmlOutputter
     private void attribute(Attribute attribute, ElementDefinition elementDefinition) throws IOException
     {
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
+        DTD attributeDTD = attributeDefinition == null ? null : attributeDefinition.getDTD(elementDefinition.lowercase);
+        if (attributeDTD == null || attributeDTD.compareTo(this.dtd) > 0)
+        {
+            throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
+                    elementDefinition.lowercase + "' element with the " + this.dtd.name().toLowerCase() + " DTD");
+        }
         raw(" ");
         raw(attributeDefinition.name);
         if (attributeDefinition.getType(elementDefinition.lowercase) != BOOLEAN)
