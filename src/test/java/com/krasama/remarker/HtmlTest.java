@@ -83,8 +83,7 @@ public class HtmlTest extends TestCase
         }
         catch (IllegalArgumentException expected)
         {
-            assertEquals("Value for boolean attribute 'checked' must be either \"checked\" or null; got \"foo\"",
-                    expected.getMessage());
+            assertEquals("The 'checked' attribute must be boolean for the 'input' element; got \"foo\"", expected.getMessage());
         }
     }
 
@@ -103,7 +102,7 @@ public class HtmlTest extends TestCase
         }
         catch (IllegalArgumentException expected)
         {
-            assertEquals("Value for number attribute 'colspan' must be an integer or null; got \"foo\"", expected.getMessage());
+            assertEquals("The 'colspan' attribute must be a number for the 'td' element; got \"foo\"", expected.getMessage());
         }
     }
 
@@ -142,17 +141,6 @@ public class HtmlTest extends TestCase
         catch (IllegalArgumentException expected)
         {
             assertEquals("The 'cols' attribute must be a number for the 'textarea' element; got \"1,2,3\"", expected.getMessage());
-        }
-        // boolean attributes are otherwise checked already, but might be
-        // slipped in via hand-made JDOM objects
-        try
-        {
-            INPUT(new Attribute("checked", "foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'checked' attribute must be boolean for the 'input' element; got \"foo\"", expected.getMessage());
         }
     }
 

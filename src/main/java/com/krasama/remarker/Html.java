@@ -147,7 +147,7 @@ public final class Html
         return true;
     }
 
-    private static Attribute attribute(String name, String value, AttributeDefinition.Type loosestType)
+    private static Attribute attribute(String name, String value)
     {
         if (value == null)
         {
@@ -155,16 +155,6 @@ public final class Html
         }
         else
         {
-            if (loosestType == BOOLEAN && !value.equals(name))
-            {
-                throw new IllegalArgumentException("Value for boolean attribute '" + name + "' must be either \"" + name +
-                        "\" or null; got \"" + value + "\"");
-            }
-            if (loosestType == NUMBER && !isNumber(value))
-            {
-                throw new IllegalArgumentException("Value for number attribute '" + name + "' must be an integer or null; got \"" +
-                        value + "\"");
-            }
             return new Attribute(name, value);
         }
     }
@@ -652,97 +642,97 @@ public final class Html
 
     public static Attribute Abbr(String value)
     {
-        return attribute("abbr", value, STRING);
+        return attribute("abbr", value);
     }
 
     public static Attribute Accept(String value)
     {
-        return attribute("accept", value, STRING);
+        return attribute("accept", value);
     }
 
     public static Attribute AcceptCharset(String value)
     {
-        return attribute("accept-charset", value, STRING);
+        return attribute("accept-charset", value);
     }
 
     public static Attribute Accesskey(String value)
     {
-        return attribute("accesskey", value, STRING);
+        return attribute("accesskey", value);
     }
 
     public static Attribute Action(String value)
     {
-        return attribute("action", value, STRING);
+        return attribute("action", value);
     }
 
     public static Attribute Align(String value)
     {
-        return attribute("align", value, STRING);
+        return attribute("align", value);
     }
 
     public static Attribute Alink(String value)
     {
-        return attribute("alink", value, STRING);
+        return attribute("alink", value);
     }
 
     public static Attribute Alt(String value)
     {
-        return attribute("alt", value, STRING);
+        return attribute("alt", value);
     }
 
     public static Attribute Archive(String value)
     {
-        return attribute("archive", value, STRING);
+        return attribute("archive", value);
     }
 
     public static Attribute Axis(String value)
     {
-        return attribute("axis", value, STRING);
+        return attribute("axis", value);
     }
 
     public static Attribute Background(String value)
     {
-        return attribute("background", value, STRING);
+        return attribute("background", value);
     }
 
     public static Attribute Bgcolor(String value)
     {
-        return attribute("bgcolor", value, STRING);
+        return attribute("bgcolor", value);
     }
 
     public static Attribute Border(String value)
     {
-        return attribute("border", value, STRING);
+        return attribute("border", value);
     }
 
     public static Attribute Cellpadding(String value)
     {
-        return attribute("cellpadding", value, STRING);
+        return attribute("cellpadding", value);
     }
 
     public static Attribute Cellspacing(String value)
     {
-        return attribute("cellspacing", value, STRING);
+        return attribute("cellspacing", value);
     }
 
     public static Attribute Char(String value)
     {
-        return attribute("char", value, STRING);
+        return attribute("char", value);
     }
 
     public static Attribute Charoff(String value)
     {
-        return attribute("charoff", value, STRING);
+        return attribute("charoff", value);
     }
 
     public static Attribute Charset(String value)
     {
-        return attribute("charset", value, STRING);
+        return attribute("charset", value);
     }
 
     public static Attribute Checked(String value)
     {
-        return attribute("checked", value, BOOLEAN);
+        return attribute("checked", value);
     }
 
     public static Attribute Checked(Boolean value)
@@ -752,47 +742,47 @@ public final class Html
 
     public static Attribute Cite(String value)
     {
-        return attribute("cite", value, STRING);
+        return attribute("cite", value);
     }
 
     public static Attribute Class(String value)
     {
-        return attribute("class", value, STRING);
+        return attribute("class", value);
     }
 
     public static Attribute Classid(String value)
     {
-        return attribute("classid", value, STRING);
+        return attribute("classid", value);
     }
 
     public static Attribute Clear(String value)
     {
-        return attribute("clear", value, STRING);
+        return attribute("clear", value);
     }
 
     public static Attribute Code(String value)
     {
-        return attribute("code", value, STRING);
+        return attribute("code", value);
     }
 
     public static Attribute Codebase(String value)
     {
-        return attribute("codebase", value, STRING);
+        return attribute("codebase", value);
     }
 
     public static Attribute Codetype(String value)
     {
-        return attribute("codetype", value, STRING);
+        return attribute("codetype", value);
     }
 
     public static Attribute Color(String value)
     {
-        return attribute("color", value, STRING);
+        return attribute("color", value);
     }
 
     public static Attribute Cols(String value)
     {
-        return attribute("cols", value, STRING);
+        return attribute("cols", value);
     }
 
     public static Attribute Cols(Integer value)
@@ -802,7 +792,7 @@ public final class Html
 
     public static Attribute Colspan(String value)
     {
-        return attribute("colspan", value, NUMBER);
+        return attribute("colspan", value);
     }
 
     public static Attribute Colspan(Integer value)
@@ -812,7 +802,7 @@ public final class Html
 
     public static Attribute Compact(String value)
     {
-        return attribute("compact", value, BOOLEAN);
+        return attribute("compact", value);
     }
 
     public static Attribute Compact(Boolean value)
@@ -822,27 +812,27 @@ public final class Html
 
     public static Attribute Content(String value)
     {
-        return attribute("content", value, STRING);
+        return attribute("content", value);
     }
 
     public static Attribute Coords(String value)
     {
-        return attribute("coords", value, STRING);
+        return attribute("coords", value);
     }
 
     public static Attribute Data(String value)
     {
-        return attribute("data", value, STRING);
+        return attribute("data", value);
     }
 
     public static Attribute Datetime(String value)
     {
-        return attribute("datetime", value, STRING);
+        return attribute("datetime", value);
     }
 
     public static Attribute Declare(String value)
     {
-        return attribute("declare", value, BOOLEAN);
+        return attribute("declare", value);
     }
 
     public static Attribute Declare(Boolean value)
@@ -852,7 +842,7 @@ public final class Html
 
     public static Attribute Defer(String value)
     {
-        return attribute("defer", value, BOOLEAN);
+        return attribute("defer", value);
     }
 
     public static Attribute Defer(Boolean value)
@@ -862,12 +852,12 @@ public final class Html
 
     public static Attribute Dir(String value)
     {
-        return attribute("dir", value, STRING);
+        return attribute("dir", value);
     }
 
     public static Attribute Disabled(String value)
     {
-        return attribute("disabled", value, BOOLEAN);
+        return attribute("disabled", value);
     }
 
     public static Attribute Disabled(Boolean value)
@@ -877,67 +867,67 @@ public final class Html
 
     public static Attribute Enctype(String value)
     {
-        return attribute("enctype", value, STRING);
+        return attribute("enctype", value);
     }
 
     public static Attribute Face(String value)
     {
-        return attribute("face", value, STRING);
+        return attribute("face", value);
     }
 
     public static Attribute For(String value)
     {
-        return attribute("for", value, STRING);
+        return attribute("for", value);
     }
 
     public static Attribute Frame(String value)
     {
-        return attribute("frame", value, STRING);
+        return attribute("frame", value);
     }
 
     public static Attribute Frameborder(String value)
     {
-        return attribute("frameborder", value, STRING);
+        return attribute("frameborder", value);
     }
 
     public static Attribute Headers(String value)
     {
-        return attribute("headers", value, STRING);
+        return attribute("headers", value);
     }
 
     public static Attribute Height(String value)
     {
-        return attribute("height", value, STRING);
+        return attribute("height", value);
     }
 
     public static Attribute Href(String value)
     {
-        return attribute("href", value, STRING);
+        return attribute("href", value);
     }
 
     public static Attribute Hreflang(String value)
     {
-        return attribute("hreflang", value, STRING);
+        return attribute("hreflang", value);
     }
 
     public static Attribute Hspace(String value)
     {
-        return attribute("hspace", value, STRING);
+        return attribute("hspace", value);
     }
 
     public static Attribute HttpEquiv(String value)
     {
-        return attribute("http-equiv", value, STRING);
+        return attribute("http-equiv", value);
     }
 
     public static Attribute Id(String value)
     {
-        return attribute("id", value, STRING);
+        return attribute("id", value);
     }
 
     public static Attribute Ismap(String value)
     {
-        return attribute("ismap", value, BOOLEAN);
+        return attribute("ismap", value);
     }
 
     public static Attribute Ismap(Boolean value)
@@ -947,42 +937,42 @@ public final class Html
 
     public static Attribute Label(String value)
     {
-        return attribute("label", value, STRING);
+        return attribute("label", value);
     }
 
     public static Attribute Lang(String value)
     {
-        return attribute("lang", value, STRING);
+        return attribute("lang", value);
     }
 
     public static Attribute Language(String value)
     {
-        return attribute("language", value, STRING);
+        return attribute("language", value);
     }
 
     public static Attribute Link(String value)
     {
-        return attribute("link", value, STRING);
+        return attribute("link", value);
     }
 
     public static Attribute Longdesc(String value)
     {
-        return attribute("longdesc", value, STRING);
+        return attribute("longdesc", value);
     }
 
     public static Attribute Marginheight(String value)
     {
-        return attribute("marginheight", value, STRING);
+        return attribute("marginheight", value);
     }
 
     public static Attribute Marginwidth(String value)
     {
-        return attribute("marginwidth", value, STRING);
+        return attribute("marginwidth", value);
     }
 
     public static Attribute Maxlength(String value)
     {
-        return attribute("maxlength", value, NUMBER);
+        return attribute("maxlength", value);
     }
 
     public static Attribute Maxlength(Integer value)
@@ -992,17 +982,17 @@ public final class Html
 
     public static Attribute Media(String value)
     {
-        return attribute("media", value, STRING);
+        return attribute("media", value);
     }
 
     public static Attribute Method(String value)
     {
-        return attribute("method", value, STRING);
+        return attribute("method", value);
     }
 
     public static Attribute Multiple(String value)
     {
-        return attribute("multiple", value, BOOLEAN);
+        return attribute("multiple", value);
     }
 
     public static Attribute Multiple(Boolean value)
@@ -1012,12 +1002,12 @@ public final class Html
 
     public static Attribute Name(String value)
     {
-        return attribute("name", value, STRING);
+        return attribute("name", value);
     }
 
     public static Attribute Nohref(String value)
     {
-        return attribute("nohref", value, BOOLEAN);
+        return attribute("nohref", value);
     }
 
     public static Attribute Nohref(Boolean value)
@@ -1027,7 +1017,7 @@ public final class Html
 
     public static Attribute Noresize(String value)
     {
-        return attribute("noresize", value, BOOLEAN);
+        return attribute("noresize", value);
     }
 
     public static Attribute Noresize(Boolean value)
@@ -1037,7 +1027,7 @@ public final class Html
 
     public static Attribute Noshade(String value)
     {
-        return attribute("noshade", value, BOOLEAN);
+        return attribute("noshade", value);
     }
 
     public static Attribute Noshade(Boolean value)
@@ -1047,7 +1037,7 @@ public final class Html
 
     public static Attribute Nowrap(String value)
     {
-        return attribute("nowrap", value, BOOLEAN);
+        return attribute("nowrap", value);
     }
 
     public static Attribute Nowrap(Boolean value)
@@ -1057,112 +1047,112 @@ public final class Html
 
     public static Attribute Object(String value)
     {
-        return attribute("object", value, STRING);
+        return attribute("object", value);
     }
 
     public static Attribute Onblur(String value)
     {
-        return attribute("onblur", value, STRING);
+        return attribute("onblur", value);
     }
 
     public static Attribute Onchange(String value)
     {
-        return attribute("onchange", value, STRING);
+        return attribute("onchange", value);
     }
 
     public static Attribute Onclick(String value)
     {
-        return attribute("onclick", value, STRING);
+        return attribute("onclick", value);
     }
 
     public static Attribute Ondblclick(String value)
     {
-        return attribute("ondblclick", value, STRING);
+        return attribute("ondblclick", value);
     }
 
     public static Attribute Onfocus(String value)
     {
-        return attribute("onfocus", value, STRING);
+        return attribute("onfocus", value);
     }
 
     public static Attribute Onkeydown(String value)
     {
-        return attribute("onkeydown", value, STRING);
+        return attribute("onkeydown", value);
     }
 
     public static Attribute Onkeypress(String value)
     {
-        return attribute("onkeypress", value, STRING);
+        return attribute("onkeypress", value);
     }
 
     public static Attribute Onkeyup(String value)
     {
-        return attribute("onkeyup", value, STRING);
+        return attribute("onkeyup", value);
     }
 
     public static Attribute Onload(String value)
     {
-        return attribute("onload", value, STRING);
+        return attribute("onload", value);
     }
 
     public static Attribute Onmousedown(String value)
     {
-        return attribute("onmousedown", value, STRING);
+        return attribute("onmousedown", value);
     }
 
     public static Attribute Onmousemove(String value)
     {
-        return attribute("onmousemove", value, STRING);
+        return attribute("onmousemove", value);
     }
 
     public static Attribute Onmouseout(String value)
     {
-        return attribute("onmouseout", value, STRING);
+        return attribute("onmouseout", value);
     }
 
     public static Attribute Onmouseover(String value)
     {
-        return attribute("onmouseover", value, STRING);
+        return attribute("onmouseover", value);
     }
 
     public static Attribute Onmouseup(String value)
     {
-        return attribute("onmouseup", value, STRING);
+        return attribute("onmouseup", value);
     }
 
     public static Attribute Onreset(String value)
     {
-        return attribute("onreset", value, STRING);
+        return attribute("onreset", value);
     }
 
     public static Attribute Onselect(String value)
     {
-        return attribute("onselect", value, STRING);
+        return attribute("onselect", value);
     }
 
     public static Attribute Onsubmit(String value)
     {
-        return attribute("onsubmit", value, STRING);
+        return attribute("onsubmit", value);
     }
 
     public static Attribute Onunload(String value)
     {
-        return attribute("onunload", value, STRING);
+        return attribute("onunload", value);
     }
 
     public static Attribute Profile(String value)
     {
-        return attribute("profile", value, STRING);
+        return attribute("profile", value);
     }
 
     public static Attribute Prompt(String value)
     {
-        return attribute("prompt", value, STRING);
+        return attribute("prompt", value);
     }
 
     public static Attribute Readonly(String value)
     {
-        return attribute("readonly", value, BOOLEAN);
+        return attribute("readonly", value);
     }
 
     public static Attribute Readonly(Boolean value)
@@ -1172,17 +1162,17 @@ public final class Html
 
     public static Attribute Rel(String value)
     {
-        return attribute("rel", value, STRING);
+        return attribute("rel", value);
     }
 
     public static Attribute Rev(String value)
     {
-        return attribute("rev", value, STRING);
+        return attribute("rev", value);
     }
 
     public static Attribute Rows(String value)
     {
-        return attribute("rows", value, STRING);
+        return attribute("rows", value);
     }
 
     public static Attribute Rows(Integer value)
@@ -1192,7 +1182,7 @@ public final class Html
 
     public static Attribute Rowspan(String value)
     {
-        return attribute("rowspan", value, NUMBER);
+        return attribute("rowspan", value);
     }
 
     public static Attribute Rowspan(Integer value)
@@ -1202,27 +1192,27 @@ public final class Html
 
     public static Attribute Rules(String value)
     {
-        return attribute("rules", value, STRING);
+        return attribute("rules", value);
     }
 
     public static Attribute Scheme(String value)
     {
-        return attribute("scheme", value, STRING);
+        return attribute("scheme", value);
     }
 
     public static Attribute Scope(String value)
     {
-        return attribute("scope", value, STRING);
+        return attribute("scope", value);
     }
 
     public static Attribute Scrolling(String value)
     {
-        return attribute("scrolling", value, STRING);
+        return attribute("scrolling", value);
     }
 
     public static Attribute Selected(String value)
     {
-        return attribute("selected", value, BOOLEAN);
+        return attribute("selected", value);
     }
 
     public static Attribute Selected(Boolean value)
@@ -1232,12 +1222,12 @@ public final class Html
 
     public static Attribute Shape(String value)
     {
-        return attribute("shape", value, STRING);
+        return attribute("shape", value);
     }
 
     public static Attribute Size(String value)
     {
-        return attribute("size", value, STRING);
+        return attribute("size", value);
     }
 
     public static Attribute Size(Integer value)
@@ -1247,7 +1237,7 @@ public final class Html
 
     public static Attribute Span(String value)
     {
-        return attribute("span", value, NUMBER);
+        return attribute("span", value);
     }
 
     public static Attribute Span(Integer value)
@@ -1257,17 +1247,17 @@ public final class Html
 
     public static Attribute Src(String value)
     {
-        return attribute("src", value, STRING);
+        return attribute("src", value);
     }
 
     public static Attribute Standby(String value)
     {
-        return attribute("standby", value, STRING);
+        return attribute("standby", value);
     }
 
     public static Attribute Start(String value)
     {
-        return attribute("start", value, NUMBER);
+        return attribute("start", value);
     }
 
     public static Attribute Start(Integer value)
@@ -1277,17 +1267,17 @@ public final class Html
 
     public static Attribute Style(String value)
     {
-        return attribute("style", value, STRING);
+        return attribute("style", value);
     }
 
     public static Attribute Summary(String value)
     {
-        return attribute("summary", value, STRING);
+        return attribute("summary", value);
     }
 
     public static Attribute Tabindex(String value)
     {
-        return attribute("tabindex", value, NUMBER);
+        return attribute("tabindex", value);
     }
 
     public static Attribute Tabindex(Integer value)
@@ -1297,37 +1287,37 @@ public final class Html
 
     public static Attribute Target(String value)
     {
-        return attribute("target", value, STRING);
+        return attribute("target", value);
     }
 
     public static Attribute Text(String value)
     {
-        return attribute("text", value, STRING);
+        return attribute("text", value);
     }
 
     public static Attribute Title(String value)
     {
-        return attribute("title", value, STRING);
+        return attribute("title", value);
     }
 
     public static Attribute Type(String value)
     {
-        return attribute("type", value, STRING);
+        return attribute("type", value);
     }
 
     public static Attribute Usemap(String value)
     {
-        return attribute("usemap", value, STRING);
+        return attribute("usemap", value);
     }
 
     public static Attribute Valign(String value)
     {
-        return attribute("valign", value, STRING);
+        return attribute("valign", value);
     }
 
     public static Attribute Value(String value)
     {
-        return attribute("value", value, STRING);
+        return attribute("value", value);
     }
 
     public static Attribute Value(Integer value)
@@ -1337,27 +1327,27 @@ public final class Html
 
     public static Attribute Valuetype(String value)
     {
-        return attribute("valuetype", value, STRING);
+        return attribute("valuetype", value);
     }
 
     public static Attribute Version(String value)
     {
-        return attribute("version", value, STRING);
+        return attribute("version", value);
     }
 
     public static Attribute Vlink(String value)
     {
-        return attribute("vlink", value, STRING);
+        return attribute("vlink", value);
     }
 
     public static Attribute Vspace(String value)
     {
-        return attribute("vspace", value, STRING);
+        return attribute("vspace", value);
     }
 
     public static Attribute Width(String value)
     {
-        return attribute("width", value, STRING);
+        return attribute("width", value);
     }
 
     public static Attribute Width(Integer value)

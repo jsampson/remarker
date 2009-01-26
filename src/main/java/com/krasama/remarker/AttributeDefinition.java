@@ -64,25 +64,24 @@ public class AttributeDefinition
 
     public void generateCode()
     {
-        generateMethod("String", true);
+        generateMethod("String");
         if (allTypes.contains(Type.BOOLEAN))
         {
             System.out.println();
-            generateMethod("Boolean", false);
+            generateMethod("Boolean");
         }
         if (allTypes.contains(Type.NUMBER))
         {
             System.out.println();
-            generateMethod("Integer", false);
+            generateMethod("Integer");
         }
     }
 
-    private void generateMethod(String valueType, boolean withType)
+    private void generateMethod(String valueType)
     {
-        String typeParam = withType ? ", " + loosestType : "";
         System.out.println("    public static Attribute " + javaName() + "(" + valueType + " value)");
         System.out.println("    {");
-        System.out.println("        return attribute(\"" + xmlName() + "\", value" + typeParam + ");");
+        System.out.println("        return attribute(\"" + xmlName() + "\", value);");
         System.out.println("    }");
     }
 
