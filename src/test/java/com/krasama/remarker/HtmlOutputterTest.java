@@ -55,6 +55,11 @@ public class HtmlOutputterTest extends TestCase
                 "<INPUT type=\"hidden\" value=\"first line&#13;&#10;second line\">");
     }
 
+    public void testSurrogatePairs() throws IOException
+    {
+        checkHtml(P("\u6C34\u007A\uD834\uDD1E"), "<P>&#27700;z&#119070;</P>\r\n");
+    }
+
     private void checkHtml(Element html, String expected) throws IOException
     {
         StringWriter writer = new StringWriter();

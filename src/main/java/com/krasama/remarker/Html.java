@@ -14,7 +14,19 @@ public final class Html
         // to prevent instantiation
     }
 
-    static Element element(String name, Object[] contents)
+    @SuppressWarnings("unchecked")
+    public static List<Content> asHtml(Object... contents)
+    {
+        Element dummy = element("_", contents);
+        if (!dummy.getAttributes().isEmpty())
+        {
+            throw new IllegalArgumentException("Attribute '" + ((Attribute) dummy.getAttributes().get(0)).getName() +
+                    "' must be contained in an element");
+        }
+        return dummy.getContent();
+    }
+
+    private static Element element(String name, Object[] contents)
     {
         Element element = new Element(name);
         addContents(element, contents);

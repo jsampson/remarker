@@ -21,19 +21,13 @@ public class HtmlOutputter
 
     public void output(Object... contents) throws IOException
     {
-        Element dummy = Html.element("_", contents);
-        if (!dummy.getAttributes().isEmpty())
-        {
-            throw new IllegalArgumentException("Attribute '" + ((Attribute) dummy.getAttributes().get(0)).getName() +
-                    "' must be contained in an element");
-        }
-        for (Object content : dummy.getContent())
+        for (Content content : Html.asHtml(contents))
         {
             dispatch(content);
         }
     }
 
-    private void dispatch(Object content) throws IOException
+    private void dispatch(Content content) throws IOException
     {
         if (content instanceof Element)
         {
@@ -178,20 +172,32 @@ public class HtmlOutputter
 
     private void escape(String string, boolean inAttributeValue) throws IOException
     {
-        for (int i = 0; i < string.length(); i++)
+        int n = string.length();
+        for (int i = 0; i < n; i++)
         {
-            char c = string.charAt(i);
+            int c = string.charAt(i);
+            int d = (i < n - 1) ? string.charAt(i + 1) : -1;
             switch (c)
             {
             case '<':
                 raw("&lt;");
-                continue;
+                break;
             case '>':
                 raw("&gt;");
-                continue;
+                break;
             case '&':
                 raw("&amp;");
-                continue;
+                break;
+            case '"':
+                if (inAttributeValue)
+                {
+                    raw("&quot;");
+                }
+                else
+                {
+                    raw('"');
+                }
+                break;
             case '\r':
             case '\n':
                 if (inAttributeValue)
@@ -202,28 +208,30 @@ public class HtmlOutputter
                 {
                     newLine();
                 }
-                continue;
-            case '"':
-                if (inAttributeValue)
-                {
-                    raw("&quot;");
-                    continue;
-                }
+                break;
             default:
                 if (c >= ' ' && c <= '~')
                 {
-                    raw(c);
+                    raw((char) c);
+                }
+                else if (c >= 0xD800 && c <= 0xDBFF && d >= 0xDC00 && d <= 0xDFFF)
+                {
+                    int highPart = c - 0xD800;
+                    int lowPart = d - 0xDC00;
+                    int character = (highPart << 10) + lowPart + 0x10000;
+                    numericCharacterReference(character);
+                    i++;
                 }
                 else
                 {
                     numericCharacterReference(c);
                 }
-                continue;
+                break;
             }
         }
     }
 
-    private void numericCharacterReference(char c) throws IOException
+    private void numericCharacterReference(int c) throws IOException
     {
         raw("&#");
         raw(Integer.toString(c));
