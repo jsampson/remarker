@@ -1,14 +1,14 @@
-package com.krasama.remarker;
+package org.remarker;
 
-import static com.krasama.remarker.AttributeDefinition.Type.*;
-import static com.krasama.remarker.ElementDefinition.DTD.*;
+import static org.remarker.AttributeDefinition.Type.*;
+import static org.remarker.ElementDefinition.DTD.*;
 
 import java.util.*;
 
 import junit.framework.*;
 
-import com.krasama.remarker.AttributeDefinition.*;
-import com.krasama.remarker.ElementDefinition.*;
+import org.remarker.AttributeDefinition.*;
+import org.remarker.ElementDefinition.*;
 
 public class SpecificationParserTest extends TestCase
 {

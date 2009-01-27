@@ -1,6 +1,6 @@
-package com.krasama.remarker;
+package org.remarker;
 
-import static com.krasama.remarker.AttributeDefinition.Type.*;
+import static org.remarker.AttributeDefinition.Type.*;
 
 import java.util.*;
 

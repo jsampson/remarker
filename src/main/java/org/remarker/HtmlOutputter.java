@@ -1,15 +1,14 @@
-package com.krasama.remarker;
+package org.remarker;
 
-import static com.krasama.remarker.AttributeDefinition.Type.*;
-import static com.krasama.remarker.ElementDefinition.DTD.*;
-import static com.krasama.remarker.SpecificationParser.*;
+import static org.remarker.AttributeDefinition.Type.*;
+import static org.remarker.ElementDefinition.DTD.*;
+import static org.remarker.SpecificationParser.*;
 
 import java.io.*;
 import java.util.*;
 
 import org.jdom.*;
-
-import com.krasama.remarker.ElementDefinition.*;
+import org.remarker.ElementDefinition.*;
 
 public class HtmlOutputter
 {

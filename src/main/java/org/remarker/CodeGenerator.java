@@ -1,4 +1,4 @@
-package com.krasama.remarker;
+package org.remarker;
 
 import java.util.*;
 

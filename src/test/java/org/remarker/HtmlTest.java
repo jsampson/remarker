@@ -1,7 +1,7 @@
-package com.krasama.remarker;
+package org.remarker;
 
-import static com.krasama.remarker.Html.*;
 import static java.util.Arrays.*;
+import static org.remarker.Html.*;
 
 import java.io.*;
 import java.util.regex.*;

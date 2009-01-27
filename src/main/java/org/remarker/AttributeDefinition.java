@@ -1,8 +1,8 @@
-package com.krasama.remarker;
+package org.remarker;
 
 import java.util.*;
 
-import com.krasama.remarker.ElementDefinition.*;
+import org.remarker.ElementDefinition.*;
 
 public class AttributeDefinition
 {

@@ -1,7 +1,7 @@
-package com.krasama.remarker;
+package org.remarker;
 
-import static com.krasama.remarker.ElementDefinition.DTD.*;
-import static com.krasama.remarker.Html.*;
+import static org.remarker.ElementDefinition.DTD.*;
+import static org.remarker.Html.*;
 
 import java.io.*;
 

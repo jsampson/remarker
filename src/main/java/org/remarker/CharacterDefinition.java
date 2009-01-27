@@ -1,4 +1,4 @@
-package com.krasama.remarker;
+package org.remarker;
 
 public class CharacterDefinition
 {
