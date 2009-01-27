@@ -69,10 +69,40 @@ public class HtmlOutputter
         {
             text((Text) content);
         }
+        else if (content instanceof Comment)
+        {
+            comment((Comment) content);
+        }
         else
         {
             throw new UnsupportedOperationException(content.getClass().getCanonicalName());
         }
+    }
+
+    private void comment(Comment comment) throws IOException
+    {
+        String text = comment.getText();
+        newLine();
+        raw("<!--");
+        if (hasLineBreaks(text))
+        {
+            StringBuilder replacement = new StringBuilder("\r\n  ");
+            for (int i = 0; i < indentLevel; i++)
+            {
+                replacement.append("  ");
+            }
+            append(replacement.toString());
+            append(text.trim().replaceAll("\r\n|\r|\n", replacement.toString()));
+            newLine();
+        }
+        else
+        {
+            raw(' ');
+            raw(text);
+            raw(' ');
+        }
+        raw("-->");
+        newLine();
     }
 
     private void element(Element element) throws IOException
@@ -142,13 +172,22 @@ public class HtmlOutputter
             else if (child instanceof Text)
             {
                 Text text = (Text) child;
-                if (text.getText().indexOf('\r') != -1 || text.getText().indexOf('\r') != -1)
+                if (hasLineBreaks(text.getText()))
                 {
                     return true;
                 }
             }
+            else if (child instanceof Comment)
+            {
+                return true;
+            }
         }
         return false;
+    }
+
+    private boolean hasLineBreaks(String text)
+    {
+        return text.indexOf('\r') != -1 || text.indexOf('\n') != -1;
     }
 
     private void text(Text text) throws IOException

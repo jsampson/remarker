@@ -236,4 +236,21 @@ public class HtmlOutputterTest extends TestCase
         outputter.output(HTML());
         assertEquals(expectedOutput, writer.toString());
     }
+
+    public void testComment() throws IOException
+    {
+        try
+        {
+            new Comment("foo--bar");
+            fail();
+        }
+        catch (IllegalDataException expected)
+        {
+            assertTrue(expected.getMessage().endsWith("Comments cannot contain double hyphens (--)."));
+        }
+        checkHtml(P(new Comment("Hello <world>!"), "Have a nice day."),
+                "<P>\r\n  <!-- Hello <world>! -->\r\n  Have a nice day.\r\n</P>\r\n");
+        checkHtml(P(new Comment("One\rTwo\nThree\r\nFour\n"), "Have a nice day."),
+        "<P>\r\n  <!--\r\n    One\r\n    Two\r\n    Three\r\n    Four\r\n  -->\r\n  Have a nice day.\r\n</P>\r\n");
+    }
 }
