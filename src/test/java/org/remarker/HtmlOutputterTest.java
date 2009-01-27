@@ -8,6 +8,7 @@ import java.io.*;
 import junit.framework.*;
 
 import org.jdom.*;
+import org.remarker.ElementDefinition.*;
 
 public class HtmlOutputterTest extends TestCase
 {
@@ -216,5 +217,23 @@ public class HtmlOutputterTest extends TestCase
         {
             assertEquals("The 'foo' attribute is not allowed for the 'p' element with the loose DTD", expected.getMessage());
         }
+    }
+
+    public void testDoctype() throws IOException
+    {
+        checkDoctype(STRICT,
+                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\r\n<HTML></HTML>\r\n");
+        checkDoctype(LOOSE,
+                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n<HTML></HTML>\r\n");
+        checkDoctype(FRAMESET,
+                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\r\n<HTML></HTML>\r\n");
+    }
+
+    private void checkDoctype(DTD dtd, String expectedOutput) throws IOException
+    {
+        StringWriter writer = new StringWriter();
+        HtmlOutputter outputter = new HtmlOutputter(writer, dtd, true);
+        outputter.output(HTML());
+        assertEquals(expectedOutput, writer.toString());
     }
 }

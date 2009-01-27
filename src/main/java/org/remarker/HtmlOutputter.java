@@ -30,6 +30,26 @@ public class HtmlOutputter
         this.dtd = dtd;
     }
 
+    public HtmlOutputter(Writer writer, DTD dtd, boolean outputDoctype) throws IOException
+    {
+        this(writer, dtd);
+        if (outputDoctype)
+        {
+            append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01");
+            if (dtd == LOOSE)
+            {
+                append(" Transitional");
+            }
+            else if (dtd == FRAMESET)
+            {
+                append(" Frameset");
+            }
+            append("//EN\" \"http://www.w3.org/TR/html4/");
+            append(dtd.name().toLowerCase());
+            append(".dtd\">\r\n");
+        }
+    }
+
     public void output(Object... contents) throws IOException
     {
         for (Content content : Html.asHtml(contents))
