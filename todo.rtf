@@ -1,0 +1,138 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf480
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Oblique;\f2\fswiss\fcharset77 Helvetica-Bold;
+\f3\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 / escaping is handled automatically\
+/ " escaped in attribute but not content; ' not escaped at all (HTML doesn't have &apos;)\
+/ short function names\
+/ variable argument lists\
+/ boolean values for boolean attributes\
+    - remember to handle "*"\
+/ null for attribute makes it disappear\
+/ null for content same as empty string\
+/ attributes and content in any order\
+/ nbsp(#)\
+/ automatic indenting (2-space or 4-space or configurable?)\
+/ naturally-empty tags like HR and BR are handled correctly (standard XML libraries, such as JDOM, output 
+\f1\i all
+\f0\i0  empty tags as <foo/> (JDOM can be configured to output 
+\f1\i all
+\f0\i0  empty tags as <foo></foo>), but we need to distinguish... <div></div> from <hr />)\
+- the whole Form framework built on top (though it might be hard to really generalize)\
+\
+/ underscores for namespacing: in Java, namespaces are handled more powerfully; we can normally not give namespaces explicitly, and then give something like A.title() vs. E.title() when we need to be explicit\
+x when iterating, it was annoying to have to build up a list 
+\f1\i before
+\f0\i0  the parent element to stick inside: would be nice to have some way to approximate a list comprehension (though of course we could just encourage a style of calling a method in the middle rather than building up a list beforehand)\
+\
+/ constants defined for all character entity references (don't forget standard XML ones, too)\
+x for script and style 
+\f2\b elements
+\f0\b0 , enclose contents in <![CDATA[ ... ]]>\
+x OR... if we do real old-style HTML, the HTML spec actually says that text is interpreted verbatim inside <script> and <style>, terminated by "</".\
+x for script and style 
+\f2\b attributes
+\f0\b0 , disallow anything that would be quoted -- &, <, >, "\
+x a Renderable interface\
+x a cheating mechanism to output "raw" HTML; ideally with validation by a parser\
+x auto-generate doctype line based on what's used (strict, loose, or frames)\
+x can choose sgml vs xml (affects empty tags in particular, and <?xml?> and doctype lines, and perhaps capitalization of element names)\
+/ indent text based on newlines in text\
+x support internationalization "trivially" with string replacement\
+x review XHTML-HTML compatibility guidelines: http://www.w3.org/TR/xhtml1/guidelines.html\
+    / makes me even more want to make it straight HTML, not XHTML... simplifies stylesheets etc., don't need xml:lang, ...\
+        / uppercase tags\
+        / no / on <BR> etc.\
+        / no value on boolean attribute\
+        ~ HTML doctypes\
+/ always output pure ASCII -- convert all non-ASCII characters to numeric references so we don't have to worry about character encodings\
+    / 
+\f1\i note that old-style SGML only allowed decimal references, not hexadecimal
+\f0\i0 \
+    / also disallow characters not allowed in XML -- i.e., most control characters (JDOM  takes care of this)\
+    / take care of Unicode surrogate pairs properly on output\
+    / always use CRLF\
+        / including <pre> text\
+        / what about within attributes? escape as &#13;&#10;?\
+x look up HTML 1/2/3 for additional DTD restrictions\
+/ validate which attributes can go in which tags\
+    / remember to handle "*"\
+/ can specify strict, loose, or frames to validate\
+/ can specify whether to generate HTML doctype line\
+- handle all subclasses of Content during rendering\
+    / Text\
+    / Element\
+    / Comment\
+        / comments should be rendered smartly (inline, single line, block...) and validate text (no --)\
+    - DocType\
+    - EntityRef\
+    - ProcessingInstruction\
+    - CDATA\
+- update tag definitions to be more robust\
+    - finish elements.jts\
+    - validate which elements can go in which enclosing elements\
+        - at least block/flow/inline, maybe table/tr/td/th...\
+    - IFRAME is allowed in LOOSE, but for some reason its attributes all require FRAMESET, but that is not what the DTD says...\
+    - special text handling for PRE and TEXTAREA\
+        - convert \\r and \\n to \\r\\n but preserve blank lines\
+        - no indentation\
+    - special text handling for SCRIPT and STYLE\
+        - disallow any non-text content\
+        - disallow </\
+        - no escaping otherwise\
+        - do indent, with newlines added inside SCRIPT/STYLE tags, other newlines converted to \\r\\n, and blank lines preserved\
+    x special cases for INS and DEL as "either block or inline"?\
+    - treat INS/DEL as inline for correctness\
+    - automatically detect whether a particular element is "block" or "inline" or "semi" based on its contents\
+        - some are always "inline" (no newlines inside or outside)\
+        - some are always "block" (newlines both inside and outside)\
+        - some are always "block" outside and sometimes "inside" (P, TD, DIV)\
+        - ...\
+- review whole HTML spec for any gotchas\
+- figure out whether "number" attributes allow "-"\
+\
+/ take collections (Iterable, Iterator) as well as arrays and varargs\
+/ how do we support interchangeability of arrays, collections, elements, attributes, strings, numbers, booleans, all treated as the same type? use Object as type signature? or make wrapper methods, maybe make_html(...) that takes any number of args and returns some kind of HTMLContent collection object?\
+/ register remarker.org\
+\
+/ buffer output so we don't incur synchronization penalty for every character\
+/ use JDOM internally, so that all the existing integrations are available (e.g., xpath, conversion to dom, output through sax, etc.) [w3's dom is not okay, because doesn't make it easy to build document fragments bottom-up]\
+- so what we're really doing is giving an HTML-specific set of convenience methods for building a JDOM tree, 
+\f1\i plus
+\f0\i0  an HTML-aware JDOM outputter, 
+\f1\i plus
+\f0\i0  a collection of view/controller components built on top that know how to render HTML 
+\f1\i and
+\f0\i0  parse HTTP requests\
+- classes:\
+    / A: static methods for HTML attributes, each with single parameter based on type of attribute (boolean, String, color, script, style...?)\
+    / E: static methods for HTML elements, each with varargs parameter allowing any HTML content\
+    / C: constants for all HTML character entity references (with value being simply a single Java char or single-character String), and methods for some to be repeated --nbsp(#) [gt, lt, amp, quot, & apos can be defined, but there's nothing special about them -- they're just literally ">", "<", "&", "\\"", and "'"]\
+    - JS: static methods for constructing well-formed JavaScript -- JS.internalScript(), JS.externalScript(), JS.inlineScript(), JS.call(), JS.this(), JS.value()...\
+    - CSS: static methods for constructing well-formed CSS -- CSS.internalStyle(), CSS.externalStyle(), CSS.inlineStyle(), CSS.property()...\
+    / HTMLOutputter: HTML-aware JDOM outputter\
+    - Page, Form, Field, Input, etc.: view/controller components built on top that know how to render HTML 
+\f1\i and
+\f0\i0  parse HTTP requests\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f3 \cf0 \
+\
+autodetection of blockiness\
+\
+<HTML>\
+  <BODY>\
+    <P><B>Hello,</B> there!</P>\
+  </BODY>\
+</HTML>\
+\
+1. If element contains only text without newlines (and no child elements), it's inline.\
+2. If element contains text with any newlines, it's a block element.\
+3. If element contains only text without newlines plus inline child elements, it's inline.\
+4. If element contains only child elements (no direct text), it's a block element.\
+\
+* What about comments inside?\
+* What about newlines in <B> etc.? They should really be indented.\
+}
