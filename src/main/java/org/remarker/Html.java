@@ -102,7 +102,7 @@ public final class Html
     {
         AttributeDefinition definition = SpecificationParser.ATTRIBUTES.get(attribute.getName());
         AttributeDefinition.Type type = definition == null ? null : definition.getType(element.getName());
-        if (type == null)
+        if (type == null && !attribute.getName().startsWith("ic-"))
         {
             throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
                     element.getName() + "' element");

@@ -1,19 +1,23 @@
 package org.remarker;
 
-import static org.remarker.AttributeDefinition.Type.*;
-import static org.remarker.ElementDefinition.DTD.*;
-import static org.remarker.SpecificationParser.*;
-
-import java.io.*;
-import java.util.*;
-
 import org.jdom.*;
-import org.remarker.ElementDefinition.*;
+import org.remarker.ElementDefinition.DTD;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
+
+import static org.remarker.AttributeDefinition.Type.BOOLEAN;
+import static org.remarker.ElementDefinition.DTD.FRAMESET;
+import static org.remarker.ElementDefinition.DTD.LOOSE;
+import static org.remarker.SpecificationParser.ATTRIBUTES;
+import static org.remarker.SpecificationParser.ELEMENTS;
 
 public class HtmlOutputter
 {
     private final Writer writer;
     private final DTD dtd;
+    private boolean allowIcAttributes = false;
     private boolean atStartOfLine = true;
     private int indentLevel = 0;
     private char[] buffer = new char[8192];
@@ -48,6 +52,12 @@ public class HtmlOutputter
             append(dtd.name().toLowerCase());
             append(".dtd\">\r\n");
         }
+    }
+
+    public HtmlOutputter allowIcAttributes()
+    {
+        allowIcAttributes = true;
+        return this;
     }
 
     public void output(Object... contents) throws IOException
@@ -199,14 +209,15 @@ public class HtmlOutputter
     {
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
         DTD attributeDTD = attributeDefinition == null ? null : attributeDefinition.getDTD(elementDefinition.lowercase);
-        if (attributeDTD == null || attributeDTD.compareTo(this.dtd) > 0)
+        if ((attributeDTD == null || attributeDTD.compareTo(this.dtd) > 0)
+                && !(allowIcAttributes && attribute.getName().startsWith("ic-")))
         {
             throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
                     elementDefinition.lowercase + "' element with the " + this.dtd.name().toLowerCase() + " DTD");
         }
         raw(" ");
-        raw(attributeDefinition.name);
-        if (attributeDefinition.getType(elementDefinition.lowercase) != BOOLEAN)
+        raw(attribute.getName());
+        if (attributeDefinition == null || attributeDefinition.getType(elementDefinition.lowercase) != BOOLEAN)
         {
             raw("=\"");
             escape(attribute.getValue(), true);
