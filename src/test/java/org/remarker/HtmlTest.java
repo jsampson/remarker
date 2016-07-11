@@ -4,6 +4,8 @@ import static java.util.Arrays.*;
 import static org.remarker.Html.*;
 
 import java.io.*;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.regex.*;
 
 import junit.framework.*;
@@ -23,7 +25,7 @@ public class HtmlTest extends TestCase
 
     public void testArray() throws Exception
     {
-        checkHtml(P((Object) new Integer[] { 17, -42, 500 }), "<p>17-42500</p>");
+        checkHtml(P((Object) new Integer[]{17, -42, 500}), "<p>17-42500</p>");
     }
 
     public void testIterable() throws Exception
@@ -34,6 +36,21 @@ public class HtmlTest extends TestCase
     public void testIterator() throws Exception
     {
         checkHtml(P(asList(17, -42, 500).iterator()), "<p>17-42500</p>");
+    }
+
+    public void testOptionalEmpty() throws Exception
+    {
+        checkHtml(P("x", Optional.empty(), "z"), "<p>xz</p>");
+    }
+
+    public void testOptionalPresent() throws Exception
+    {
+        checkHtml(P("x", Optional.of("y"), "z"), "<p>xyz</p>");
+    }
+
+    public void testSupplier() throws Exception
+    {
+        checkHtml(P("x", (Supplier<String>) () -> "y", "z"), "<p>xyz</p>");
     }
 
     public void testNull() throws Exception
