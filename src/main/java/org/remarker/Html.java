@@ -3,6 +3,7 @@ package org.remarker;
 import static org.remarker.AttributeDefinition.Type.*;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import org.jdom.*;
 
@@ -86,6 +87,14 @@ public final class Html
         else if (content instanceof Iterator)
         {
             addContents(element, (Iterator<?>) content);
+        }
+        else if (content instanceof Optional)
+        {
+            ((Optional<?>) content).ifPresent(value -> addContent(element, value));
+        }
+        else if (content instanceof Supplier)
+        {
+            addContent(element, ((Supplier<?>) content).get());
         }
         else if (content instanceof Enum || content instanceof CharSequence || content instanceof Boolean ||
                 content instanceof Character || content instanceof Number)
