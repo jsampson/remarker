@@ -72,8 +72,9 @@ public class SpecificationParser
         inline.addAll(phrase);
         inline.addAll(special);
         inline.addAll(formctrl);
-        // remove BR so that it is formatted on its own line
+        // remove BR and SCRIPT so that they are formatted on their own lines
         inline.remove("BR");
+        inline.remove("SCRIPT");
 
         Map<String, ElementDefinition> elements = new TreeMap<String, ElementDefinition>();
         Document document = load("elements.html");
