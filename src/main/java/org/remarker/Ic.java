@@ -5,6 +5,7 @@ import org.jdom.Attribute;
 /**
  * @see <a href="http://intercoolerjs.org/reference.html">Intercooler Reference</a>
  */
+@SuppressWarnings("unused")
 public final class Ic
 {
     private Ic()

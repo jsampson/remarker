@@ -6,7 +6,7 @@ import org.remarker.ElementDefinition.*;
 
 public class AttributeDefinition
 {
-    public static enum Type
+    public enum Type
     {
         STRING, BOOLEAN, NUMBER
     }
@@ -20,9 +20,9 @@ public class AttributeDefinition
     public AttributeDefinition(String name, Map<String, Type> typesByElement, Map<String, DTD> dtdsByElement)
     {
         this.name = name.toLowerCase().intern();
-        this.typesByElement = Collections.unmodifiableMap(new HashMap<String, Type>(typesByElement));
-        this.dtdsByElement = Collections.unmodifiableMap(new HashMap<String, DTD>(dtdsByElement));
-        this.allTypes = Collections.unmodifiableSet(new HashSet<Type>(typesByElement.values()));
+        this.typesByElement = Collections.unmodifiableMap(new HashMap<>(typesByElement));
+        this.dtdsByElement = Collections.unmodifiableMap(new HashMap<>(dtdsByElement));
+        this.allTypes = Collections.unmodifiableSet(new HashSet<>(typesByElement.values()));
         if (allTypes.isEmpty())
         {
             throw new IllegalArgumentException("Impossible! Attribute must have at least one type");

@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import org.jdom.*;
 
+@SuppressWarnings("unused")
 public final class Html
 {
     private Html()
@@ -170,13 +171,13 @@ public final class Html
 
     private static Attribute attribute(String name, Boolean value)
     {
-        if (value == null || value.booleanValue() == false)
+        if (Boolean.TRUE.equals(value))
         {
-            return null;
+            return new Attribute(name, name);
         }
         else
         {
-            return new Attribute(name, name);
+            return null;
         }
     }
 
