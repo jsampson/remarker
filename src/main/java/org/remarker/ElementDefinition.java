@@ -2,7 +2,7 @@ package org.remarker;
 
 public class ElementDefinition
 {
-    public static enum DTD
+    public enum DTD
     {
         STRICT, LOOSE, FRAMESET
     }

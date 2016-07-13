@@ -60,8 +60,8 @@ public class HtmlTest extends TestCase
 
     public void testStringifying() throws Exception
     {
-        checkHtml(P(AttributeDefinition.Type.BOOLEAN, new StringBuilder(" la la la "), Boolean.TRUE, Character.valueOf('*'),
-                Double.valueOf(3.1415)), "<p>BOOLEAN la la la true*3.1415</p>");
+        checkHtml(P(AttributeDefinition.Type.BOOLEAN, new StringBuilder(" la la la "), Boolean.TRUE, '*',
+                3.1415), "<p>BOOLEAN la la la true*3.1415</p>");
     }
 
     public void testElementContentError()

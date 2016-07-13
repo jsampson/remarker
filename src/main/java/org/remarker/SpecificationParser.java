@@ -36,7 +36,7 @@ public class SpecificationParser
 
     public static Map<String, CharacterDefinition> parseCharacters() throws Exception
     {
-        Map<String, CharacterDefinition> characters = new TreeMap<String, CharacterDefinition>();
+        Map<String, CharacterDefinition> characters = new TreeMap<>();
         characters.put("apos", new CharacterDefinition("apos", '\''));
         Pattern pattern = Pattern.compile("<!ENTITY ([A-Za-z0-9]+) +CDATA \"&#([0-9]+);\"");
         Document document = load("characters.html");
@@ -60,14 +60,14 @@ public class SpecificationParser
     public static Map<String, ElementDefinition> parseElements() throws Exception
     {
         // definition of "inline" elements from the HTML 4.01 DTD
-        Set<String> fontstyle = new HashSet<String>(asList("TT", "I", "B", "BIG", "SMALL"));
-        Set<String> phrase = new HashSet<String>(asList("EM", "STRONG", "DFN", "CODE", "SAMP", "KBD", "VAR", "CITE", "ABBR",
+        Set<String> fontstyle = new HashSet<>(asList("TT", "I", "B", "BIG", "SMALL"));
+        Set<String> phrase = new HashSet<>(asList("EM", "STRONG", "DFN", "CODE", "SAMP", "KBD", "VAR", "CITE", "ABBR",
                 "ACRONYM"));
-        Set<String> special = new HashSet<String>(asList("A", "IMG", "OBJECT", "BR", "SCRIPT", "MAP", "Q", "SUB", "SUP", "SPAN",
+        Set<String> special = new HashSet<>(asList("A", "IMG", "OBJECT", "BR", "SCRIPT", "MAP", "Q", "SUB", "SUP", "SPAN",
                 "BDO"));
-        Set<String> formctrl = new HashSet<String>(asList("INPUT", "SELECT", "TEXTAREA", "LABEL", "BUTTON"));
+        Set<String> formctrl = new HashSet<>(asList("INPUT", "SELECT", "TEXTAREA", "LABEL", "BUTTON"));
 
-        Set<String> inline = new HashSet<String>();
+        Set<String> inline = new HashSet<>();
         inline.addAll(fontstyle);
         inline.addAll(phrase);
         inline.addAll(special);
@@ -76,7 +76,7 @@ public class SpecificationParser
         inline.remove("BR");
         inline.remove("SCRIPT");
 
-        Map<String, ElementDefinition> elements = new TreeMap<String, ElementDefinition>();
+        Map<String, ElementDefinition> elements = new TreeMap<>();
         Document document = load("elements.html");
         List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
         for (Object node : nodes)
@@ -96,7 +96,7 @@ public class SpecificationParser
         String elementNamesRegex = "([A-Z0-9]+(,[ \n\r]+[A-Z0-9]+)*)";
         Pattern elementNamesPattern = Pattern.compile("^" + elementNamesRegex + "$");
         Pattern allButElementNamesPattern = Pattern.compile("^All elements but " + elementNamesRegex + "$");
-        Map<String, AttributeDefinition> attributes = new TreeMap<String, AttributeDefinition>();
+        Map<String, AttributeDefinition> attributes = new TreeMap<>();
         Document document = load("attributes.html");
         List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
         for (Object node : nodes)
@@ -108,8 +108,8 @@ public class SpecificationParser
             String dtdCode = getCellValue(tr, 5);
             Type type = typeCode.equals("(" + name + ")") ? BOOLEAN : typeCode.equals("NUMBER") ? NUMBER : STRING;
             DTD dtd = parseDTD(dtdCode);
-            Map<String, Type> typesByElement = new HashMap<String, Type>();
-            Map<String, DTD> dtdsByElement = new HashMap<String, DTD>();
+            Map<String, Type> typesByElement = new HashMap<>();
+            Map<String, DTD> dtdsByElement = new HashMap<>();
             if (attributes.containsKey(name))
             {
                 AttributeDefinition oldDefinition = attributes.get(name);
@@ -139,16 +139,9 @@ public class SpecificationParser
 
     private static Document load(String filename) throws Exception
     {
-        InputStream in = SpecificationParser.class.getResourceAsStream("/com/krasama/remarker/" + filename);
-        try
-        {
+        try (InputStream in = SpecificationParser.class.getResourceAsStream("/com/krasama/remarker/" + filename)) {
             SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(in);
-            return document;
-        }
-        finally
-        {
-            in.close();
+            return builder.build(in);
         }
     }
 
