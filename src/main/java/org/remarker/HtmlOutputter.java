@@ -1,6 +1,5 @@
 package org.remarker;
 
-import org.jdom.*;
 import org.remarker.ElementDefinition.DTD;
 
 import java.io.IOException;
@@ -75,44 +74,10 @@ public class HtmlOutputter
         {
             element((Element) content);
         }
-        else if (content instanceof Text)
+        else
         {
             text((Text) content);
         }
-        else if (content instanceof Comment)
-        {
-            comment((Comment) content);
-        }
-        else
-        {
-            throw new UnsupportedOperationException(content.getClass().getCanonicalName());
-        }
-    }
-
-    private void comment(Comment comment) throws IOException
-    {
-        String text = comment.getText();
-        newLine();
-        raw("<!--");
-        if (hasLineBreaks(text))
-        {
-            StringBuilder replacement = new StringBuilder("\r\n  ");
-            for (int i = 0; i < indentLevel; i++)
-            {
-                replacement.append("  ");
-            }
-            append(replacement.toString());
-            append(text.trim().replaceAll("\r\n|\r|\n", replacement.toString()));
-            newLine();
-        }
-        else
-        {
-            raw(' ');
-            raw(text);
-            raw(' ');
-        }
-        raw("-->");
-        newLine();
     }
 
     private void element(Element element) throws IOException
@@ -124,16 +89,16 @@ public class HtmlOutputter
                     this.dtd.name().toLowerCase() + " DTD");
         }
         boolean newLinesOutside = !elementDefinition.inline;
-        boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getContent());
+        boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getContents());
         if (newLinesOutside)
         {
             newLine();
         }
         raw('<');
         raw(elementDefinition.uppercase);
-        for (Object attribute : element.getAttributes())
+        for (Attribute attribute : element.getAttributes())
         {
-            attribute((Attribute) attribute, elementDefinition);
+            attribute(attribute, elementDefinition);
         }
         if (elementDefinition.empty)
         {
@@ -147,9 +112,9 @@ public class HtmlOutputter
                 indentLevel++;
                 newLine();
             }
-            for (Object content : element.getContent())
+            for (Content content : element.getContents())
             {
-                dispatch((Content) content);
+                dispatch(content);
             }
             if (newLinesInside)
             {
@@ -166,15 +131,15 @@ public class HtmlOutputter
         }
     }
 
-    private boolean hasNonInlineContents(List<?> children)
+    private boolean hasNonInlineContents(List<Content> children)
     {
-        for (Object child : children)
+        for (Content child : children)
         {
             if (child instanceof Element)
             {
                 Element element = (Element) child;
                 ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
-                if (!elementDefinition.inline || hasNonInlineContents(element.getContent()))
+                if (!elementDefinition.inline || hasNonInlineContents(element.getContents()))
                 {
                     return true;
                 }
@@ -182,14 +147,10 @@ public class HtmlOutputter
             else if (child instanceof Text)
             {
                 Text text = (Text) child;
-                if (hasLineBreaks(text.getText()))
+                if (hasLineBreaks(text.getValue()))
                 {
                     return true;
                 }
-            }
-            else if (child instanceof Comment)
-            {
-                return true;
             }
         }
         return false;
@@ -202,7 +163,7 @@ public class HtmlOutputter
 
     private void text(Text text) throws IOException
     {
-        escape(text.getText(), false);
+        escape(text.getValue(), false);
     }
 
     private void attribute(Attribute attribute, ElementDefinition elementDefinition) throws IOException

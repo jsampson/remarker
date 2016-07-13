@@ -1,6 +1,6 @@
 package org.remarker;
 
-public class CharacterDefinition
+class CharacterDefinition
 {
     public final String name;
     public final char value;

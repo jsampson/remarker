@@ -1,7 +1,5 @@
 package org.remarker;
 
-import org.jdom.Attribute;
-
 /**
  * @see <a href="http://intercoolerjs.org/reference.html">Intercooler Reference</a>
  */
