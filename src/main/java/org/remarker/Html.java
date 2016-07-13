@@ -5,8 +5,6 @@ import static org.remarker.AttributeDefinition.Type.*;
 import java.util.*;
 import java.util.function.Supplier;
 
-import org.jdom.*;
-
 @SuppressWarnings("unused")
 public final class Html
 {
@@ -15,16 +13,16 @@ public final class Html
         // to prevent instantiation
     }
 
-    @SuppressWarnings("unchecked")
     public static List<Content> asHtml(Object... contents)
     {
         Element dummy = element("_", contents);
         if (!dummy.getAttributes().isEmpty())
         {
-            throw new IllegalArgumentException("Attribute '" + ((Attribute) dummy.getAttributes().get(0)).getName() +
-                    "' must be contained in an element");
+            Attribute firstAttribute = dummy.getAttributes().iterator().next();
+            throw new IllegalArgumentException(
+                    "Attribute '" + firstAttribute.getName() + "' must be contained in an element");
         }
-        return dummy.getContent();
+        return dummy.getContents();
     }
 
     private static Element element(String name, Object[] contents)
@@ -66,7 +64,7 @@ public final class Html
         }
         else if (content instanceof String)
         {
-            element.addContent((String) content);
+            element.addContent(new Text((String) content));
         }
         else if (content instanceof Content)
         {
@@ -75,7 +73,7 @@ public final class Html
         else if (content instanceof Attribute)
         {
             validateAttribute(element, (Attribute) content);
-            element.setAttribute((Attribute) content);
+            element.putAttribute((Attribute) content);
         }
         else if (content.getClass().isArray() && !content.getClass().getComponentType().isPrimitive())
         {
@@ -100,7 +98,7 @@ public final class Html
         else if (content instanceof Enum || content instanceof CharSequence || content instanceof Boolean ||
                 content instanceof Character || content instanceof Number)
         {
-            element.addContent(content.toString());
+            element.addContent(new Text(content.toString()));
         }
         else
         {

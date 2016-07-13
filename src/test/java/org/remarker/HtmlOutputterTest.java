@@ -7,7 +7,6 @@ import java.io.*;
 
 import junit.framework.*;
 
-import org.jdom.*;
 import org.remarker.ElementDefinition.*;
 
 public class HtmlOutputterTest extends TestCase
@@ -198,7 +197,7 @@ public class HtmlOutputterTest extends TestCase
         try
         {
             Element element = new Element("p");
-            element.setAttribute(new Attribute("checked", "checked"));
+            element.putAttribute(new Attribute("checked", "checked"));
             loose.output(element);
             fail();
         }
@@ -209,7 +208,7 @@ public class HtmlOutputterTest extends TestCase
         try
         {
             Element element = new Element("p");
-            element.setAttribute(new Attribute("foo", "bar"));
+            element.putAttribute(new Attribute("foo", "bar"));
             loose.output(element);
             fail();
         }
@@ -235,22 +234,5 @@ public class HtmlOutputterTest extends TestCase
         HtmlOutputter outputter = new HtmlOutputter(writer, dtd, true);
         outputter.output(HTML());
         assertEquals(expectedOutput, writer.toString());
-    }
-
-    public void testComment() throws IOException
-    {
-        try
-        {
-            new Comment("foo--bar");
-            fail();
-        }
-        catch (IllegalDataException expected)
-        {
-            assertTrue(expected.getMessage().endsWith("Comments cannot contain double hyphens (--)."));
-        }
-        checkHtml(P(new Comment("Hello <world>!"), "Have a nice day."),
-                "<P>\r\n  <!-- Hello <world>! -->\r\n  Have a nice day.\r\n</P>\r\n");
-        checkHtml(P(new Comment("One\rTwo\nThree\r\nFour\n"), "Have a nice day."),
-        "<P>\r\n  <!--\r\n    One\r\n    Two\r\n    Three\r\n    Four\r\n  -->\r\n  Have a nice day.\r\n</P>\r\n");
     }
 }

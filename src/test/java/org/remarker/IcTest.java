@@ -1,7 +1,6 @@
 package org.remarker;
 
 import junit.framework.TestCase;
-import org.jdom.output.XMLOutputter;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -10,14 +9,6 @@ import static org.remarker.Html.*;
 
 public class IcTest extends TestCase
 {
-    public void testIcAttributeAllowedWithXmlOutputter() throws IOException
-    {
-        XMLOutputter outputter = new XMLOutputter();
-        StringWriter writer = new StringWriter();
-        outputter.output(HTML(BODY(DIV(Ic.GetFrom("foo")))), writer);
-        assertEquals("<html><body><div ic-get-from=\"foo\" /></body></html>", writer.toString());
-    }
-
     public void testIcAttributeAllowedWithHtmlOutputterWhenEnabled() throws IOException
     {
         StringWriter writer = new StringWriter();

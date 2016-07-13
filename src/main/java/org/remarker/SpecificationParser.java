@@ -8,7 +8,8 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-import org.jdom.*;
+import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.input.*;
 import org.jdom.xpath.*;
 import org.remarker.AttributeDefinition.*;

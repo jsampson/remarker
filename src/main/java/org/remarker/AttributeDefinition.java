@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.remarker.ElementDefinition.*;
 
-public class AttributeDefinition
+class AttributeDefinition
 {
     public enum Type
     {

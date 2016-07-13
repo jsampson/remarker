@@ -1,6 +1,6 @@
 package org.remarker;
 
-public class ElementDefinition
+class ElementDefinition
 {
     public enum DTD
     {

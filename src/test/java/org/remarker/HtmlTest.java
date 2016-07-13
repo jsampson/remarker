@@ -1,17 +1,13 @@
 package org.remarker;
 
-import static java.util.Arrays.*;
-import static org.remarker.Html.*;
+import junit.framework.TestCase;
 
-import java.io.*;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
-import junit.framework.*;
-
-import org.jdom.*;
-import org.jdom.output.*;
+import static java.util.Arrays.asList;
+import static org.remarker.Html.*;
 
 public class HtmlTest extends TestCase
 {
@@ -174,11 +170,39 @@ public class HtmlTest extends TestCase
         }
     }
 
-    private void checkHtml(Element html, String expected) throws IOException
+    private void checkHtml(Element html, String expected)
     {
-        XMLOutputter outputter = new XMLOutputter();
-        StringWriter writer = new StringWriter();
-        outputter.output(html, writer);
-        assertEquals(expected, writer.toString());
+        StringBuilder builder = new StringBuilder();
+        renderForTesting(html, builder);
+        assertEquals(expected, builder.toString());
+    }
+
+    private void renderForTesting(Element element, StringBuilder builder)
+    {
+        builder.append("<").append(element.getName());
+        for (Attribute attribute : element.getAttributes())
+        {
+            builder.append(" ").append(attribute.getName()).append("=\"").append(attribute.getValue()).append("\"");
+        }
+        if (element.getContents().isEmpty())
+        {
+            builder.append(" />");
+        }
+        else
+        {
+            builder.append(">");
+            for (Content content : element.getContents())
+            {
+                if (content instanceof Element)
+                {
+                    renderForTesting((Element) content, builder);
+                }
+                else
+                {
+                    builder.append(((Text) content).getValue());
+                }
+            }
+            builder.append("</").append(element.getName()).append(">");
+        }
     }
 }
