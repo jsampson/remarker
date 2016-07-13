@@ -1,19 +1,20 @@
 package org.remarker;
 
 import static java.util.Arrays.*;
+import static javax.xml.xpath.XPathConstants.NODESET;
 import static org.remarker.AttributeDefinition.Type.*;
 import static org.remarker.ElementDefinition.DTD.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
+import javax.xml.xpath.*;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.*;
-import org.jdom.xpath.*;
 import org.remarker.AttributeDefinition.*;
 import org.remarker.ElementDefinition.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class SpecificationParser
 {
@@ -40,12 +41,11 @@ public class SpecificationParser
         Map<String, CharacterDefinition> characters = new TreeMap<>();
         characters.put("apos", new CharacterDefinition("apos", '\''));
         Pattern pattern = Pattern.compile("<!ENTITY ([A-Za-z0-9]+) +CDATA \"&#([0-9]+);\"");
-        Document document = load("characters.html");
-        List<?> nodes = XPath.selectNodes(document, "//pre");
-        for (Object node : nodes)
+        NodeList nodes = load("characters.html", "//pre");
+        for (int index = 0; index < nodes.getLength(); index++)
         {
-            Element pre = (Element) node;
-            String text = pre.getText();
+            Element pre = (Element) nodes.item(index);
+            String text = pre.getTextContent();
             Matcher matcher = pattern.matcher(text);
             while (matcher.find())
             {
@@ -78,11 +78,10 @@ public class SpecificationParser
         inline.remove("SCRIPT");
 
         Map<String, ElementDefinition> elements = new TreeMap<>();
-        Document document = load("elements.html");
-        List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
-        for (Object node : nodes)
+        NodeList nodes = load("elements.html", "//tr[td[1]/@title='Name']");
+        for (int index = 0; index < nodes.getLength(); index++)
         {
-            Element tr = (Element) node;
+            Element tr = (Element) nodes.item(index);
             String name = getCellValue(tr, 0);
             String empty = getCellValue(tr, 3);
             String dtd = getCellValue(tr, 5);
@@ -98,11 +97,10 @@ public class SpecificationParser
         Pattern elementNamesPattern = Pattern.compile("^" + elementNamesRegex + "$");
         Pattern allButElementNamesPattern = Pattern.compile("^All elements but " + elementNamesRegex + "$");
         Map<String, AttributeDefinition> attributes = new TreeMap<>();
-        Document document = load("attributes.html");
-        List<?> nodes = XPath.selectNodes(document, "//tr[td[1]/@title='Name']");
-        for (Object node : nodes)
+        NodeList nodes = load("attributes.html", "//tr[td[1]/@title='Name']");
+        for (int index = 0; index < nodes.getLength(); index++)
         {
-            Element tr = (Element) node;
+            Element tr = (Element) nodes.item(index);
             String name = getCellValue(tr, 0).toLowerCase().intern();
             String elements = getCellValue(tr, 1);
             String typeCode = getCellValue(tr, 2);
@@ -138,17 +136,30 @@ public class SpecificationParser
         return attributes;
     }
 
-    private static Document load(String filename) throws Exception
+    private static NodeList load(String filename, String xpath) throws Exception
     {
-        try (InputStream in = SpecificationParser.class.getResourceAsStream("/com/krasama/remarker/" + filename)) {
-            SAXBuilder builder = new SAXBuilder();
-            return builder.build(in);
+        try (InputStream in = SpecificationParser.class.getResourceAsStream("/com/krasama/remarker/" + filename))
+        {
+            return (NodeList) XPathFactory.newInstance().newXPath().evaluate(xpath, new InputSource(in), NODESET);
         }
     }
 
     private static String getCellValue(Element tr, int i)
     {
-        return ((Element) tr.getChildren().get(i)).getValue().trim();
+        NodeList children = tr.getChildNodes();
+        int elementIndex = -1;
+        for (int childIndex = 0; childIndex < children.getLength(); childIndex++)
+        {
+            if (children.item(childIndex) instanceof Element)
+            {
+                elementIndex++;
+                if (elementIndex == i)
+                {
+                    return children.item(childIndex).getTextContent().trim();
+                }
+            }
+        }
+        throw new NoSuchElementException();
     }
 
     private static DTD parseDTD(String dtd)
