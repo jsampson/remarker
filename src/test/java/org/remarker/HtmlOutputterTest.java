@@ -48,6 +48,13 @@ public class HtmlOutputterTest extends TestCase
                 "<!DOCTYPE HTML>\r\n<HTML>\r\n  <BODY>\r\n    <P>\r\n      First line.\r\n      Second line.\r\n      Third line.\r\n      Fourth line.\r\n    </P>\r\n  </BODY>\r\n</HTML>\r\n");
     }
 
+    public void testPreIndentation()
+    {
+        checkHtml(
+                HTML(BODY(PRE("First line.\nSecond line.\rThird line.\r\nFourth line."))),
+                "<!DOCTYPE HTML>\r\n<HTML>\r\n  <BODY>\r\n    <PRE>First line.\r\nSecond line.\r\nThird line.\r\nFourth line.</PRE>\r\n  </BODY>\r\n</HTML>\r\n");
+    }
+
     public void testNewlinesInAttribute()
     {
         checkHtml(INPUT(Type("hidden"), Value("first line\r\nsecond line")),
