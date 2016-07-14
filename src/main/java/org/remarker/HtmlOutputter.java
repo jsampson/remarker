@@ -18,6 +18,7 @@ public final class HtmlOutputter<X extends Exception>
     private boolean nothingWritten = true;
     private boolean atStartOfLine = true;
     private int indentLevel = 0;
+    private int indentSuppressionLevel = 0;
     private char[] buffer = new char[8192];
     private int index = 0;
 
@@ -58,8 +59,9 @@ public final class HtmlOutputter<X extends Exception>
         {
             append("<!DOCTYPE HTML>\r\n");
         }
+        boolean pre = element.getName().equals("pre");
         boolean newLinesOutside = !elementDefinition.inline;
-        boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getContents());
+        boolean newLinesInside = !pre && !elementDefinition.inline && hasNonInlineContents(element.getContents());
         if (newLinesOutside)
         {
             newLine();
@@ -77,6 +79,10 @@ public final class HtmlOutputter<X extends Exception>
         else
         {
             raw('>');
+            if (pre)
+            {
+                indentSuppressionLevel++;
+            }
             if (newLinesInside)
             {
                 indentLevel++;
@@ -94,6 +100,10 @@ public final class HtmlOutputter<X extends Exception>
             raw("</");
             raw(elementDefinition.uppercase);
             raw('>');
+            if (pre)
+            {
+                indentSuppressionLevel--;
+            }
         }
         if (newLinesOutside)
         {
@@ -175,7 +185,7 @@ public final class HtmlOutputter<X extends Exception>
 
     private void writeIndent() throws X
     {
-        if (atStartOfLine && indentLevel > 0)
+        if (atStartOfLine && indentLevel > 0 && indentSuppressionLevel == 0)
         {
             for (int i = 0; i < indentLevel; i++)
             {
