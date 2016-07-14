@@ -3,7 +3,6 @@ package org.remarker;
 import static java.util.Arrays.*;
 import static javax.xml.xpath.XPathConstants.NODESET;
 import static org.remarker.AttributeDefinition.Type.*;
-import static org.remarker.ElementDefinition.DTD.*;
 
 import java.io.*;
 import java.util.*;
@@ -11,7 +10,6 @@ import java.util.regex.*;
 import javax.xml.xpath.*;
 
 import org.remarker.AttributeDefinition.*;
-import org.remarker.ElementDefinition.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -85,8 +83,10 @@ public class SpecificationParser
             String name = getCellValue(tr, 0);
             String empty = getCellValue(tr, 3);
             String dtd = getCellValue(tr, 5);
-            elements.put(name.toLowerCase().intern(), new ElementDefinition(name, inline.contains(name), empty.equals("E"),
-                    parseDTD(dtd)));
+            if (isStrict(dtd))
+            {
+                elements.put(name.toLowerCase().intern(), new ElementDefinition(name, inline.contains(name), empty.equals("E")));
+            }
         }
         return elements;
     }
@@ -105,33 +105,33 @@ public class SpecificationParser
             String elements = getCellValue(tr, 1);
             String typeCode = getCellValue(tr, 2);
             String dtdCode = getCellValue(tr, 5);
+            if (!isStrict(dtdCode))
+            {
+                continue;
+            }
             Type type = typeCode.equals("(" + name + ")") ? BOOLEAN : typeCode.equals("NUMBER") ? NUMBER : STRING;
-            DTD dtd = parseDTD(dtdCode);
             Map<String, Type> typesByElement = new HashMap<>();
-            Map<String, DTD> dtdsByElement = new HashMap<>();
             if (attributes.containsKey(name))
             {
                 AttributeDefinition oldDefinition = attributes.get(name);
                 typesByElement.putAll(oldDefinition.typesByElement);
-                dtdsByElement.putAll(oldDefinition.dtdsByElement);
             }
             Matcher elementNamesMatcher = elementNamesPattern.matcher(elements);
             Matcher allButElementNamesMatcher = allButElementNamesPattern.matcher(elements);
             if (elementNamesMatcher.matches())
             {
-                putTypeAndDTD(elementNamesMatcher, typesByElement, dtdsByElement, type, dtd);
+                putType(elementNamesMatcher, typesByElement, type);
             }
             else if (allButElementNamesMatcher.matches())
             {
                 typesByElement.put("*", type);
-                dtdsByElement.put("*", dtd);
-                putTypeAndDTD(allButElementNamesMatcher, typesByElement, dtdsByElement, null, null);
+                putType(allButElementNamesMatcher, typesByElement, null);
             }
             else
             {
                 throw new IllegalStateException(elements);
             }
-            attributes.put(name, new AttributeDefinition(name, typesByElement, dtdsByElement));
+            attributes.put(name, new AttributeDefinition(name, typesByElement));
         }
         return attributes;
     }
@@ -162,20 +162,18 @@ public class SpecificationParser
         throw new NoSuchElementException();
     }
 
-    private static DTD parseDTD(String dtd)
+    private static boolean isStrict(String dtd)
     {
-        return dtd.equals("L") ? LOOSE : dtd.equals("F") ? FRAMESET : STRICT;
+        return !dtd.equals("L") && !dtd.equals("F");
     }
 
-    private static void putTypeAndDTD(Matcher elementNamesMatcher, Map<String, Type> typesByElement,
-            Map<String, DTD> dtdsByElement, Type type, DTD dtd)
+    private static void putType(Matcher elementNamesMatcher, Map<String, Type> typesByElement, Type type)
     {
         String[] elementNames = getElementNames(elementNamesMatcher);
         for (String elementName : elementNames)
         {
             String elementNameInterned = elementName.toLowerCase().intern();
             typesByElement.put(elementNameInterned, type);
-            dtdsByElement.put(elementNameInterned, dtd);
         }
     }
 
