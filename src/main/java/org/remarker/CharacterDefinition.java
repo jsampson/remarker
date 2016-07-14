@@ -2,26 +2,26 @@ package org.remarker;
 
 class CharacterDefinition
 {
-    public final String name;
-    public final char value;
+    final String name;
+    final char value;
 
-    public CharacterDefinition(String name, char value)
+    CharacterDefinition(String name, char value)
     {
         this.name = name.intern();
         this.value = value;
     }
 
-    public String javaName()
+    String javaName()
     {
         return "_" + name;
     }
 
-    public char charValue()
+    char charValue()
     {
         return value;
     }
 
-    public void generateCode()
+    void generateCode()
     {
         System.out.println("    public static final String " + javaName() + " = String.valueOf((char) " + (int) charValue() + ");");
         if (name.endsWith("sp"))

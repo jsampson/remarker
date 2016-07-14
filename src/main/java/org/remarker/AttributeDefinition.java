@@ -4,17 +4,17 @@ import java.util.*;
 
 class AttributeDefinition
 {
-    public enum Type
+    enum Type
     {
         STRING, BOOLEAN, NUMBER
     }
 
-    public final String name;
-    public final Map<String, Type> typesByElement;
-    public final Set<Type> allTypes;
-    public final Type loosestType;
+    final String name;
+    final Map<String, Type> typesByElement;
+    final Set<Type> allTypes;
+    final Type loosestType;
 
-    public AttributeDefinition(String name, Map<String, Type> typesByElement)
+    AttributeDefinition(String name, Map<String, Type> typesByElement)
     {
         this.name = name.toLowerCase().intern();
         this.typesByElement = Collections.unmodifiableMap(new HashMap<>(typesByElement));
@@ -41,7 +41,7 @@ class AttributeDefinition
         }
     }
 
-    public String javaName()
+    String javaName()
     {
         String[] words = name.split("-");
         StringBuilder result = new StringBuilder();
@@ -53,12 +53,12 @@ class AttributeDefinition
         return result.toString();
     }
 
-    public String xmlName()
+    String xmlName()
     {
         return name;
     }
 
-    public void generateCode()
+    void generateCode()
     {
         generateMethod("String");
         if (allTypes.contains(Type.BOOLEAN))
@@ -81,7 +81,7 @@ class AttributeDefinition
         System.out.println("    }");
     }
 
-    public Type getType(String elementName)
+    Type getType(String elementName)
     {
         if (typesByElement.containsKey(elementName))
         {
