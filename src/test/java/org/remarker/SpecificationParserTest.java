@@ -10,9 +10,9 @@ import org.remarker.AttributeDefinition.*;
 
 public class SpecificationParserTest extends TestCase
 {
-    public void testCharacters() throws Exception
+    public void testCharacters()
     {
-        Map<String, CharacterDefinition> characters = SpecificationParser.parseCharacters();
+        Map<String, CharacterDefinition> characters = SpecificationParser.CHARACTERS;
         assertEquals(253, characters.size());
         // all standard XML characters
         checkCharacter(characters, "lt", '<');
@@ -46,9 +46,9 @@ public class SpecificationParserTest extends TestCase
         assertEquals(value, character.value);
     }
 
-    public void testElements() throws Exception
+    public void testElements()
     {
-        Map<String, ElementDefinition> elements = SpecificationParser.parseElements();
+        Map<String, ElementDefinition> elements = SpecificationParser.ELEMENTS;
         assertEquals(77, elements.size());
         checkElement(elements, "a", "A", false);
         checkNoElement(elements, "applet");
@@ -72,9 +72,9 @@ public class SpecificationParserTest extends TestCase
         assertNull(elements.get(lowercase));
     }
 
-    public void testAttributes() throws Exception
+    public void testAttributes()
     {
-        Map<String, AttributeDefinition> attributes = SpecificationParser.parseAttributes();
+        Map<String, AttributeDefinition> attributes = SpecificationParser.ATTRIBUTES;
         assertEquals(93, attributes.size());
         checkAttribute(attributes, "abbr", new String[] { "td", "th" }, new Type[] { STRING, STRING });
         checkAttribute(attributes, "border", new String[] { "table" }, new Type[] { STRING });

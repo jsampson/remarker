@@ -2,12 +2,12 @@ package org.remarker;
 
 class ElementDefinition
 {
-    public final String lowercase;
-    public final String uppercase;
-    public final boolean inline;
-    public final boolean empty;
+    final String lowercase;
+    final String uppercase;
+    final boolean inline;
+    final boolean empty;
 
-    public ElementDefinition(String name, boolean inline, boolean empty)
+    ElementDefinition(String name, boolean inline, boolean empty)
     {
         this.lowercase = name.toLowerCase().intern();
         this.uppercase = name.toUpperCase().intern();
@@ -25,7 +25,7 @@ class ElementDefinition
         return lowercase;
     }
 
-    public void generateCode()
+    void generateCode()
     {
         System.out.println("    public static Element " + javaName() + "(Object... contents)");
         System.out.println("    {");

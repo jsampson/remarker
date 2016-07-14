@@ -11,7 +11,7 @@ import static org.remarker.Html.*;
 
 public class HtmlTest extends TestCase
 {
-    public void testDocument() throws Exception
+    public void testDocument()
     {
         checkHtml(
                 HTML(HEAD(TITLE("Example")), BODY(H1("Hello!"), P("Look...", _nbsp, A(Href("http://..."), Title("Somewhere Else"),
@@ -19,42 +19,42 @@ public class HtmlTest extends TestCase
                 "<html><head><title>Example</title></head><body><h1>Hello!</h1><p>Look...\u00A0<a href=\"http://...\" title=\"Somewhere Else\">Go There.</a></p></body></html>");
     }
 
-    public void testArray() throws Exception
+    public void testArray()
     {
         checkHtml(P((Object) new Integer[]{17, -42, 500}), "<p>17-42500</p>");
     }
 
-    public void testIterable() throws Exception
+    public void testIterable()
     {
         checkHtml(P(asList(17, -42, 500)), "<p>17-42500</p>");
     }
 
-    public void testIterator() throws Exception
+    public void testIterator()
     {
         checkHtml(P(asList(17, -42, 500).iterator()), "<p>17-42500</p>");
     }
 
-    public void testOptionalEmpty() throws Exception
+    public void testOptionalEmpty()
     {
         checkHtml(P("x", Optional.empty(), "z"), "<p>xz</p>");
     }
 
-    public void testOptionalPresent() throws Exception
+    public void testOptionalPresent()
     {
         checkHtml(P("x", Optional.of("y"), "z"), "<p>xyz</p>");
     }
 
-    public void testSupplier() throws Exception
+    public void testSupplier()
     {
         checkHtml(P("x", (Supplier<String>) () -> "y", "z"), "<p>xyz</p>");
     }
 
-    public void testNull() throws Exception
+    public void testNull()
     {
         checkHtml(P("foo", null, "bar"), "<p>foobar</p>");
     }
 
-    public void testStringifying() throws Exception
+    public void testStringifying()
     {
         checkHtml(P(AttributeDefinition.Type.BOOLEAN, new StringBuilder(" la la la "), Boolean.TRUE, '*',
                 3.1415), "<p>BOOLEAN la la la true*3.1415</p>");
@@ -70,7 +70,7 @@ public class HtmlTest extends TestCase
                 () -> P((Object) new int[] { 1, 2, 3 }));
     }
 
-    public void testBooleanAttribute() throws Exception
+    public void testBooleanAttribute()
     {
         checkHtml(INPUT(Checked(true)), "<input checked=\"checked\" />");
         checkHtml(INPUT(Checked(false)), "<input />");
@@ -82,7 +82,7 @@ public class HtmlTest extends TestCase
                 () -> INPUT(Checked("foo")));
     }
 
-    public void testNumberAttribute() throws Exception
+    public void testNumberAttribute()
     {
         checkHtml(TD(Colspan(42)), "<td colspan=\"42\" />");
         checkHtml(TD(Colspan(-17)), "<td colspan=\"-17\" />");
@@ -95,7 +95,7 @@ public class HtmlTest extends TestCase
                 () -> TD(Colspan("foo")));
     }
 
-    public void testAllowedAttributes() throws Exception
+    public void testAllowedAttributes()
     {
         // "action" is allowed only for "form"
         checkHtml(FORM(Action("...")), "<form action=\"...\" />");
@@ -114,7 +114,7 @@ public class HtmlTest extends TestCase
                 () -> TEXTAREA(Cols("1,2,3")));
     }
 
-    public void testBogusAttribute() throws Exception
+    public void testBogusAttribute()
     {
         assertThrowsIllegalArgumentException(
                 "The 'foo' attribute is not allowed for the 'p' element",

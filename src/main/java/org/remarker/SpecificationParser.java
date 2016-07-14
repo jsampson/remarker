@@ -14,11 +14,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-public class SpecificationParser
+final class SpecificationParser
 {
-    public static final Map<String, CharacterDefinition> CHARACTERS;
-    public static final Map<String, ElementDefinition> ELEMENTS;
-    public static final Map<String, AttributeDefinition> ATTRIBUTES;
+    static final Map<String, CharacterDefinition> CHARACTERS;
+    static final Map<String, ElementDefinition> ELEMENTS;
+    static final Map<String, AttributeDefinition> ATTRIBUTES;
 
     static
     {
@@ -30,11 +30,11 @@ public class SpecificationParser
         }
         catch (Exception impossible)
         {
-            throw new AssertionError(impossible);
+            throw new ExceptionInInitializerError(impossible);
         }
     }
 
-    public static Map<String, CharacterDefinition> parseCharacters() throws Exception
+    private static Map<String, CharacterDefinition> parseCharacters() throws Exception
     {
         Map<String, CharacterDefinition> characters = new TreeMap<>();
         characters.put("apos", new CharacterDefinition("apos", '\''));
@@ -56,7 +56,7 @@ public class SpecificationParser
         return characters;
     }
 
-    public static Map<String, ElementDefinition> parseElements() throws Exception
+    private static Map<String, ElementDefinition> parseElements() throws Exception
     {
         // definition of "inline" elements from the HTML 4.01 DTD
         Set<String> fontstyle = new HashSet<>(asList("TT", "I", "B", "BIG", "SMALL"));
@@ -91,7 +91,7 @@ public class SpecificationParser
         return elements;
     }
 
-    public static Map<String, AttributeDefinition> parseAttributes() throws Exception
+    private static Map<String, AttributeDefinition> parseAttributes() throws Exception
     {
         String elementNamesRegex = "([A-Z0-9]+(,[ \n\r]+[A-Z0-9]+)*)";
         Pattern elementNamesPattern = Pattern.compile("^" + elementNamesRegex + "$");
