@@ -1,13 +1,11 @@
 package org.remarker;
 
-import static org.remarker.ElementDefinition.DTD.*;
 import static org.remarker.Html.*;
+import static org.remarker.HtmlTest.assertThrowsIllegalArgumentException;
 
 import java.io.*;
 
 import junit.framework.*;
-
-import org.remarker.ElementDefinition.*;
 
 public class HtmlOutputterTest extends TestCase
 {
@@ -16,7 +14,7 @@ public class HtmlOutputterTest extends TestCase
         checkHtml(
                 HTML(HEAD(TITLE("Example")), BODY(H1("Hello!"), P("Look...", _nbsp, A(Href("http://..."), Title("Somewhere Else"),
                         "Go There.")))),
-                "<HTML>\r\n  <HEAD>\r\n    <TITLE>Example</TITLE>\r\n  </HEAD>\r\n  <BODY>\r\n    <H1>Hello!</H1>\r\n    <P>Look...&#160;<A href=\"http://...\" title=\"Somewhere Else\">Go There.</A></P>\r\n  </BODY>\r\n</HTML>\r\n");
+                "<!DOCTYPE HTML>\r\n<HTML>\r\n  <HEAD>\r\n    <TITLE>Example</TITLE>\r\n  </HEAD>\r\n  <BODY>\r\n    <H1>Hello!</H1>\r\n    <P>Look...&#160;<A href=\"http://...\" title=\"Somewhere Else\">Go There.</A></P>\r\n  </BODY>\r\n</HTML>\r\n");
     }
 
     public void testEscaping() throws Exception
@@ -40,14 +38,14 @@ public class HtmlOutputterTest extends TestCase
     {
         checkHtml(
                 HTML(BODY(TABLE(TR(TD("Hello."), TD(P("Goodbye.")))))),
-                "<HTML>\r\n  <BODY>\r\n    <TABLE>\r\n      <TR>\r\n        <TD>Hello.</TD>\r\n        <TD>\r\n          <P>Goodbye.</P>\r\n        </TD>\r\n      </TR>\r\n    </TABLE>\r\n  </BODY>\r\n</HTML>\r\n");
+                "<!DOCTYPE HTML>\r\n<HTML>\r\n  <BODY>\r\n    <TABLE>\r\n      <TR>\r\n        <TD>Hello.</TD>\r\n        <TD>\r\n          <P>Goodbye.</P>\r\n        </TD>\r\n      </TR>\r\n    </TABLE>\r\n  </BODY>\r\n</HTML>\r\n");
     }
 
     public void testTextIndentation() throws Exception
     {
         checkHtml(
                 HTML(BODY(P("First line.\nSecond line.\rThird line.\r\nFourth line."))),
-                "<HTML>\r\n  <BODY>\r\n    <P>\r\n      First line.\r\n      Second line.\r\n      Third line.\r\n      Fourth line.\r\n    </P>\r\n  </BODY>\r\n</HTML>\r\n");
+                "<!DOCTYPE HTML>\r\n<HTML>\r\n  <BODY>\r\n    <P>\r\n      First line.\r\n      Second line.\r\n      Third line.\r\n      Fourth line.\r\n    </P>\r\n  </BODY>\r\n</HTML>\r\n");
     }
 
     public void testNewlinesInAttribute() throws Exception
@@ -56,183 +54,91 @@ public class HtmlOutputterTest extends TestCase
                 "<INPUT type=\"hidden\" value=\"first line&#13;&#10;second line\">");
     }
 
-    public void testSurrogatePairs() throws IOException
+    public void testSurrogatePairs()
     {
         checkHtml(P("\u6C34\u007A\uD834\uDD1E"), "<P>&#27700;z&#119070;</P>\r\n");
     }
 
-    private void checkHtml(Element html, String expected) throws IOException
+    private void checkHtml(Element html, String expected)
     {
         StringWriter writer = new StringWriter();
-        HtmlOutputter outputter = new HtmlOutputter(writer);
+        HtmlOutputter<RuntimeException> outputter = new HtmlOutputter<>(writer::write);
         outputter.output(html);
         assertEquals(expected, writer.toString());
     }
 
-    public void testMixedOutput() throws IOException
+    public void testMixedOutput()
     {
         StringWriter writer = new StringWriter();
-        HtmlOutputter outputter = new HtmlOutputter(writer);
+        HtmlOutputter<RuntimeException> outputter = new HtmlOutputter<>(writer::write);
         outputter.output("<escapeme>", 15, P("bla"));
         assertEquals("&lt;escapeme&gt;15\r\n<P>bla</P>\r\n", writer.toString());
     }
 
-    public void testMixedOutputError() throws IOException
+    public void testMixedOutputError()
     {
         StringWriter writer = new StringWriter();
-        HtmlOutputter outputter = new HtmlOutputter(writer);
-        try
-        {
-            outputter.output(Class("foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("Attribute 'class' must be contained in an element", expected.getMessage());
-        }
+        HtmlOutputter<RuntimeException> outputter = new HtmlOutputter<>(writer::write);
+        assertThrowsIllegalArgumentException(
+                "Attribute 'class' must be contained in an element",
+                () -> outputter.output(Class("foo")));
     }
 
-    public void testElementDTDValidation() throws IOException
+    public void testElementDTDValidation()
     {
         StringWriter writer = new StringWriter();
-        HtmlOutputter strict = new HtmlOutputter(writer, STRICT);
-        HtmlOutputter loose = new HtmlOutputter(writer, LOOSE);
-        HtmlOutputter frameset = new HtmlOutputter(writer, FRAMESET);
+        HtmlOutputter<RuntimeException> strict = new HtmlOutputter<>(writer::write);
         // P is okay in all DTDs
         strict.output(P("foo"));
-        loose.output(P("foo"));
-        frameset.output(P("foo"));
         // CENTER is not allowed in the strict DTD
-        loose.output(CENTER("foo"));
-        frameset.output(CENTER("foo"));
-        try
-        {
-            strict.output(CENTER("foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'center' element is not allowed with the strict DTD", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'center' element is not allowed",
+                () -> strict.output(CENTER("foo")));
         // FRAME is only allowed in the frameset DTD
-        frameset.output(FRAME("foo"));
-        try
-        {
-            strict.output(FRAME("foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'frame' element is not allowed with the strict DTD", expected.getMessage());
-        }
-        try
-        {
-            loose.output(FRAME("foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'frame' element is not allowed with the loose DTD", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'frame' element is not allowed",
+                () -> strict.output(FRAME("foo")));
         // don't throw a NullPointerException if the element isn't found at all
-        try
-        {
-            loose.output(new Element("foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'foo' element is not allowed with the loose DTD", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'foo' element is not allowed",
+                () -> strict.output(new Element("foo")));
     }
 
-    public void testAttributeDTDValidation() throws IOException
+    public void testAttributeDTDValidation()
     {
         StringWriter writer = new StringWriter();
-        HtmlOutputter strict = new HtmlOutputter(writer, STRICT);
-        HtmlOutputter loose = new HtmlOutputter(writer, LOOSE);
-        HtmlOutputter frameset = new HtmlOutputter(writer, FRAMESET);
+        HtmlOutputter<RuntimeException> strict = new HtmlOutputter<>(writer::write);
         // Id is okay in all DTDs
         strict.output(P(Id("foo")));
-        loose.output(P(Id("foo")));
-        frameset.output(P(Id("foo")));
         // Align is not allowed in the strict DTD
-        loose.output(P(Align("center")));
-        frameset.output(P(Align("center")));
-        try
-        {
-            strict.output(P(Align("center")));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'align' attribute is not allowed for the 'p' element with the strict DTD", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'align' attribute is not allowed for the 'p' element",
+                () -> strict.output(P(Align("center"))));
         // Name is allowed on A in the strict DTD, but on IFRAME only in the
         // frameset DTD
         strict.output(A(Name("foo")));
-        loose.output(A(Name("foo")));
-        frameset.output(A(Name("foo")));
-        frameset.output(IFRAME(Name("foo")));
-        try
-        {
-            strict.output(IFRAME(Name("foo")));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'iframe' element is not allowed with the strict DTD", expected.getMessage());
-        }
-        try
-        {
-            loose.output(IFRAME(Name("foo")));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'name' attribute is not allowed for the 'iframe' element with the loose DTD", expected.getMessage());
-        }
-        // don't throw a NullPointerException if the attribute isn't allowed at
-        // all
-        try
-        {
-            Element element = new Element("p");
-            element.putAttribute(new Attribute("checked", "checked"));
-            loose.output(element);
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'checked' attribute is not allowed for the 'p' element with the loose DTD", expected.getMessage());
-        }
-        try
-        {
-            Element element = new Element("p");
-            element.putAttribute(new Attribute("foo", "bar"));
-            loose.output(element);
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'foo' attribute is not allowed for the 'p' element with the loose DTD", expected.getMessage());
-        }
+        // don't throw a NullPointerException if the attribute isn't allowed at all
+        assertThrowsIllegalArgumentException(
+                "The 'checked' attribute is not allowed for the 'p' element",
+                () -> {
+                    Element element = new Element("p");
+                    element.putAttribute(new Attribute("checked", "checked"));
+                    strict.output(element);
+                });
+        assertThrowsIllegalArgumentException(
+                "The 'foo' attribute is not allowed for the 'p' element",
+                () -> {
+                    Element element = new Element("p");
+                    element.putAttribute(new Attribute("foo", "bar"));
+                    strict.output(element);
+                });
     }
 
-    public void testDoctype() throws IOException
-    {
-        checkDoctype(STRICT,
-                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\r\n<HTML></HTML>\r\n");
-        checkDoctype(LOOSE,
-                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n<HTML></HTML>\r\n");
-        checkDoctype(FRAMESET,
-                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\r\n<HTML></HTML>\r\n");
-    }
-
-    private void checkDoctype(DTD dtd, String expectedOutput) throws IOException
+    public void testDoctype()
     {
         StringWriter writer = new StringWriter();
-        HtmlOutputter outputter = new HtmlOutputter(writer, dtd, true);
+        HtmlOutputter<RuntimeException> outputter = new HtmlOutputter<>(writer::write);
         outputter.output(HTML());
-        assertEquals(expectedOutput, writer.toString());
+        assertEquals("<!DOCTYPE HTML>\r\n<HTML></HTML>\r\n", writer.toString());
     }
 }

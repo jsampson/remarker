@@ -1,14 +1,12 @@
 package org.remarker;
 
 import static org.remarker.AttributeDefinition.Type.*;
-import static org.remarker.ElementDefinition.DTD.*;
 
 import java.util.*;
 
 import junit.framework.*;
 
 import org.remarker.AttributeDefinition.*;
-import org.remarker.ElementDefinition.*;
 
 public class SpecificationParserTest extends TestCase
 {
@@ -51,63 +49,60 @@ public class SpecificationParserTest extends TestCase
     public void testElements() throws Exception
     {
         Map<String, ElementDefinition> elements = SpecificationParser.parseElements();
-        assertEquals(91, elements.size());
-        checkElement(elements, "a", "A", false, STRICT);
-        checkElement(elements, "applet", "APPLET", false, LOOSE);
-        checkElement(elements, "base", "BASE", true, STRICT);
-        checkElement(elements, "isindex", "ISINDEX", true, LOOSE);
-        checkElement(elements, "noframes", "NOFRAMES", false, FRAMESET);
-        checkElement(elements, "var", "VAR", false, STRICT);
+        assertEquals(77, elements.size());
+        checkElement(elements, "a", "A", false);
+        checkNoElement(elements, "applet");
+        checkElement(elements, "base", "BASE", true);
+        checkNoElement(elements, "isindex");
+        checkNoElement(elements, "iframe");
+        checkNoElement(elements, "noframes");
+        checkElement(elements, "var", "VAR", false);
     }
 
-    private void checkElement(Map<String, ElementDefinition> elements, String lowercase, String uppercase, boolean empty, DTD dtd)
+    private void checkElement(Map<String, ElementDefinition> elements, String lowercase, String uppercase, boolean empty)
     {
         ElementDefinition element = elements.get(lowercase);
         assertSame(lowercase, element.lowercase);
         assertSame(uppercase, element.uppercase);
         assertEquals(empty, element.empty);
-        assertSame(dtd, element.dtd);
+    }
+
+    private void checkNoElement(Map<String, ElementDefinition> elements, String lowercase)
+    {
+        assertNull(elements.get(lowercase));
     }
 
     public void testAttributes() throws Exception
     {
         Map<String, AttributeDefinition> attributes = SpecificationParser.parseAttributes();
-        assertEquals(119, attributes.size());
-        checkAttribute(attributes, "abbr", new String[] { "td", "th" }, new Type[] { STRING, STRING }, new DTD[] { STRICT, STRICT });
-        checkAttribute(attributes, "border", new String[] { "table", "img", "object" }, new Type[] { STRING, STRING, STRING },
-                new DTD[] { STRICT, LOOSE, LOOSE });
-        checkAttribute(attributes, "checked", new String[] { "input" }, new Type[] { BOOLEAN }, new DTD[] { STRICT });
-        checkAttribute(attributes, "cols", new String[] { "frameset", "textarea" }, new Type[] { STRING, NUMBER }, new DTD[] {
-                FRAMESET, STRICT });
-        checkAttribute(attributes, "colspan", new String[] { "td", "th" }, new Type[] { NUMBER, NUMBER }, new DTD[] { STRICT,
-                STRICT });
+        assertEquals(93, attributes.size());
+        checkAttribute(attributes, "abbr", new String[] { "td", "th" }, new Type[] { STRING, STRING });
+        checkAttribute(attributes, "border", new String[] { "table" }, new Type[] { STRING });
+        checkAttribute(attributes, "checked", new String[] { "input" }, new Type[] { BOOLEAN });
+        checkAttribute(attributes, "cols", new String[] { "textarea" }, new Type[] { NUMBER });
+        checkAttribute(attributes, "colspan", new String[] { "td", "th" }, new Type[] { NUMBER, NUMBER });
         checkAttribute(attributes, "class", new String[] { "*", "base", "basefont", "head", "html", "meta", "param", "script",
-                "style", "title" }, new Type[] { STRING }, new DTD[] { STRICT });
+                "style", "title" }, new Type[] { STRING });
         checkAttribute(attributes, "dir", new String[] { "*", "bdo", "applet", "base", "basefont", "br", "frame", "frameset",
-                "iframe", "param", "script" }, new Type[] { STRING, STRING }, new DTD[] { STRICT, STRICT });
+                "iframe", "param", "script" }, new Type[] { STRING, STRING });
     }
 
-    private void checkAttribute(Map<String, AttributeDefinition> attributes, String name, String[] elements, Type[] types,
-            DTD[] dtds)
+    private void checkAttribute(Map<String, AttributeDefinition> attributes, String name, String[] elements, Type[] types)
     {
         AttributeDefinition attribute = attributes.get(name);
         assertSame(name, attribute.name);
         assertEquals(elements.length, attribute.typesByElement.size());
-        assertEquals(elements.length, attribute.dtdsByElement.size());
         for (int i = 0; i < elements.length; i++)
         {
             String element = elements[i];
             assertTrue(attribute.typesByElement.containsKey(element));
-            assertTrue(attribute.dtdsByElement.containsKey(element));
             if (i < types.length)
             {
                 assertSame(types[i], attribute.typesByElement.get(element));
-                assertSame(dtds[i], attribute.dtdsByElement.get(element));
             }
             else
             {
                 assertNull(attribute.typesByElement.get(element));
-                assertNull(attribute.dtdsByElement.get(element));
             }
         }
     }

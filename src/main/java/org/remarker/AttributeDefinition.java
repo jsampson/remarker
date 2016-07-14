@@ -2,8 +2,6 @@ package org.remarker;
 
 import java.util.*;
 
-import org.remarker.ElementDefinition.*;
-
 class AttributeDefinition
 {
     public enum Type
@@ -13,15 +11,13 @@ class AttributeDefinition
 
     public final String name;
     public final Map<String, Type> typesByElement;
-    public final Map<String, DTD> dtdsByElement;
     public final Set<Type> allTypes;
     public final Type loosestType;
 
-    public AttributeDefinition(String name, Map<String, Type> typesByElement, Map<String, DTD> dtdsByElement)
+    public AttributeDefinition(String name, Map<String, Type> typesByElement)
     {
         this.name = name.toLowerCase().intern();
         this.typesByElement = Collections.unmodifiableMap(new HashMap<>(typesByElement));
-        this.dtdsByElement = Collections.unmodifiableMap(new HashMap<>(dtdsByElement));
         this.allTypes = Collections.unmodifiableSet(new HashSet<>(typesByElement.values()));
         if (allTypes.isEmpty())
         {
@@ -94,18 +90,6 @@ class AttributeDefinition
         else
         {
             return typesByElement.get("*");
-        }
-    }
-
-    public DTD getDTD(String elementName)
-    {
-        if (dtdsByElement.containsKey(elementName))
-        {
-            return dtdsByElement.get(elementName);
-        }
-        else
-        {
-            return dtdsByElement.get("*");
         }
     }
 }

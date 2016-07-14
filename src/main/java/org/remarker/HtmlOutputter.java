@@ -1,58 +1,32 @@
 package org.remarker;
 
-import org.remarker.ElementDefinition.DTD;
-
-import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
 
 import static org.remarker.AttributeDefinition.Type.BOOLEAN;
-import static org.remarker.ElementDefinition.DTD.FRAMESET;
-import static org.remarker.ElementDefinition.DTD.LOOSE;
 import static org.remarker.SpecificationParser.ATTRIBUTES;
 import static org.remarker.SpecificationParser.ELEMENTS;
 
-public class HtmlOutputter
+public final class HtmlOutputter<X extends Exception>
 {
-    private final Writer writer;
-    private final DTD dtd;
+    @FunctionalInterface
+    public interface BufferConsumer<X extends Exception>
+    {
+        void accept(char[] buffer, int offset, int length) throws X;
+    }
+
+    private final BufferConsumer<X> consumer;
+    private boolean nothingWritten = true;
     private boolean atStartOfLine = true;
     private int indentLevel = 0;
     private char[] buffer = new char[8192];
     private int index = 0;
 
-    public HtmlOutputter(Writer writer)
+    public HtmlOutputter(BufferConsumer<X> consumer) throws X
     {
-        this(writer, LOOSE);
+        this.consumer = consumer;
     }
 
-    public HtmlOutputter(Writer writer, DTD dtd)
-    {
-        this.writer = writer;
-        this.dtd = dtd;
-    }
-
-    public HtmlOutputter(Writer writer, DTD dtd, boolean outputDoctype) throws IOException
-    {
-        this(writer, dtd);
-        if (outputDoctype)
-        {
-            append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01");
-            if (dtd == LOOSE)
-            {
-                append(" Transitional");
-            }
-            else if (dtd == FRAMESET)
-            {
-                append(" Frameset");
-            }
-            append("//EN\" \"http://www.w3.org/TR/html4/");
-            append(dtd.name().toLowerCase());
-            append(".dtd\">\r\n");
-        }
-    }
-
-    public void output(Object... contents) throws IOException
+    public void output(Object... contents) throws X
     {
         for (Content content : Html.asHtml(contents))
         {
@@ -61,7 +35,7 @@ public class HtmlOutputter
         flush();
     }
 
-    private void dispatch(Content content) throws IOException
+    private void dispatch(Content content) throws X
     {
         if (content instanceof Element)
         {
@@ -73,13 +47,16 @@ public class HtmlOutputter
         }
     }
 
-    private void element(Element element) throws IOException
+    private void element(Element element) throws X
     {
         ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
-        if (elementDefinition == null || elementDefinition.dtd.compareTo(this.dtd) > 0)
+        if (elementDefinition == null)
         {
-            throw new IllegalArgumentException("The '" + element.getName() + "' element is not allowed with the " +
-                    this.dtd.name().toLowerCase() + " DTD");
+            throw new IllegalArgumentException("The '" + element.getName() + "' element is not allowed");
+        }
+        if (element.getName().equals("html") && nothingWritten)
+        {
+            append("<!DOCTYPE HTML>\r\n");
         }
         boolean newLinesOutside = !elementDefinition.inline;
         boolean newLinesInside = !elementDefinition.inline && hasNonInlineContents(element.getContents());
@@ -154,23 +131,24 @@ public class HtmlOutputter
         return text.indexOf('\r') != -1 || text.indexOf('\n') != -1;
     }
 
-    private void text(Text text) throws IOException
+    private void text(Text text) throws X
     {
         escape(text.getValue(), false);
     }
 
-    private void attribute(Attribute attribute, ElementDefinition elementDefinition) throws IOException
+    private void attribute(Attribute attribute, ElementDefinition elementDefinition) throws X
     {
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
-        DTD attributeDTD = attributeDefinition == null ? null : attributeDefinition.getDTD(elementDefinition.lowercase);
-        if ((attributeDTD == null || attributeDTD.compareTo(this.dtd) > 0) && !attribute.isExtended())
+        AttributeDefinition.Type attributeType =
+                attributeDefinition == null ? null : attributeDefinition.getType(elementDefinition.lowercase);
+        if (attributeType == null && !attribute.isExtended())
         {
             throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
-                    elementDefinition.lowercase + "' element with the " + this.dtd.name().toLowerCase() + " DTD");
+                    elementDefinition.lowercase + "' element");
         }
         raw(" ");
         raw(attribute.getName());
-        if (attributeDefinition == null || attributeDefinition.getType(elementDefinition.lowercase) != BOOLEAN)
+        if (attributeType != BOOLEAN)
         {
             raw("=\"");
             escape(attribute.getValue(), true);
@@ -178,7 +156,7 @@ public class HtmlOutputter
         }
     }
 
-    private void raw(String string) throws IOException
+    private void raw(String string) throws X
     {
         if (string.length() != 0)
         {
@@ -188,14 +166,14 @@ public class HtmlOutputter
         }
     }
 
-    private void raw(char character) throws IOException
+    private void raw(char character) throws X
     {
         writeIndent();
         append(character);
         atStartOfLine = false;
     }
 
-    private void writeIndent() throws IOException
+    private void writeIndent() throws X
     {
         if (atStartOfLine && indentLevel > 0)
         {
@@ -207,7 +185,7 @@ public class HtmlOutputter
         }
     }
 
-    private void newLine() throws IOException
+    private void newLine() throws X
     {
         if (!atStartOfLine)
         {
@@ -216,7 +194,7 @@ public class HtmlOutputter
         }
     }
 
-    private void append(String s) throws IOException
+    private void append(String s) throws X
     {
         int n = s.length();
         for (int i = 0; i < n; i++)
@@ -225,8 +203,9 @@ public class HtmlOutputter
         }
     }
 
-    private void append(char c) throws IOException
+    private void append(char c) throws X
     {
+        nothingWritten = false;
         buffer[index++] = c;
         if (index == buffer.length)
         {
@@ -234,16 +213,16 @@ public class HtmlOutputter
         }
     }
 
-    private void flush() throws IOException
+    private void flush() throws X
     {
         if (index > 0)
         {
-            writer.write(buffer, 0, index);
+            consumer.accept(buffer, 0, index);
             index = 0;
         }
     }
 
-    private void escape(String string, boolean inAttributeValue) throws IOException
+    private void escape(String string, boolean inAttributeValue) throws X
     {
         int n = string.length();
         for (int i = 0; i < n; i++)
@@ -304,7 +283,7 @@ public class HtmlOutputter
         }
     }
 
-    private void numericCharacterReference(int c) throws IOException
+    private void numericCharacterReference(int c) throws X
     {
         raw("&#");
         raw(Integer.toString(c));

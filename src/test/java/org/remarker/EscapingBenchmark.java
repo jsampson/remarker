@@ -4,7 +4,7 @@ import java.io.*;
 
 public class EscapingBenchmark
 {
-    public static void main(String[] args) throws Exception
+    public static void main(String[] args)
     {
         int n = 10000;
         int r = 100;
@@ -21,7 +21,7 @@ public class EscapingBenchmark
         for (int i = 0; i < r; i++)
         {
             StringWriter writer = new StringWriter();
-            HtmlOutputter outputter = new HtmlOutputter(writer);
+            HtmlOutputter<RuntimeException> outputter = new HtmlOutputter<>(writer::write);
             long start = System.nanoTime();
             outputter.output(inputString);
             long end = System.nanoTime();

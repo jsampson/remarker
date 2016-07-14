@@ -62,24 +62,12 @@ public class HtmlTest extends TestCase
 
     public void testElementContentError()
     {
-        try
-        {
-            P(Pattern.compile("[abc]"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("java.util.regex.Pattern", expected.getMessage());
-        }
-        try
-        {
-            P((Object) new int[] { 1, 2, 3 });
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("int[]", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "java.util.regex.Pattern",
+                () -> P(Pattern.compile("[abc]")));
+        assertThrowsIllegalArgumentException(
+                "int[]",
+                () -> P((Object) new int[] { 1, 2, 3 }));
     }
 
     public void testBooleanAttribute() throws Exception
@@ -89,15 +77,9 @@ public class HtmlTest extends TestCase
         checkHtml(INPUT(Checked((Boolean) null)), "<input />");
         checkHtml(INPUT(Checked("checked")), "<input checked=\"checked\" />");
         checkHtml(INPUT(Checked((String) null)), "<input />");
-        try
-        {
-            INPUT(Checked("foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'checked' attribute must be boolean for the 'input' element; got \"foo\"", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'checked' attribute must be boolean for the 'input' element; got \"foo\"",
+                () -> INPUT(Checked("foo")));
     }
 
     public void testNumberAttribute() throws Exception
@@ -108,66 +90,35 @@ public class HtmlTest extends TestCase
         checkHtml(TD(Colspan("42")), "<td colspan=\"42\" />");
         checkHtml(TD(Colspan("-17")), "<td colspan=\"-17\" />");
         checkHtml(TD(Colspan((String) null)), "<td />");
-        try
-        {
-            TD(Colspan("foo"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'colspan' attribute must be a number for the 'td' element; got \"foo\"", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'colspan' attribute must be a number for the 'td' element; got \"foo\"",
+                () -> TD(Colspan("foo")));
     }
 
     public void testAllowedAttributes() throws Exception
     {
         // "action" is allowed only for "form"
         checkHtml(FORM(Action("...")), "<form action=\"...\" />");
-        try
-        {
-            BODY(Action("..."));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'action' attribute is not allowed for the 'body' element", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'action' attribute is not allowed for the 'body' element",
+                () -> BODY(Action("...")));
         // "onclick" is allowed for *all elements but* a certain list
         checkHtml(BODY(Onclick("...")), "<body onclick=\"...\" />");
-        try
-        {
-            HEAD(Onclick("..."));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'onclick' attribute is not allowed for the 'head' element", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'onclick' attribute is not allowed for the 'head' element",
+                () -> HEAD(Onclick("...")));
         // "cols" has a different type for "frameset" than for "textarea"
-        checkHtml(FRAMESET(Cols("1,2,3")), "<frameset cols=\"1,2,3\" />");
         checkHtml(TEXTAREA(Cols("123")), "<textarea cols=\"123\" />");
-        try
-        {
-            TEXTAREA(Cols("1,2,3"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'cols' attribute must be a number for the 'textarea' element; got \"1,2,3\"", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'cols' attribute must be a number for the 'textarea' element; got \"1,2,3\"",
+                () -> TEXTAREA(Cols("1,2,3")));
     }
 
     public void testBogusAttribute() throws Exception
     {
-        try
-        {
-            P(new Attribute("foo", "bar"));
-            fail();
-        }
-        catch (IllegalArgumentException expected)
-        {
-            assertEquals("The 'foo' attribute is not allowed for the 'p' element", expected.getMessage());
-        }
+        assertThrowsIllegalArgumentException(
+                "The 'foo' attribute is not allowed for the 'p' element",
+                () -> P(new Attribute("foo", "bar")));
     }
 
     private void checkHtml(Element html, String expected)
@@ -203,6 +154,19 @@ public class HtmlTest extends TestCase
                 }
             }
             builder.append("</").append(element.getName()).append(">");
+        }
+    }
+
+    static void assertThrowsIllegalArgumentException(String expectedMessage, Runnable runnable)
+    {
+        try
+        {
+            runnable.run();
+            fail();
+        }
+        catch (IllegalArgumentException actual)
+        {
+            assertEquals(expectedMessage, actual.getMessage());
         }
     }
 }
