@@ -138,7 +138,7 @@ public class SpecificationParser
 
     private static NodeList load(String filename, String xpath) throws Exception
     {
-        try (InputStream in = SpecificationParser.class.getResourceAsStream("/com/krasama/remarker/" + filename))
+        try (InputStream in = SpecificationParser.class.getResourceAsStream("/org/remarker/" + filename))
         {
             return (NodeList) XPathFactory.newInstance().newXPath().evaluate(xpath, new InputSource(in), NODESET);
         }
