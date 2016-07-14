@@ -224,7 +224,7 @@ public final class Ic
         }
         else
         {
-            return new Attribute(name, value);
+            return new Attribute(name, value, true);
         }
     }
 }
