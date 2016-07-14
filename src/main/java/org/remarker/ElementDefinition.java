@@ -22,12 +22,12 @@ class ElementDefinition
         this.dtd = dtd;
     }
 
-    public String javaName()
+    private String javaName()
     {
         return uppercase;
     }
 
-    public String xmlName()
+    private String xmlName()
     {
         return lowercase;
     }

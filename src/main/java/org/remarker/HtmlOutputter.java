@@ -16,7 +16,6 @@ public class HtmlOutputter
 {
     private final Writer writer;
     private final DTD dtd;
-    private boolean allowIcAttributes = false;
     private boolean atStartOfLine = true;
     private int indentLevel = 0;
     private char[] buffer = new char[8192];
@@ -51,12 +50,6 @@ public class HtmlOutputter
             append(dtd.name().toLowerCase());
             append(".dtd\">\r\n");
         }
-    }
-
-    public HtmlOutputter allowIcAttributes()
-    {
-        allowIcAttributes = true;
-        return this;
     }
 
     public void output(Object... contents) throws IOException
@@ -170,8 +163,7 @@ public class HtmlOutputter
     {
         AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
         DTD attributeDTD = attributeDefinition == null ? null : attributeDefinition.getDTD(elementDefinition.lowercase);
-        if ((attributeDTD == null || attributeDTD.compareTo(this.dtd) > 0)
-                && !(allowIcAttributes && attribute.getName().startsWith("ic-")))
+        if ((attributeDTD == null || attributeDTD.compareTo(this.dtd) > 0) && !attribute.isExtended())
         {
             throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
                     elementDefinition.lowercase + "' element with the " + this.dtd.name().toLowerCase() + " DTD");
