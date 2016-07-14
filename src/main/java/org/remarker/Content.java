@@ -6,4 +6,6 @@ public abstract class Content
     {
         // to prevent extension outside of package
     }
+
+    abstract void appendTextTo(StringBuilder builder);
 }

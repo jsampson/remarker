@@ -13,4 +13,10 @@ public final class Text extends Content
     {
         return value;
     }
+
+    @Override
+    void appendTextTo(StringBuilder builder)
+    {
+        builder.append(value);
+    }
 }
