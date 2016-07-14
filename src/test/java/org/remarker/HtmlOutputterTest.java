@@ -93,11 +93,11 @@ public class HtmlOutputterTest extends TestCase
         // CENTER is not allowed in the strict DTD
         assertThrowsIllegalArgumentException(
                 "The 'center' element is not allowed",
-                () -> strict.output(CENTER("foo")));
+                () -> strict.output(new Element("center")));
         // FRAME is only allowed in the frameset DTD
         assertThrowsIllegalArgumentException(
                 "The 'frame' element is not allowed",
-                () -> strict.output(FRAME("foo")));
+                () -> strict.output(new Element("frame")));
         // don't throw a NullPointerException if the element isn't found at all
         assertThrowsIllegalArgumentException(
                 "The 'foo' element is not allowed",

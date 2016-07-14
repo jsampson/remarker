@@ -213,11 +213,6 @@ public final class Html
         return element("address", contents);
     }
 
-    public static Element APPLET(Object... contents)
-    {
-        return element("applet", contents);
-    }
-
     public static Element AREA(Object... contents)
     {
         return element("area", contents);
@@ -231,11 +226,6 @@ public final class Html
     public static Element BASE(Object... contents)
     {
         return element("base", contents);
-    }
-
-    public static Element BASEFONT(Object... contents)
-    {
-        return element("basefont", contents);
     }
 
     public static Element BDO(Object... contents)
@@ -273,11 +263,6 @@ public final class Html
         return element("caption", contents);
     }
 
-    public static Element CENTER(Object... contents)
-    {
-        return element("center", contents);
-    }
-
     public static Element CITE(Object... contents)
     {
         return element("cite", contents);
@@ -313,11 +298,6 @@ public final class Html
         return element("dfn", contents);
     }
 
-    public static Element DIR(Object... contents)
-    {
-        return element("dir", contents);
-    }
-
     public static Element DIV(Object... contents)
     {
         return element("div", contents);
@@ -343,24 +323,9 @@ public final class Html
         return element("fieldset", contents);
     }
 
-    public static Element FONT(Object... contents)
-    {
-        return element("font", contents);
-    }
-
     public static Element FORM(Object... contents)
     {
         return element("form", contents);
-    }
-
-    public static Element FRAME(Object... contents)
-    {
-        return element("frame", contents);
-    }
-
-    public static Element FRAMESET(Object... contents)
-    {
-        return element("frameset", contents);
     }
 
     public static Element H1(Object... contents)
@@ -413,11 +378,6 @@ public final class Html
         return element("i", contents);
     }
 
-    public static Element IFRAME(Object... contents)
-    {
-        return element("iframe", contents);
-    }
-
     public static Element IMG(Object... contents)
     {
         return element("img", contents);
@@ -431,11 +391,6 @@ public final class Html
     public static Element INS(Object... contents)
     {
         return element("ins", contents);
-    }
-
-    public static Element ISINDEX(Object... contents)
-    {
-        return element("isindex", contents);
     }
 
     public static Element KBD(Object... contents)
@@ -468,19 +423,9 @@ public final class Html
         return element("map", contents);
     }
 
-    public static Element MENU(Object... contents)
-    {
-        return element("menu", contents);
-    }
-
     public static Element META(Object... contents)
     {
         return element("meta", contents);
-    }
-
-    public static Element NOFRAMES(Object... contents)
-    {
-        return element("noframes", contents);
     }
 
     public static Element NOSCRIPT(Object... contents)
@@ -528,11 +473,6 @@ public final class Html
         return element("q", contents);
     }
 
-    public static Element S(Object... contents)
-    {
-        return element("s", contents);
-    }
-
     public static Element SAMP(Object... contents)
     {
         return element("samp", contents);
@@ -556,11 +496,6 @@ public final class Html
     public static Element SPAN(Object... contents)
     {
         return element("span", contents);
-    }
-
-    public static Element STRIKE(Object... contents)
-    {
-        return element("strike", contents);
     }
 
     public static Element STRONG(Object... contents)
@@ -633,11 +568,6 @@ public final class Html
         return element("tt", contents);
     }
 
-    public static Element U(Object... contents)
-    {
-        return element("u", contents);
-    }
-
     public static Element UL(Object... contents)
     {
         return element("ul", contents);
@@ -678,11 +608,6 @@ public final class Html
         return attribute("align", value);
     }
 
-    public static Attribute Alink(String value)
-    {
-        return attribute("alink", value);
-    }
-
     public static Attribute Alt(String value)
     {
         return attribute("alt", value);
@@ -696,16 +621,6 @@ public final class Html
     public static Attribute Axis(String value)
     {
         return attribute("axis", value);
-    }
-
-    public static Attribute Background(String value)
-    {
-        return attribute("background", value);
-    }
-
-    public static Attribute Bgcolor(String value)
-    {
-        return attribute("bgcolor", value);
     }
 
     public static Attribute Border(String value)
@@ -763,16 +678,6 @@ public final class Html
         return attribute("classid", value);
     }
 
-    public static Attribute Clear(String value)
-    {
-        return attribute("clear", value);
-    }
-
-    public static Attribute Code(String value)
-    {
-        return attribute("code", value);
-    }
-
     public static Attribute Codebase(String value)
     {
         return attribute("codebase", value);
@@ -781,11 +686,6 @@ public final class Html
     public static Attribute Codetype(String value)
     {
         return attribute("codetype", value);
-    }
-
-    public static Attribute Color(String value)
-    {
-        return attribute("color", value);
     }
 
     public static Attribute Cols(String value)
@@ -806,16 +706,6 @@ public final class Html
     public static Attribute Colspan(Integer value)
     {
         return attribute("colspan", value);
-    }
-
-    public static Attribute Compact(String value)
-    {
-        return attribute("compact", value);
-    }
-
-    public static Attribute Compact(Boolean value)
-    {
-        return attribute("compact", value);
     }
 
     public static Attribute Content(String value)
@@ -878,11 +768,6 @@ public final class Html
         return attribute("enctype", value);
     }
 
-    public static Attribute Face(String value)
-    {
-        return attribute("face", value);
-    }
-
     public static Attribute For(String value)
     {
         return attribute("for", value);
@@ -891,11 +776,6 @@ public final class Html
     public static Attribute Frame(String value)
     {
         return attribute("frame", value);
-    }
-
-    public static Attribute Frameborder(String value)
-    {
-        return attribute("frameborder", value);
     }
 
     public static Attribute Headers(String value)
@@ -916,11 +796,6 @@ public final class Html
     public static Attribute Hreflang(String value)
     {
         return attribute("hreflang", value);
-    }
-
-    public static Attribute Hspace(String value)
-    {
-        return attribute("hspace", value);
     }
 
     public static Attribute HttpEquiv(String value)
@@ -953,29 +828,9 @@ public final class Html
         return attribute("lang", value);
     }
 
-    public static Attribute Language(String value)
-    {
-        return attribute("language", value);
-    }
-
-    public static Attribute Link(String value)
-    {
-        return attribute("link", value);
-    }
-
     public static Attribute Longdesc(String value)
     {
         return attribute("longdesc", value);
-    }
-
-    public static Attribute Marginheight(String value)
-    {
-        return attribute("marginheight", value);
-    }
-
-    public static Attribute Marginwidth(String value)
-    {
-        return attribute("marginwidth", value);
     }
 
     public static Attribute Maxlength(String value)
@@ -1021,41 +876,6 @@ public final class Html
     public static Attribute Nohref(Boolean value)
     {
         return attribute("nohref", value);
-    }
-
-    public static Attribute Noresize(String value)
-    {
-        return attribute("noresize", value);
-    }
-
-    public static Attribute Noresize(Boolean value)
-    {
-        return attribute("noresize", value);
-    }
-
-    public static Attribute Noshade(String value)
-    {
-        return attribute("noshade", value);
-    }
-
-    public static Attribute Noshade(Boolean value)
-    {
-        return attribute("noshade", value);
-    }
-
-    public static Attribute Nowrap(String value)
-    {
-        return attribute("nowrap", value);
-    }
-
-    public static Attribute Nowrap(Boolean value)
-    {
-        return attribute("nowrap", value);
-    }
-
-    public static Attribute Object(String value)
-    {
-        return attribute("object", value);
     }
 
     public static Attribute Onblur(String value)
@@ -1153,11 +973,6 @@ public final class Html
         return attribute("profile", value);
     }
 
-    public static Attribute Prompt(String value)
-    {
-        return attribute("prompt", value);
-    }
-
     public static Attribute Readonly(String value)
     {
         return attribute("readonly", value);
@@ -1213,11 +1028,6 @@ public final class Html
         return attribute("scope", value);
     }
 
-    public static Attribute Scrolling(String value)
-    {
-        return attribute("scrolling", value);
-    }
-
     public static Attribute Selected(String value)
     {
         return attribute("selected", value);
@@ -1263,16 +1073,6 @@ public final class Html
         return attribute("standby", value);
     }
 
-    public static Attribute Start(String value)
-    {
-        return attribute("start", value);
-    }
-
-    public static Attribute Start(Integer value)
-    {
-        return attribute("start", value);
-    }
-
     public static Attribute Style(String value)
     {
         return attribute("style", value);
@@ -1291,16 +1091,6 @@ public final class Html
     public static Attribute Tabindex(Integer value)
     {
         return attribute("tabindex", value);
-    }
-
-    public static Attribute Target(String value)
-    {
-        return attribute("target", value);
-    }
-
-    public static Attribute Text(String value)
-    {
-        return attribute("text", value);
     }
 
     public static Attribute Title(String value)
@@ -1328,37 +1118,12 @@ public final class Html
         return attribute("value", value);
     }
 
-    public static Attribute Value(Integer value)
-    {
-        return attribute("value", value);
-    }
-
     public static Attribute Valuetype(String value)
     {
         return attribute("valuetype", value);
     }
 
-    public static Attribute Version(String value)
-    {
-        return attribute("version", value);
-    }
-
-    public static Attribute Vlink(String value)
-    {
-        return attribute("vlink", value);
-    }
-
-    public static Attribute Vspace(String value)
-    {
-        return attribute("vspace", value);
-    }
-
     public static Attribute Width(String value)
-    {
-        return attribute("width", value);
-    }
-
-    public static Attribute Width(Integer value)
     {
         return attribute("width", value);
     }
