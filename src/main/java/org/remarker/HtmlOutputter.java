@@ -22,7 +22,7 @@ public final class HtmlOutputter<X extends Exception>
     private char[] buffer = new char[8192];
     private int index = 0;
 
-    public HtmlOutputter(BufferConsumer<X> consumer) throws X
+    public HtmlOutputter(BufferConsumer<X> consumer)
     {
         this.consumer = consumer;
     }
