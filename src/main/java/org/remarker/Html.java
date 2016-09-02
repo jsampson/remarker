@@ -1,9 +1,13 @@
 package org.remarker;
 
-import static org.remarker.AttributeDefinition.Type.*;
-
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import static org.remarker.AttributeDefinition.Type.BOOLEAN;
+import static org.remarker.AttributeDefinition.Type.NUMBER;
 
 @SuppressWarnings("unused")
 public final class Html
@@ -90,6 +94,10 @@ public final class Html
         else if (content instanceof Optional)
         {
             ((Optional<?>) content).ifPresent(value -> addContent(element, value));
+        }
+        else if (content instanceof Stream)
+        {
+            ((Stream<?>) content).forEach(value -> addContent(element, value));
         }
         else if (content instanceof Supplier)
         {
