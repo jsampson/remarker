@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.remarker.Html.*;
@@ -42,6 +43,16 @@ public class HtmlTest extends TestCase
     public void testOptionalPresent()
     {
         checkHtml(P("x", Optional.of("y"), "z"), "<p>xyz</p>");
+    }
+
+    public void testEmptyStream()
+    {
+        checkHtml(P("x", Stream.empty(), "z"), "<p>xz</p>");
+    }
+
+    public void testNonEmptyStream()
+    {
+        checkHtml(P("x", Stream.of("a", "b", "c"), "z"), "<p>xabcz</p>");
     }
 
     public void testSupplier()
