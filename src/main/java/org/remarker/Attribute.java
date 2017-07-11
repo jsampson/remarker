@@ -1,21 +1,18 @@
 package org.remarker;
 
+import static java.util.Objects.requireNonNull;
+
 public final class Attribute
 {
     private final String name;
     private final String value;
-    private final boolean extended;
+    private final AttributeTypeFunction typeFunction;
 
-    Attribute(String name, String value)
+    Attribute(String name, String value, AttributeTypeFunction typeFunction)
     {
-        this(name, value, false);
-    }
-
-    Attribute(String name, String value, boolean extended)
-    {
-        this.name = name;
-        this.value = value;
-        this.extended = extended;
+        this.name = requireNonNull(name);
+        this.value = requireNonNull(value);
+        this.typeFunction = requireNonNull(typeFunction);
     }
 
     public String getName()
@@ -28,8 +25,8 @@ public final class Attribute
         return value;
     }
 
-    boolean isExtended()
+    AttributeDefinition.Type getType(ElementDefinition elementDefinition)
     {
-        return extended;
+        return typeFunction.getType(elementDefinition.lowercase);
     }
 }

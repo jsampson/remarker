@@ -12,7 +12,6 @@ class AttributeDefinition
     final String name;
     final Map<String, Type> typesByElement;
     final Set<Type> allTypes;
-    final Type loosestType;
 
     AttributeDefinition(String name, Map<String, Type> typesByElement)
     {
@@ -26,18 +25,6 @@ class AttributeDefinition
         if (allTypes.contains(Type.BOOLEAN) && allTypes.size() != 1)
         {
             throw new IllegalArgumentException("Boolean attributes are always only boolean");
-        }
-        if (allTypes.contains(Type.STRING))
-        {
-            this.loosestType = Type.STRING;
-        }
-        else if (allTypes.contains(Type.NUMBER))
-        {
-            this.loosestType = Type.NUMBER;
-        }
-        else
-        {
-            this.loosestType = Type.BOOLEAN;
         }
     }
 

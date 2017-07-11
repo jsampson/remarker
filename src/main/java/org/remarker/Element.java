@@ -6,24 +6,30 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 public final class Element extends Content
 {
-    private final String name;
+    private final ElementDefinition definition;
     private final List<Content> contents;
     private final Map<String, Attribute> attributes;
 
-    Element(String name)
+    Element(ElementDefinition definition)
     {
-        this.name = name;
+        this.definition = requireNonNull(definition);
         this.contents = new ArrayList<>();
         this.attributes = new LinkedHashMap<>();
     }
 
+    ElementDefinition getDefinition()
+    {
+        return definition;
+    }
+
     public String getName()
     {
-        return name;
+        return definition.lowercase;
     }
 
     public List<Content> getContents()
@@ -66,7 +72,8 @@ public final class Element extends Content
                     String attributeName = partMatcher.group(2);
                     String expectedValue = partMatcher.group(3);
 
-                    elements = elements.flatMap(Element::childStream).filter(element -> childName.equals(element.name));
+                    elements = elements.flatMap(Element::childStream)
+                            .filter(element -> childName.equals(element.getName()));
 
                     if (attributeName != null)
                     {

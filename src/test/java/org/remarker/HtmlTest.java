@@ -129,7 +129,7 @@ public class HtmlTest extends TestCase
     {
         assertThrowsIllegalArgumentException(
                 "The 'foo' attribute is not allowed for the 'p' element",
-                () -> P(new Attribute("foo", "bar")));
+                () -> P(new Attribute("foo", "bar", elementName -> null)));
     }
 
     private void checkHtml(Element html, String expected)
