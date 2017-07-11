@@ -3,8 +3,6 @@ package org.remarker;
 import java.util.List;
 
 import static org.remarker.AttributeDefinition.Type.BOOLEAN;
-import static org.remarker.SpecificationParser.ATTRIBUTES;
-import static org.remarker.SpecificationParser.ELEMENTS;
 
 public final class HtmlOutputter<X extends Exception>
 {
@@ -29,18 +27,31 @@ public final class HtmlOutputter<X extends Exception>
 
     public void output(Object... contents) throws X
     {
-        for (Content content : Html.asHtml(contents))
+        dispatch(Html.asHtml(contents).getContents());
+        flush();
+    }
+
+    private void dispatch(Iterable<Content> contents) throws X
+    {
+        for (Content content : contents)
         {
             dispatch(content);
         }
-        flush();
     }
 
     private void dispatch(Content content) throws X
     {
         if (content instanceof Element)
         {
-            element((Element) content);
+            Element element = (Element) content;
+            if (element.getDefinition() == Html.DUMMY)
+            {
+                dispatch(element.getContents());
+            }
+            else
+            {
+                element(element);
+            }
         }
         else
         {
@@ -50,11 +61,7 @@ public final class HtmlOutputter<X extends Exception>
 
     private void element(Element element) throws X
     {
-        ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
-        if (elementDefinition == null)
-        {
-            throw new IllegalArgumentException("The '" + element.getName() + "' element is not allowed");
-        }
+        ElementDefinition elementDefinition = element.getDefinition();
         if (element.getName().equals("html") && nothingWritten)
         {
             append("<!DOCTYPE HTML>\r\n");
@@ -118,8 +125,7 @@ public final class HtmlOutputter<X extends Exception>
             if (child instanceof Element)
             {
                 Element element = (Element) child;
-                ElementDefinition elementDefinition = ELEMENTS.get(element.getName());
-                if (!elementDefinition.inline || hasNonInlineContents(element.getContents()))
+                if (!element.getDefinition().inline || hasNonInlineContents(element.getContents()))
                 {
                     return true;
                 }
@@ -148,14 +154,7 @@ public final class HtmlOutputter<X extends Exception>
 
     private void attribute(Attribute attribute, ElementDefinition elementDefinition) throws X
     {
-        AttributeDefinition attributeDefinition = ATTRIBUTES.get(attribute.getName());
-        AttributeDefinition.Type attributeType =
-                attributeDefinition == null ? null : attributeDefinition.getType(elementDefinition.lowercase);
-        if (attributeType == null && !attribute.isExtended())
-        {
-            throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
-                    elementDefinition.lowercase + "' element");
-        }
+        AttributeDefinition.Type attributeType = attribute.getType(elementDefinition);
         raw(" ");
         raw(attribute.getName());
         if (attributeType != BOOLEAN)

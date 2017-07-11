@@ -1,7 +1,6 @@
 package org.remarker;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -17,21 +16,26 @@ public final class Html
         // to prevent instantiation
     }
 
-    public static List<Content> asHtml(Object... contents)
+    static final ElementDefinition DUMMY = new ElementDefinition("_", true, false);
+
+    public static Element noHtml()
     {
-        Element dummy = element("_", contents);
-        if (!dummy.getAttributes().isEmpty())
-        {
-            Attribute firstAttribute = dummy.getAttributes().iterator().next();
-            throw new IllegalArgumentException(
-                    "Attribute '" + firstAttribute.getName() + "' must be contained in an element");
-        }
-        return dummy.getContents();
+        return asHtml();
+    }
+
+    public static Element asHtml(Object... contents)
+    {
+        return element(DUMMY, contents);
     }
 
     private static Element element(String name, Object[] contents)
     {
-        Element element = new Element(name);
+        return element(SpecificationParser.ELEMENTS.get(name), contents);
+    }
+
+    static Element element(ElementDefinition definition, Object[] contents)
+    {
+        Element element = new Element(definition);
         addContents(element, contents);
         return element;
     }
@@ -116,9 +120,13 @@ public final class Html
 
     private static void validateAttribute(Element element, Attribute attribute)
     {
-        AttributeDefinition definition = SpecificationParser.ATTRIBUTES.get(attribute.getName());
-        AttributeDefinition.Type type = definition == null ? null : definition.getType(element.getName());
-        if (type == null && !attribute.isExtended())
+        AttributeDefinition.Type type = attribute.getType(element.getDefinition());
+        if (element.getDefinition() == DUMMY)
+        {
+            throw new IllegalArgumentException(
+                    "Attribute '" + attribute.getName() + "' must be contained in an element");
+        }
+        else if (type == null)
         {
             throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
                     element.getName() + "' element");
@@ -171,23 +179,21 @@ public final class Html
         }
         else
         {
-            return new Attribute(name, value);
+            return new Attribute(name, value, SpecificationParser.ATTRIBUTES.get(name)::getType);
         }
     }
 
     private static Attribute attribute(String name, Boolean value)
     {
-        if (Boolean.TRUE.equals(value))
-        {
-            return new Attribute(name, name);
-        }
-        else
-        {
-            return null;
-        }
+        return attribute(name, Boolean.TRUE.equals(value) ? name : null);
     }
 
     private static Attribute attribute(String name, Integer value)
+    {
+        return attribute(name, value == null ? null : value.toString());
+    }
+
+    static Attribute extendedAttribute(String name, String value)
     {
         if (value == null)
         {
@@ -195,7 +201,19 @@ public final class Html
         }
         else
         {
-            return new Attribute(name, value.toString());
+            return new Attribute(name, value, AttributeTypeFunction.STRING);
+        }
+    }
+
+    static Attribute extendedAttribute(String name, Boolean value)
+    {
+        if (Boolean.TRUE.equals(value))
+        {
+            return new Attribute(name, name, AttributeTypeFunction.BOOLEAN);
+        }
+        else
+        {
+            return null;
         }
     }
 
