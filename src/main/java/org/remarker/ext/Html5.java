@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.ext;
+
+import org.remarker.dom.Attribute;
+import org.remarker.dom.Element;
 
 /**
  * @see <a href="https://www.w3.org/TR/html5-diff/">HTML5 Differences from HTML4</a>
@@ -27,11 +30,9 @@ public final class Html5
         // to prevent instantiation
     }
 
-    private static final ElementDefinition TEMPLATE = new ElementDefinition("template", false, false);
-
     public static Element TEMPLATE(Object... contents)
     {
-        return new Element(TEMPLATE, contents);
+        return new Element("TEMPLATE", false, false, contents);
     }
 
     public static Attribute Autofocus(Boolean value)

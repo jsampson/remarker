@@ -16,19 +16,18 @@
 
 package org.remarker;
 
-import static java.util.Arrays.*;
-import static javax.xml.xpath.XPathConstants.NODESET;
-import static org.remarker.AttributeDefinition.Type.*;
-
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 import javax.xml.xpath.*;
-
-import org.remarker.AttributeDefinition.*;
+import org.remarker.dom.AttributeType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import static java.util.Arrays.*;
+import static javax.xml.xpath.XPathConstants.NODESET;
+import static org.remarker.dom.AttributeType.*;
 
 final class SpecificationParser
 {
@@ -126,8 +125,8 @@ final class SpecificationParser
             {
                 continue;
             }
-            Type type = typeCode.equals("(" + name + ")") ? BOOLEAN : typeCode.equals("NUMBER") ? NUMBER : STRING;
-            Map<String, Type> typesByElement = new HashMap<>();
+            AttributeType type = typeCode.equals("(" + name + ")") ? BOOLEAN : typeCode.equals("NUMBER") ? NUMBER : STRING;
+            Map<String, AttributeType> typesByElement = new HashMap<>();
             if (attributes.containsKey(name))
             {
                 AttributeDefinition oldDefinition = attributes.get(name);
@@ -184,12 +183,12 @@ final class SpecificationParser
         return !dtd.equals("L") && !dtd.equals("F");
     }
 
-    private static void putType(Matcher elementNamesMatcher, Map<String, Type> typesByElement, Type type)
+    private static void putType(Matcher elementNamesMatcher, Map<String, AttributeType> typesByElement, AttributeType type)
     {
         String[] elementNames = getElementNames(elementNamesMatcher);
         for (String elementName : elementNames)
         {
-            String elementNameInterned = elementName.toLowerCase().intern();
+            String elementNameInterned = elementName.toUpperCase().intern();
             typesByElement.put(elementNameInterned, type);
         }
     }

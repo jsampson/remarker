@@ -17,19 +17,15 @@
 package org.remarker;
 
 import java.util.*;
+import org.remarker.dom.AttributeType;
 
 class AttributeDefinition
 {
-    enum Type
-    {
-        STRING, BOOLEAN, NUMBER
-    }
-
     final String name;
-    final Map<String, Type> typesByElement;
-    final Set<Type> allTypes;
+    final Map<String, AttributeType> typesByElement;
+    final Set<AttributeType> allTypes;
 
-    AttributeDefinition(String name, Map<String, Type> typesByElement)
+    AttributeDefinition(String name, Map<String, AttributeType> typesByElement)
     {
         this.name = name.toLowerCase().intern();
         this.typesByElement = Collections.unmodifiableMap(new HashMap<>(typesByElement));
@@ -38,7 +34,7 @@ class AttributeDefinition
         {
             throw new IllegalArgumentException("Impossible! Attribute must have at least one type");
         }
-        if (allTypes.contains(Type.BOOLEAN) && allTypes.size() != 1)
+        if (allTypes.contains(AttributeType.BOOLEAN) && allTypes.size() != 1)
         {
             throw new IllegalArgumentException("Boolean attributes are always only boolean");
         }
@@ -64,12 +60,12 @@ class AttributeDefinition
     void generateCode()
     {
         generateMethod("String");
-        if (allTypes.contains(Type.BOOLEAN))
+        if (allTypes.contains(AttributeType.BOOLEAN))
         {
             System.out.println();
             generateMethod("Boolean");
         }
-        if (allTypes.contains(Type.NUMBER))
+        if (allTypes.contains(AttributeType.NUMBER))
         {
             System.out.println();
             generateMethod("Integer");
@@ -84,7 +80,7 @@ class AttributeDefinition
         System.out.println("    }");
     }
 
-    Type getType(String elementName)
+    AttributeType getType(String elementName)
     {
         if (typesByElement.containsKey(elementName))
         {

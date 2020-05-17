@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.dom;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,22 +32,38 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.remarker.AttributeDefinition.Type.BOOLEAN;
-import static org.remarker.AttributeDefinition.Type.NUMBER;
+import static org.remarker.dom.AttributeType.BOOLEAN;
+import static org.remarker.dom.AttributeType.NUMBER;
 
 public final class Element extends Content
 {
-    private final ElementDefinition definition;
+    private static final Pattern NAME_PATTERN = Pattern.compile("[A-Z]+[0-9]?");
+
+    private final String name;
+    private final boolean inline;
+    private final boolean empty;
     private final List<Content> contents;
     private final Map<String, Attribute> attributes;
 
-    Element(ElementDefinition definition, Object... contents)
+    public Element(String name, boolean inline, boolean empty, Object... contents)
     {
-        this.definition = requireNonNull(definition);
+        if (name != null && !NAME_PATTERN.matcher(name).matches())
+        {
+            throw new IllegalArgumentException("Element name should be uppercase: " + name);
+        }
+
+        this.name = name;
+        this.inline = inline;
+        this.empty = empty;
         this.contents = new ArrayList<>();
         this.attributes = new LinkedHashMap<>();
 
         addContents(contents);
+
+        if (empty && !this.contents.isEmpty())
+        {
+            throw new IllegalArgumentException("Empty element must not have contents: " + name);
+        }
     }
 
     private void addContents(Object[] contents)
@@ -131,8 +147,8 @@ public final class Element extends Content
 
     private void validateAttribute(Attribute attribute)
     {
-        AttributeDefinition.Type type = attribute.getType(definition);
-        if (definition.isContainer())
+        AttributeType type = attribute.getType(name);
+        if (isFragment())
         {
             throw new IllegalArgumentException(
                     "Attribute '" + attribute.getName() + "' must be contained in an element");
@@ -182,14 +198,24 @@ public final class Element extends Content
         return true;
     }
 
-    ElementDefinition getDefinition()
+    public boolean isFragment()
     {
-        return definition;
+        return name == null;
+    }
+
+    public boolean isInline()
+    {
+        return inline;
+    }
+
+    public boolean isEmpty()
+    {
+        return empty;
     }
 
     public String getName()
     {
-        return definition.lowercase;
+        return name;
     }
 
     public List<Content> getContents()
@@ -223,12 +249,12 @@ public final class Element extends Content
                     String expectedValue = partMatcher.group(3);
 
                     elements = elements.flatMap(Element::childStream)
-                            .filter(element -> childName.equals(element.getName()));
+                            .filter(element -> childName.equalsIgnoreCase(element.getName()));
 
                     if (attributeName != null)
                     {
                         elements = elements.filter(element -> element.attributeStream().anyMatch(
-                                attribute -> attributeName.equals(attribute.getName())
+                                attribute -> attributeName.equalsIgnoreCase(attribute.getName())
                                         && expectedValue.equals(attribute.getValue())));
                     }
                     else if (expectedValue != null)
@@ -249,7 +275,7 @@ public final class Element extends Content
                 if (attributeName != null)
                 {
                     return unmodifiableList(elements.flatMap(Element::attributeStream).filter(attribute ->
-                            attributeName.equals(attribute.getName())).map(Attribute::getValue).collect(toList()));
+                            attributeName.equalsIgnoreCase(attribute.getName())).map(Attribute::getValue).collect(toList()));
                 }
                 else
                 {

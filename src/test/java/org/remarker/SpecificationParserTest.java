@@ -16,13 +16,11 @@
 
 package org.remarker;
 
-import static org.remarker.AttributeDefinition.Type.*;
-
 import java.util.*;
-
 import junit.framework.*;
+import org.remarker.dom.*;
 
-import org.remarker.AttributeDefinition.*;
+import static org.remarker.dom.AttributeType.*;
 
 public class SpecificationParserTest extends TestCase
 {
@@ -92,25 +90,25 @@ public class SpecificationParserTest extends TestCase
     {
         Map<String, AttributeDefinition> attributes = SpecificationParser.ATTRIBUTES;
         assertEquals(93, attributes.size());
-        checkAttribute(attributes, "abbr", new String[] { "td", "th" }, new Type[] { STRING, STRING });
-        checkAttribute(attributes, "border", new String[] { "table" }, new Type[] { STRING });
-        checkAttribute(attributes, "checked", new String[] { "input" }, new Type[] { BOOLEAN });
-        checkAttribute(attributes, "cols", new String[] { "textarea" }, new Type[] { NUMBER });
-        checkAttribute(attributes, "colspan", new String[] { "td", "th" }, new Type[] { NUMBER, NUMBER });
+        checkAttribute(attributes, "abbr", new String[] { "td", "th" }, new AttributeType[] { STRING, STRING });
+        checkAttribute(attributes, "border", new String[] { "table" }, new AttributeType[] { STRING });
+        checkAttribute(attributes, "checked", new String[] { "input" }, new AttributeType[] { BOOLEAN });
+        checkAttribute(attributes, "cols", new String[] { "textarea" }, new AttributeType[] { NUMBER });
+        checkAttribute(attributes, "colspan", new String[] { "td", "th" }, new AttributeType[] { NUMBER, NUMBER });
         checkAttribute(attributes, "class", new String[] { "*", "base", "basefont", "head", "html", "meta", "param", "script",
-                "style", "title" }, new Type[] { STRING });
+                "style", "title" }, new AttributeType[] { STRING });
         checkAttribute(attributes, "dir", new String[] { "*", "bdo", "applet", "base", "basefont", "br", "frame", "frameset",
-                "iframe", "param", "script" }, new Type[] { STRING, STRING });
+                "iframe", "param", "script" }, new AttributeType[] { STRING, STRING });
     }
 
-    private void checkAttribute(Map<String, AttributeDefinition> attributes, String name, String[] elements, Type[] types)
+    private void checkAttribute(Map<String, AttributeDefinition> attributes, String name, String[] elements, AttributeType[] types)
     {
         AttributeDefinition attribute = attributes.get(name);
         assertSame(name, attribute.name);
         assertEquals(elements.length, attribute.typesByElement.size());
         for (int i = 0; i < elements.length; i++)
         {
-            String element = elements[i];
+            String element = elements[i].toUpperCase();
             assertTrue(attribute.typesByElement.containsKey(element));
             if (i < types.length)
             {

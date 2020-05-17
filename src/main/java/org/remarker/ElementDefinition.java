@@ -18,8 +18,6 @@ package org.remarker;
 
 class ElementDefinition
 {
-    static final ElementDefinition CONTAINER = new ElementDefinition();
-
     final String lowercase;
     final String uppercase;
     final boolean inline;
@@ -33,25 +31,8 @@ class ElementDefinition
         this.empty = empty;
     }
 
-    private ElementDefinition()
-    {
-        this.lowercase = null;
-        this.uppercase = null;
-        this.inline = true;
-        this.empty = false;
-    }
-
-    boolean isContainer()
-    {
-        return lowercase == null;
-    }
-
     void generateCode()
     {
-        if (isContainer())
-        {
-            throw new IllegalStateException();
-        }
         System.out.println("    public static Element " + uppercase + "(Object... contents)");
         System.out.println("    {");
         System.out.println("        return element(\"" + lowercase + "\", contents);");

@@ -16,7 +16,7 @@
 
 package org.remarker;
 
-import static org.remarker.ElementDefinition.CONTAINER;
+import org.remarker.dom.*;
 
 @SuppressWarnings("unused")
 public final class Html
@@ -33,12 +33,13 @@ public final class Html
 
     public static Element asHtml(Object... contents)
     {
-        return new Element(CONTAINER, contents);
+        return new Element(null, true, false, contents);
     }
 
     private static Element element(String name, Object[] contents)
     {
-        return new Element(SpecificationParser.ELEMENTS.get(name), contents);
+        ElementDefinition definition = SpecificationParser.ELEMENTS.get(name);
+        return new Element(definition.uppercase, definition.inline, definition.empty, contents);
     }
 
     private static Attribute attribute(String name, String value)

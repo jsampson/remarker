@@ -16,12 +16,12 @@
 
 package org.remarker;
 
-import junit.framework.TestCase;
-
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import junit.framework.TestCase;
+import org.remarker.dom.*;
 
 import static java.util.Arrays.asList;
 import static org.remarker.Html.*;
@@ -83,7 +83,7 @@ public class HtmlTest extends TestCase
 
     public void testStringifying()
     {
-        checkHtml(P(AttributeDefinition.Type.BOOLEAN, new StringBuilder(" la la la "), Boolean.TRUE, '*',
+        checkHtml(P(AttributeType.BOOLEAN, new StringBuilder(" la la la "), Boolean.TRUE, '*',
                 3.1415), "<p>BOOLEAN la la la true*3.1415</p>");
     }
 
@@ -105,7 +105,7 @@ public class HtmlTest extends TestCase
         checkHtml(INPUT(Checked("checked")), "<input checked=\"checked\" />");
         checkHtml(INPUT(Checked((String) null)), "<input />");
         assertThrowsIllegalArgumentException(
-                "The 'checked' attribute must be boolean for the 'input' element; got \"foo\"",
+                "The 'checked' attribute must be boolean for the 'INPUT' element; got \"foo\"",
                 () -> INPUT(Checked("foo")));
     }
 
@@ -118,7 +118,7 @@ public class HtmlTest extends TestCase
         checkHtml(TD(Colspan("-17")), "<td colspan=\"-17\" />");
         checkHtml(TD(Colspan((String) null)), "<td />");
         assertThrowsIllegalArgumentException(
-                "The 'colspan' attribute must be a number for the 'td' element; got \"foo\"",
+                "The 'colspan' attribute must be a number for the 'TD' element; got \"foo\"",
                 () -> TD(Colspan("foo")));
     }
 
@@ -127,24 +127,24 @@ public class HtmlTest extends TestCase
         // "action" is allowed only for "form"
         checkHtml(FORM(Action("...")), "<form action=\"...\" />");
         assertThrowsIllegalArgumentException(
-                "The 'action' attribute is not allowed for the 'body' element",
+                "The 'action' attribute is not allowed for the 'BODY' element",
                 () -> BODY(Action("...")));
         // "onclick" is allowed for *all elements but* a certain list
         checkHtml(BODY(Onclick("...")), "<body onclick=\"...\" />");
         assertThrowsIllegalArgumentException(
-                "The 'onclick' attribute is not allowed for the 'head' element",
+                "The 'onclick' attribute is not allowed for the 'HEAD' element",
                 () -> HEAD(Onclick("...")));
         // "cols" has a different type for "frameset" than for "textarea"
         checkHtml(TEXTAREA(Cols("123")), "<textarea cols=\"123\" />");
         assertThrowsIllegalArgumentException(
-                "The 'cols' attribute must be a number for the 'textarea' element; got \"1,2,3\"",
+                "The 'cols' attribute must be a number for the 'TEXTAREA' element; got \"1,2,3\"",
                 () -> TEXTAREA(Cols("1,2,3")));
     }
 
     public void testBogusAttribute()
     {
         assertThrowsIllegalArgumentException(
-                "The 'foo' attribute is not allowed for the 'p' element",
+                "The 'foo' attribute is not allowed for the 'P' element",
                 () -> P(new Attribute("foo", "bar", elementName -> null)));
     }
 
@@ -157,7 +157,7 @@ public class HtmlTest extends TestCase
 
     private void renderForTesting(Element element, StringBuilder builder)
     {
-        builder.append("<").append(element.getName());
+        builder.append("<").append(element.getName().toLowerCase());
         for (Attribute attribute : element.getAttributes())
         {
             builder.append(" ").append(attribute.getName()).append("=\"").append(attribute.getValue()).append("\"");
@@ -180,7 +180,7 @@ public class HtmlTest extends TestCase
                     builder.append(((Text) content).getValue());
                 }
             }
-            builder.append("</").append(element.getName()).append(">");
+            builder.append("</").append(element.getName().toLowerCase()).append(">");
         }
     }
 

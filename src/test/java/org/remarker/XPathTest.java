@@ -17,6 +17,7 @@
 package org.remarker;
 
 import org.junit.Test;
+import org.remarker.dom.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;

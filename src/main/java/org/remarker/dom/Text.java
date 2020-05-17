@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.dom;
 
-import java.io.StringWriter;
-import junit.framework.TestCase;
-import org.remarker.ext.Ic;
+import static java.util.Objects.requireNonNull;
 
-import static org.remarker.Html.*;
-
-public class IcTest extends TestCase
+public final class Text extends Content
 {
-    public void testIcAttributeAllowed()
+    private final String value;
+
+    Text(String value)
     {
-        StringWriter writer = new StringWriter();
-        HtmlOutputter<RuntimeException> outputter = new HtmlOutputter<>(writer::write);
-        outputter.output(HTML(BODY(DIV(Ic.GetFrom("foo")))));
-        assertEquals("<!DOCTYPE HTML>\r\n<HTML>\r\n  <BODY>\r\n    <DIV ic-get-from=\"foo\"></DIV>\r\n  </BODY>\r\n</HTML>\r\n", writer.toString());
+        this.value = requireNonNull(value);
+    }
+
+    public String getValue()
+    {
+        return value;
+    }
+
+    @Override
+    void appendTextTo(StringBuilder builder)
+    {
+        builder.append(value);
     }
 }

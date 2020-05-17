@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.dom;
 
-@FunctionalInterface
-interface AttributeTypeFunction
+public enum AttributeType
 {
-    AttributeTypeFunction STRING = elementName -> AttributeDefinition.Type.STRING;
-    AttributeTypeFunction BOOLEAN = elementName -> AttributeDefinition.Type.BOOLEAN;
-
-    AttributeDefinition.Type getType(String elementName);
+    STRING, BOOLEAN, NUMBER
 }

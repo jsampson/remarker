@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.ext;
+
+import org.remarker.dom.Attribute;
 
 public final class Bootstrap
 {

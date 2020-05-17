@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.dom;
 
-public abstract class Content
+@FunctionalInterface
+public interface AttributeTypeFunction
 {
-    Content()
-    {
-        // to prevent extension outside of package
-    }
+    AttributeTypeFunction STRING = elementName -> AttributeType.STRING;
+    AttributeTypeFunction BOOLEAN = elementName -> AttributeType.BOOLEAN;
 
-    abstract void appendTextTo(StringBuilder builder);
+    AttributeType getType(String elementName);
 }

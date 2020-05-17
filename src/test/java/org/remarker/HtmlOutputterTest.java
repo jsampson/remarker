@@ -16,12 +16,12 @@
 
 package org.remarker;
 
+import java.io.*;
+import junit.framework.*;
+import org.remarker.dom.*;
+
 import static org.remarker.Html.*;
 import static org.remarker.HtmlTest.assertThrowsIllegalArgumentException;
-
-import java.io.*;
-
-import junit.framework.*;
 
 public class HtmlOutputterTest extends TestCase
 {
@@ -58,7 +58,7 @@ public class HtmlOutputterTest extends TestCase
                 "</P>");
     }
 
-    public void testDummyTag()
+    public void testFragment()
     {
         checkHtml(DIV(
                 DIV("One"),
@@ -194,17 +194,17 @@ public class HtmlOutputterTest extends TestCase
         strict.output(P(Id("foo")));
         // Align is not allowed in the strict DTD
         assertThrowsIllegalArgumentException(
-                "The 'align' attribute is not allowed for the 'p' element",
+                "The 'align' attribute is not allowed for the 'P' element",
                 () -> strict.output(P(Align("center"))));
         // Name is allowed on A in the strict DTD, but on IFRAME only in the
         // frameset DTD
         strict.output(A(Name("foo")));
         // don't throw a NullPointerException if the attribute isn't allowed at all
         assertThrowsIllegalArgumentException(
-                "The 'checked' attribute is not allowed for the 'p' element",
+                "The 'checked' attribute is not allowed for the 'P' element",
                 () -> strict.output(P(Checked(true))));
         assertThrowsIllegalArgumentException(
-                "The 'foo' attribute is not allowed for the 'p' element",
+                "The 'foo' attribute is not allowed for the 'P' element",
                 () -> strict.output(P(new Attribute("foo", "bar", elementName -> null))));
     }
 

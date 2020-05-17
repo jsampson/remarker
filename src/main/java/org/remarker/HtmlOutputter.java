@@ -17,8 +17,9 @@
 package org.remarker;
 
 import java.util.List;
+import org.remarker.dom.*;
 
-import static org.remarker.AttributeDefinition.Type.BOOLEAN;
+import static org.remarker.dom.AttributeType.BOOLEAN;
 
 public final class HtmlOutputter<X extends Exception>
 {
@@ -60,7 +61,7 @@ public final class HtmlOutputter<X extends Exception>
         if (content instanceof Element)
         {
             Element element = (Element) content;
-            if (element.getDefinition().isContainer())
+            if (element.isFragment())
             {
                 dispatch(element.getContents());
             }
@@ -77,25 +78,24 @@ public final class HtmlOutputter<X extends Exception>
 
     private void element(Element element) throws X
     {
-        ElementDefinition elementDefinition = element.getDefinition();
-        if (element.getName().equals("html") && nothingWritten)
+        if (element.getName().equals("HTML") && nothingWritten)
         {
             append("<!DOCTYPE HTML>\r\n");
         }
-        boolean pre = element.getName().equals("pre");
-        boolean newLinesOutside = !elementDefinition.inline;
-        boolean newLinesInside = !pre && !elementDefinition.inline && hasNonInlineContents(element.getContents());
+        boolean pre = element.getName().equals("PRE");
+        boolean newLinesOutside = !element.isInline();
+        boolean newLinesInside = !pre && !element.isInline() && hasNonInlineContents(element.getContents());
         if (newLinesOutside)
         {
             newLine();
         }
         raw('<');
-        raw(elementDefinition.uppercase);
+        raw(element.getName());
         for (Attribute attribute : element.getAttributes())
         {
-            attribute(attribute, elementDefinition);
+            attribute(attribute, element);
         }
-        if (elementDefinition.empty)
+        if (element.isEmpty())
         {
             raw(">");
         }
@@ -121,7 +121,7 @@ public final class HtmlOutputter<X extends Exception>
                 indentLevel--;
             }
             raw("</");
-            raw(elementDefinition.uppercase);
+            raw(element.getName());
             raw('>');
             if (pre)
             {
@@ -141,7 +141,7 @@ public final class HtmlOutputter<X extends Exception>
             if (child instanceof Element)
             {
                 Element element = (Element) child;
-                if (!element.getDefinition().inline || hasNonInlineContents(element.getContents()))
+                if (!element.isInline() || hasNonInlineContents(element.getContents()))
                 {
                     return true;
                 }
@@ -168,9 +168,9 @@ public final class HtmlOutputter<X extends Exception>
         escape(text.getValue(), false);
     }
 
-    private void attribute(Attribute attribute, ElementDefinition elementDefinition) throws X
+    private void attribute(Attribute attribute, Element element) throws X
     {
-        AttributeDefinition.Type attributeType = attribute.getType(elementDefinition);
+        AttributeType attributeType = attribute.getType(element.getName());
         raw(" ");
         raw(attribute.getName());
         if (attributeType != BOOLEAN)

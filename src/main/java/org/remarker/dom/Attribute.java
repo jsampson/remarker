@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.dom;
+
+import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
 public final class Attribute
 {
-    static Attribute simple(String name, String value)
+    private static final Pattern NAME_PATTERN = Pattern.compile("[a-z]+(?:-[a-z]+)*");
+
+    public static Attribute simple(String name, String value)
     {
         if (value == null)
         {
@@ -32,7 +36,7 @@ public final class Attribute
         }
     }
 
-    static Attribute simple(String name, Boolean value)
+    public static Attribute simple(String name, Boolean value)
     {
         if (Boolean.TRUE.equals(value))
         {
@@ -48,8 +52,13 @@ public final class Attribute
     private final String value;
     private final AttributeTypeFunction typeFunction;
 
-    Attribute(String name, String value, AttributeTypeFunction typeFunction)
+    public Attribute(String name, String value, AttributeTypeFunction typeFunction)
     {
+        if (name != null && !NAME_PATTERN.matcher(name).matches())
+        {
+            throw new IllegalArgumentException("Attribute name should be lowercase with hyphens: " + name);
+        }
+
         this.name = requireNonNull(name);
         this.value = requireNonNull(value);
         this.typeFunction = requireNonNull(typeFunction);
@@ -65,8 +74,8 @@ public final class Attribute
         return value;
     }
 
-    AttributeDefinition.Type getType(ElementDefinition elementDefinition)
+    public AttributeType getType(String elementName)
     {
-        return typeFunction.getType(elementDefinition.lowercase);
+        return typeFunction.getType(elementName);
     }
 }

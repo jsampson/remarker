@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.ext;
+
+import org.remarker.dom.Attribute;
 
 /**
  * @see <a href="http://intercoolerjs.org/reference.html">Intercooler Reference</a>

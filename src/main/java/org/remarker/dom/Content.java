@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package org.remarker;
+package org.remarker.dom;
 
-import static java.util.Objects.requireNonNull;
-
-public final class Text extends Content
+public abstract class Content
 {
-    private final String value;
-
-    Text(String value)
+    Content()
     {
-        this.value = requireNonNull(value);
+        // to prevent extension outside of package
     }
 
-    public String getValue()
-    {
-        return value;
-    }
-
-    @Override
-    void appendTextTo(StringBuilder builder)
-    {
-        builder.append(value);
-    }
+    abstract void appendTextTo(StringBuilder builder);
 }
