@@ -18,6 +18,8 @@ package org.remarker;
 
 class ElementDefinition
 {
+    static final ElementDefinition CONTAINER = new ElementDefinition();
+
     final String lowercase;
     final String uppercase;
     final boolean inline;
@@ -31,21 +33,28 @@ class ElementDefinition
         this.empty = empty;
     }
 
-    private String javaName()
+    private ElementDefinition()
     {
-        return uppercase;
+        this.lowercase = null;
+        this.uppercase = null;
+        this.inline = true;
+        this.empty = false;
     }
 
-    private String xmlName()
+    boolean isContainer()
     {
-        return lowercase;
+        return lowercase == null;
     }
 
     void generateCode()
     {
-        System.out.println("    public static Element " + javaName() + "(Object... contents)");
+        if (isContainer())
+        {
+            throw new IllegalStateException();
+        }
+        System.out.println("    public static Element " + uppercase + "(Object... contents)");
         System.out.println("    {");
-        System.out.println("        return element(\"" + xmlName() + "\", contents);");
+        System.out.println("        return element(\"" + lowercase + "\", contents);");
         System.out.println("    }");
     }
 }

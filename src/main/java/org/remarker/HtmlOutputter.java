@@ -60,7 +60,7 @@ public final class HtmlOutputter<X extends Exception>
         if (content instanceof Element)
         {
             Element element = (Element) content;
-            if (element.getDefinition() == Html.DUMMY)
+            if (element.getDefinition().isContainer())
             {
                 dispatch(element.getContents());
             }

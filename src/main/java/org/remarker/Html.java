@@ -16,13 +16,7 @@
 
 package org.remarker;
 
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static org.remarker.AttributeDefinition.Type.BOOLEAN;
-import static org.remarker.AttributeDefinition.Type.NUMBER;
+import static org.remarker.ElementDefinition.CONTAINER;
 
 @SuppressWarnings("unused")
 public final class Html
@@ -32,8 +26,6 @@ public final class Html
         // to prevent instantiation
     }
 
-    static final ElementDefinition DUMMY = new ElementDefinition("_", true, false);
-
     public static Element noHtml()
     {
         return asHtml();
@@ -41,150 +33,12 @@ public final class Html
 
     public static Element asHtml(Object... contents)
     {
-        return element(DUMMY, contents);
+        return new Element(CONTAINER, contents);
     }
 
     private static Element element(String name, Object[] contents)
     {
-        return element(SpecificationParser.ELEMENTS.get(name), contents);
-    }
-
-    static Element element(ElementDefinition definition, Object[] contents)
-    {
-        Element element = new Element(definition);
-        addContents(element, contents);
-        return element;
-    }
-
-    private static void addContents(Element element, Object[] contents)
-    {
-        for (Object content : contents)
-        {
-            addContent(element, content);
-        }
-    }
-
-    private static void addContents(Element element, Iterable<?> contents)
-    {
-        for (Object content : contents)
-        {
-            addContent(element, content);
-        }
-    }
-
-    private static void addContents(Element element, Iterator<?> contents)
-    {
-        while (contents.hasNext())
-        {
-            addContent(element, contents.next());
-        }
-    }
-
-    private static void addContent(Element element, Object content)
-    {
-        if (content == null)
-        {
-            return;
-        }
-        else if (content instanceof String)
-        {
-            element.addContent(new Text((String) content));
-        }
-        else if (content instanceof Content)
-        {
-            element.addContent((Content) content);
-        }
-        else if (content instanceof Attribute)
-        {
-            validateAttribute(element, (Attribute) content);
-            element.putAttribute((Attribute) content);
-        }
-        else if (content.getClass().isArray() && !content.getClass().getComponentType().isPrimitive())
-        {
-            addContents(element, (Object[]) content);
-        }
-        else if (content instanceof Iterable)
-        {
-            addContents(element, (Iterable<?>) content);
-        }
-        else if (content instanceof Iterator)
-        {
-            addContents(element, (Iterator<?>) content);
-        }
-        else if (content instanceof Optional)
-        {
-            ((Optional<?>) content).ifPresent(value -> addContent(element, value));
-        }
-        else if (content instanceof Stream)
-        {
-            ((Stream<?>) content).forEach(value -> addContent(element, value));
-        }
-        else if (content instanceof Supplier)
-        {
-            addContent(element, ((Supplier<?>) content).get());
-        }
-        else if (content instanceof Enum || content instanceof CharSequence || content instanceof Boolean ||
-                content instanceof Character || content instanceof Number)
-        {
-            element.addContent(new Text(content.toString()));
-        }
-        else
-        {
-            throw new IllegalArgumentException(content.getClass().getCanonicalName());
-        }
-    }
-
-    private static void validateAttribute(Element element, Attribute attribute)
-    {
-        AttributeDefinition.Type type = attribute.getType(element.getDefinition());
-        if (element.getDefinition() == DUMMY)
-        {
-            throw new IllegalArgumentException(
-                    "Attribute '" + attribute.getName() + "' must be contained in an element");
-        }
-        else if (type == null)
-        {
-            throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
-                    element.getName() + "' element");
-        }
-        else if (type == NUMBER)
-        {
-            if (!isNumber(attribute.getValue()))
-            {
-                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be a number for the '" +
-                        element.getName() + "' element; got \"" + attribute.getValue() + "\"");
-            }
-        }
-        else if (type == BOOLEAN)
-        {
-            if (!attribute.getValue().equals(attribute.getName()))
-            {
-                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be boolean for the '" +
-                        element.getName() + "' element; got \"" + attribute.getValue() + "\"");
-            }
-        }
-    }
-
-    private static boolean isNumber(String value)
-    {
-        int n = value.length();
-        if (n == 0)
-        {
-            return false;
-        }
-        for (int i = 0; i < n; i++)
-        {
-            char c = value.charAt(i);
-            if (i == 0 && c == '-' && n > 1)
-            {
-                continue;
-            }
-            if (c < '0' || c > '9')
-            {
-                return false;
-            }
-        }
-        return true;
+        return new Element(SpecificationParser.ELEMENTS.get(name), contents);
     }
 
     private static Attribute attribute(String name, String value)
@@ -207,30 +61,6 @@ public final class Html
     private static Attribute attribute(String name, Integer value)
     {
         return attribute(name, value == null ? null : value.toString());
-    }
-
-    static Attribute extendedAttribute(String name, String value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-        else
-        {
-            return new Attribute(name, value, AttributeTypeFunction.STRING);
-        }
-    }
-
-    static Attribute extendedAttribute(String name, Boolean value)
-    {
-        if (Boolean.TRUE.equals(value))
-        {
-            return new Attribute(name, name, AttributeTypeFunction.BOOLEAN);
-        }
-        else
-        {
-            return null;
-        }
     }
 
     // BEGIN GENERATED CODE

@@ -16,8 +16,6 @@
 
 package org.remarker;
 
-import static org.remarker.Html.extendedAttribute;
-
 public final class Bootstrap
 {
     private Bootstrap()
@@ -27,26 +25,26 @@ public final class Bootstrap
 
     public static Attribute AriaExpanded(String value)
     {
-        return extendedAttribute("aria-expanded", value);
+        return Attribute.simple("aria-expanded", value);
     }
 
     public static Attribute AriaHidden(String value)
     {
-        return extendedAttribute("aria-hidden", value);
+        return Attribute.simple("aria-hidden", value);
     }
 
     public static Attribute DataParent(String value)
     {
-        return extendedAttribute("data-parent", value);
+        return Attribute.simple("data-parent", value);
     }
 
     public static Attribute DataTarget(String value)
     {
-        return extendedAttribute("data-target", value);
+        return Attribute.simple("data-target", value);
     }
 
     public static Attribute DataToggle(String value)
     {
-        return extendedAttribute("data-toggle", value);
+        return Attribute.simple("data-toggle", value);
     }
 }

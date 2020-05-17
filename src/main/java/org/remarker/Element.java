@@ -16,14 +16,24 @@
 
 package org.remarker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.remarker.AttributeDefinition.Type.BOOLEAN;
+import static org.remarker.AttributeDefinition.Type.NUMBER;
 
 public final class Element extends Content
 {
@@ -31,11 +41,145 @@ public final class Element extends Content
     private final List<Content> contents;
     private final Map<String, Attribute> attributes;
 
-    Element(ElementDefinition definition)
+    Element(ElementDefinition definition, Object... contents)
     {
         this.definition = requireNonNull(definition);
         this.contents = new ArrayList<>();
         this.attributes = new LinkedHashMap<>();
+
+        addContents(contents);
+    }
+
+    private void addContents(Object[] contents)
+    {
+        for (Object content : contents)
+        {
+            addContent(content);
+        }
+    }
+
+    private void addContents(Iterable<?> contents)
+    {
+        for (Object content : contents)
+        {
+            addContent(content);
+        }
+    }
+
+    private void addContents(Iterator<?> contents)
+    {
+        while (contents.hasNext())
+        {
+            addContent(contents.next());
+        }
+    }
+
+    private void addContent(Object content)
+    {
+        if (content == null)
+        {
+            return;
+        }
+        else if (content instanceof String)
+        {
+            this.contents.add(new Text((String) content));
+        }
+        else if (content instanceof Content)
+        {
+            this.contents.add((Content) content);
+        }
+        else if (content instanceof Attribute)
+        {
+            Attribute attribute = (Attribute) content;
+            validateAttribute(attribute);
+            this.attributes.put(attribute.getName(), attribute);
+        }
+        else if (content.getClass().isArray() && !content.getClass().getComponentType().isPrimitive())
+        {
+            addContents((Object[]) content);
+        }
+        else if (content instanceof Iterable)
+        {
+            addContents((Iterable<?>) content);
+        }
+        else if (content instanceof Iterator)
+        {
+            addContents((Iterator<?>) content);
+        }
+        else if (content instanceof Optional)
+        {
+            ((Optional<?>) content).ifPresent(value -> addContent(value));
+        }
+        else if (content instanceof Stream)
+        {
+            ((Stream<?>) content).forEach(value -> addContent(value));
+        }
+        else if (content instanceof Supplier)
+        {
+            addContent(((Supplier<?>) content).get());
+        }
+        else if (content instanceof Enum || content instanceof CharSequence || content instanceof Boolean ||
+                content instanceof Character || content instanceof Number)
+        {
+            this.contents.add(new Text(content.toString()));
+        }
+        else
+        {
+            throw new IllegalArgumentException(content.getClass().getCanonicalName());
+        }
+    }
+
+    private void validateAttribute(Attribute attribute)
+    {
+        AttributeDefinition.Type type = attribute.getType(definition);
+        if (definition.isContainer())
+        {
+            throw new IllegalArgumentException(
+                    "Attribute '" + attribute.getName() + "' must be contained in an element");
+        }
+        else if (type == null)
+        {
+            throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
+                    getName() + "' element");
+        }
+        else if (type == NUMBER)
+        {
+            if (!isNumber(attribute.getValue()))
+            {
+                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be a number for the '" +
+                        getName() + "' element; got \"" + attribute.getValue() + "\"");
+            }
+        }
+        else if (type == BOOLEAN)
+        {
+            if (!attribute.getValue().equals(attribute.getName()))
+            {
+                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be boolean for the '" +
+                        getName() + "' element; got \"" + attribute.getValue() + "\"");
+            }
+        }
+    }
+
+    private static boolean isNumber(String value)
+    {
+        int n = value.length();
+        if (n == 0)
+        {
+            return false;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            char c = value.charAt(i);
+            if (i == 0 && c == '-' && n > 1)
+            {
+                continue;
+            }
+            if (c < '0' || c > '9')
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     ElementDefinition getDefinition()
@@ -55,17 +199,7 @@ public final class Element extends Content
 
     public Collection<Attribute> getAttributes()
     {
-        return Collections.unmodifiableCollection(attributes.values());
-    }
-
-    void addContent(Content content)
-    {
-        contents.add(content);
-    }
-
-    void putAttribute(Attribute attribute)
-    {
-        attributes.put(attribute.getName(), attribute);
+        return unmodifiableCollection(attributes.values());
     }
 
     private static final Pattern XPATH_PART_PATTERN =

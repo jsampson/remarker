@@ -20,6 +20,30 @@ import static java.util.Objects.requireNonNull;
 
 public final class Attribute
 {
+    static Attribute simple(String name, String value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+        else
+        {
+            return new Attribute(name, value, AttributeTypeFunction.STRING);
+        }
+    }
+
+    static Attribute simple(String name, Boolean value)
+    {
+        if (Boolean.TRUE.equals(value))
+        {
+            return new Attribute(name, name, AttributeTypeFunction.BOOLEAN);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     private final String name;
     private final String value;
     private final AttributeTypeFunction typeFunction;
