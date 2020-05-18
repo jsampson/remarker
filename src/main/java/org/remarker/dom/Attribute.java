@@ -48,6 +48,18 @@ public final class Attribute
         }
     }
 
+    public static Attribute trueFalse(String name, Boolean value)
+    {
+        if (value != null)
+        {
+            return new Attribute(name, value.toString(), AttributeTypeFunction.STRING);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     private final String name;
     private final String value;
     private final AttributeTypeFunction typeFunction;
