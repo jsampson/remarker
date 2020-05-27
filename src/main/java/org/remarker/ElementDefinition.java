@@ -18,14 +18,12 @@ package org.remarker;
 
 class ElementDefinition
 {
-    final String lowercase;
     final String uppercase;
     final boolean inline;
     final boolean empty;
 
     ElementDefinition(String name, boolean inline, boolean empty)
     {
-        this.lowercase = name.toLowerCase().intern();
         this.uppercase = name.toUpperCase().intern();
         this.inline = inline;
         this.empty = empty;
@@ -33,15 +31,10 @@ class ElementDefinition
 
     void generateCode()
     {
-        if (inline && empty)
-        {
-            System.out.println();
-            System.out.println(">>>>>>>>>>>>>> " + uppercase);
-            System.out.println();
-        }
-        System.out.println("    public static Element " + uppercase + "(Object... contents)");
-        System.out.println("    {");
-        System.out.println("        return element(\"" + lowercase + "\", contents);");
-        System.out.println("    }");
+        System.out.printf("%n");
+        System.out.printf("    public static Element %s(Object... contents)%n", uppercase);
+        System.out.printf("    {%n");
+        System.out.printf("        return new Element(\"%s\", %b, %b, contents);%n", uppercase, inline, empty);
+        System.out.printf("    }%n");
     }
 }

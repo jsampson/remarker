@@ -76,7 +76,6 @@ public class SpecificationParserTest extends TestCase
     private void checkElement(Map<String, ElementDefinition> elements, String lowercase, String uppercase, boolean empty)
     {
         ElementDefinition element = elements.get(lowercase);
-        assertSame(lowercase, element.lowercase);
         assertSame(uppercase, element.uppercase);
         assertEquals(empty, element.empty);
     }

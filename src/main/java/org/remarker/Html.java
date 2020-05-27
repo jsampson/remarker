@@ -36,962 +36,906 @@ public final class Html
         return new Element(null, true, false, contents);
     }
 
-    private static Element element(String name, Object[] contents)
-    {
-        ElementDefinition definition = SpecificationParser.ELEMENTS.get(name);
-        return new Element(definition.uppercase, definition.inline, definition.empty, contents);
-    }
-
-    private static Attribute attribute(String name, String value)
-    {
-        return Attribute.quotedString(name, value);
-    }
-
-    private static Attribute attribute(String name, Boolean value)
-    {
-        return Attribute.traditionalBoolean(name, value);
-    }
-
-    private static Attribute attribute(String name, Integer value)
-    {
-        return Attribute.quotedString(name, value);
-    }
-
     // BEGIN GENERATED CODE
 
     public static Element A(Object... contents)
     {
-        return element("a", contents);
+        return new Element("A", true, false, contents);
     }
 
     public static Element ABBR(Object... contents)
     {
-        return element("abbr", contents);
+        return new Element("ABBR", true, false, contents);
     }
 
     public static Element ACRONYM(Object... contents)
     {
-        return element("acronym", contents);
+        return new Element("ACRONYM", true, false, contents);
     }
 
     public static Element ADDRESS(Object... contents)
     {
-        return element("address", contents);
+        return new Element("ADDRESS", false, false, contents);
     }
 
     public static Element AREA(Object... contents)
     {
-        return element("area", contents);
+        return new Element("AREA", false, true, contents);
     }
 
     public static Element B(Object... contents)
     {
-        return element("b", contents);
+        return new Element("B", true, false, contents);
     }
 
     public static Element BASE(Object... contents)
     {
-        return element("base", contents);
+        return new Element("BASE", false, true, contents);
     }
 
     public static Element BDO(Object... contents)
     {
-        return element("bdo", contents);
+        return new Element("BDO", true, false, contents);
     }
 
     public static Element BIG(Object... contents)
     {
-        return element("big", contents);
+        return new Element("BIG", true, false, contents);
     }
 
     public static Element BLOCKQUOTE(Object... contents)
     {
-        return element("blockquote", contents);
+        return new Element("BLOCKQUOTE", false, false, contents);
     }
 
     public static Element BODY(Object... contents)
     {
-        return element("body", contents);
+        return new Element("BODY", false, false, contents);
     }
 
     public static Element BR(Object... contents)
     {
-        return element("br", contents);
+        return new Element("BR", false, true, contents);
     }
 
     public static Element BUTTON(Object... contents)
     {
-        return element("button", contents);
+        return new Element("BUTTON", true, false, contents);
     }
 
     public static Element CAPTION(Object... contents)
     {
-        return element("caption", contents);
+        return new Element("CAPTION", false, false, contents);
     }
 
     public static Element CITE(Object... contents)
     {
-        return element("cite", contents);
+        return new Element("CITE", true, false, contents);
     }
 
     public static Element CODE(Object... contents)
     {
-        return element("code", contents);
+        return new Element("CODE", true, false, contents);
     }
 
     public static Element COL(Object... contents)
     {
-        return element("col", contents);
+        return new Element("COL", false, true, contents);
     }
 
     public static Element COLGROUP(Object... contents)
     {
-        return element("colgroup", contents);
+        return new Element("COLGROUP", false, false, contents);
     }
 
     public static Element DD(Object... contents)
     {
-        return element("dd", contents);
+        return new Element("DD", false, false, contents);
     }
 
     public static Element DEL(Object... contents)
     {
-        return element("del", contents);
+        return new Element("DEL", false, false, contents);
     }
 
     public static Element DFN(Object... contents)
     {
-        return element("dfn", contents);
+        return new Element("DFN", true, false, contents);
     }
 
     public static Element DIV(Object... contents)
     {
-        return element("div", contents);
+        return new Element("DIV", false, false, contents);
     }
 
     public static Element DL(Object... contents)
     {
-        return element("dl", contents);
+        return new Element("DL", false, false, contents);
     }
 
     public static Element DT(Object... contents)
     {
-        return element("dt", contents);
+        return new Element("DT", false, false, contents);
     }
 
     public static Element EM(Object... contents)
     {
-        return element("em", contents);
+        return new Element("EM", true, false, contents);
     }
 
     public static Element FIELDSET(Object... contents)
     {
-        return element("fieldset", contents);
+        return new Element("FIELDSET", false, false, contents);
     }
 
     public static Element FORM(Object... contents)
     {
-        return element("form", contents);
+        return new Element("FORM", false, false, contents);
     }
 
     public static Element H1(Object... contents)
     {
-        return element("h1", contents);
+        return new Element("H1", false, false, contents);
     }
 
     public static Element H2(Object... contents)
     {
-        return element("h2", contents);
+        return new Element("H2", false, false, contents);
     }
 
     public static Element H3(Object... contents)
     {
-        return element("h3", contents);
+        return new Element("H3", false, false, contents);
     }
 
     public static Element H4(Object... contents)
     {
-        return element("h4", contents);
+        return new Element("H4", false, false, contents);
     }
 
     public static Element H5(Object... contents)
     {
-        return element("h5", contents);
+        return new Element("H5", false, false, contents);
     }
 
     public static Element H6(Object... contents)
     {
-        return element("h6", contents);
+        return new Element("H6", false, false, contents);
     }
 
     public static Element HEAD(Object... contents)
     {
-        return element("head", contents);
+        return new Element("HEAD", false, false, contents);
     }
 
     public static Element HR(Object... contents)
     {
-        return element("hr", contents);
+        return new Element("HR", false, true, contents);
     }
 
     public static Element HTML(Object... contents)
     {
-        return element("html", contents);
+        return new Element("HTML", false, false, contents);
     }
 
     public static Element I(Object... contents)
     {
-        return element("i", contents);
+        return new Element("I", true, false, contents);
     }
 
     public static Element IMG(Object... contents)
     {
-        return element("img", contents);
+        return new Element("IMG", true, true, contents);
     }
 
     public static Element INPUT(Object... contents)
     {
-        return element("input", contents);
+        return new Element("INPUT", true, true, contents);
     }
 
     public static Element INS(Object... contents)
     {
-        return element("ins", contents);
+        return new Element("INS", false, false, contents);
     }
 
     public static Element KBD(Object... contents)
     {
-        return element("kbd", contents);
+        return new Element("KBD", true, false, contents);
     }
 
     public static Element LABEL(Object... contents)
     {
-        return element("label", contents);
+        return new Element("LABEL", true, false, contents);
     }
 
     public static Element LEGEND(Object... contents)
     {
-        return element("legend", contents);
+        return new Element("LEGEND", false, false, contents);
     }
 
     public static Element LI(Object... contents)
     {
-        return element("li", contents);
+        return new Element("LI", false, false, contents);
     }
 
     public static Element LINK(Object... contents)
     {
-        return element("link", contents);
+        return new Element("LINK", false, true, contents);
     }
 
     public static Element MAP(Object... contents)
     {
-        return element("map", contents);
+        return new Element("MAP", true, false, contents);
     }
 
     public static Element META(Object... contents)
     {
-        return element("meta", contents);
+        return new Element("META", false, true, contents);
     }
 
     public static Element NOSCRIPT(Object... contents)
     {
-        return element("noscript", contents);
+        return new Element("NOSCRIPT", false, false, contents);
     }
 
     public static Element OBJECT(Object... contents)
     {
-        return element("object", contents);
+        return new Element("OBJECT", true, false, contents);
     }
 
     public static Element OL(Object... contents)
     {
-        return element("ol", contents);
+        return new Element("OL", false, false, contents);
     }
 
     public static Element OPTGROUP(Object... contents)
     {
-        return element("optgroup", contents);
+        return new Element("OPTGROUP", false, false, contents);
     }
 
     public static Element OPTION(Object... contents)
     {
-        return element("option", contents);
+        return new Element("OPTION", false, false, contents);
     }
 
     public static Element P(Object... contents)
     {
-        return element("p", contents);
+        return new Element("P", false, false, contents);
     }
 
     public static Element PARAM(Object... contents)
     {
-        return element("param", contents);
+        return new Element("PARAM", false, true, contents);
     }
 
     public static Element PRE(Object... contents)
     {
-        return element("pre", contents);
+        return new Element("PRE", false, false, contents);
     }
 
     public static Element Q(Object... contents)
     {
-        return element("q", contents);
+        return new Element("Q", true, false, contents);
     }
 
     public static Element SAMP(Object... contents)
     {
-        return element("samp", contents);
+        return new Element("SAMP", true, false, contents);
     }
 
     public static Element SCRIPT(Object... contents)
     {
-        return element("script", contents);
+        return new Element("SCRIPT", false, false, contents);
     }
 
     public static Element SELECT(Object... contents)
     {
-        return element("select", contents);
+        return new Element("SELECT", false, false, contents);
     }
 
     public static Element SMALL(Object... contents)
     {
-        return element("small", contents);
+        return new Element("SMALL", true, false, contents);
     }
 
     public static Element SPAN(Object... contents)
     {
-        return element("span", contents);
+        return new Element("SPAN", true, false, contents);
     }
 
     public static Element STRONG(Object... contents)
     {
-        return element("strong", contents);
+        return new Element("STRONG", true, false, contents);
     }
 
     public static Element STYLE(Object... contents)
     {
-        return element("style", contents);
+        return new Element("STYLE", false, false, contents);
     }
 
     public static Element SUB(Object... contents)
     {
-        return element("sub", contents);
+        return new Element("SUB", true, false, contents);
     }
 
     public static Element SUP(Object... contents)
     {
-        return element("sup", contents);
+        return new Element("SUP", true, false, contents);
     }
 
     public static Element TABLE(Object... contents)
     {
-        return element("table", contents);
+        return new Element("TABLE", false, false, contents);
     }
 
     public static Element TBODY(Object... contents)
     {
-        return element("tbody", contents);
+        return new Element("TBODY", false, false, contents);
     }
 
     public static Element TD(Object... contents)
     {
-        return element("td", contents);
+        return new Element("TD", false, false, contents);
     }
 
     public static Element TEXTAREA(Object... contents)
     {
-        return element("textarea", contents);
+        return new Element("TEXTAREA", true, false, contents);
     }
 
     public static Element TFOOT(Object... contents)
     {
-        return element("tfoot", contents);
+        return new Element("TFOOT", false, false, contents);
     }
 
     public static Element TH(Object... contents)
     {
-        return element("th", contents);
+        return new Element("TH", false, false, contents);
     }
 
     public static Element THEAD(Object... contents)
     {
-        return element("thead", contents);
+        return new Element("THEAD", false, false, contents);
     }
 
     public static Element TITLE(Object... contents)
     {
-        return element("title", contents);
+        return new Element("TITLE", false, false, contents);
     }
 
     public static Element TR(Object... contents)
     {
-        return element("tr", contents);
+        return new Element("TR", false, false, contents);
     }
 
     public static Element TT(Object... contents)
     {
-        return element("tt", contents);
+        return new Element("TT", true, false, contents);
     }
 
     public static Element UL(Object... contents)
     {
-        return element("ul", contents);
+        return new Element("UL", false, false, contents);
     }
 
     public static Element VAR(Object... contents)
     {
-        return element("var", contents);
+        return new Element("VAR", true, false, contents);
     }
 
     public static Attribute Abbr(String value)
     {
-        return attribute("abbr", value);
+        return Attribute.quotedString("abbr", value);
     }
 
     public static Attribute Accept(String value)
     {
-        return attribute("accept", value);
+        return Attribute.quotedString("accept", value);
     }
 
     public static Attribute AcceptCharset(String value)
     {
-        return attribute("accept-charset", value);
+        return Attribute.quotedString("accept-charset", value);
     }
 
     public static Attribute Accesskey(String value)
     {
-        return attribute("accesskey", value);
+        return Attribute.quotedString("accesskey", value);
     }
 
     public static Attribute Action(String value)
     {
-        return attribute("action", value);
+        return Attribute.quotedString("action", value);
     }
 
     public static Attribute Align(String value)
     {
-        return attribute("align", value);
+        return Attribute.quotedString("align", value);
     }
 
     public static Attribute Alt(String value)
     {
-        return attribute("alt", value);
+        return Attribute.quotedString("alt", value);
     }
 
     public static Attribute Archive(String value)
     {
-        return attribute("archive", value);
+        return Attribute.quotedString("archive", value);
     }
 
     public static Attribute Axis(String value)
     {
-        return attribute("axis", value);
+        return Attribute.quotedString("axis", value);
     }
 
     public static Attribute Border(String value)
     {
-        return attribute("border", value);
+        return Attribute.quotedString("border", value);
     }
 
     public static Attribute Cellpadding(String value)
     {
-        return attribute("cellpadding", value);
+        return Attribute.quotedString("cellpadding", value);
     }
 
     public static Attribute Cellspacing(String value)
     {
-        return attribute("cellspacing", value);
+        return Attribute.quotedString("cellspacing", value);
     }
 
     public static Attribute Char(String value)
     {
-        return attribute("char", value);
+        return Attribute.quotedString("char", value);
     }
 
     public static Attribute Charoff(String value)
     {
-        return attribute("charoff", value);
+        return Attribute.quotedString("charoff", value);
     }
 
     public static Attribute Charset(String value)
     {
-        return attribute("charset", value);
+        return Attribute.quotedString("charset", value);
     }
 
-    public static Attribute Checked(String value)
+    public static Attribute Checked()
     {
-        return attribute("checked", value);
+        return Attribute.traditionalBoolean("checked", true);
     }
 
     public static Attribute Checked(Boolean value)
     {
-        return attribute("checked", value);
+        return Attribute.traditionalBoolean("checked", value);
     }
 
     public static Attribute Cite(String value)
     {
-        return attribute("cite", value);
+        return Attribute.quotedString("cite", value);
     }
 
     public static Attribute Class(String value)
     {
-        return attribute("class", value);
+        return Attribute.quotedString("class", value);
     }
 
     public static Attribute Classid(String value)
     {
-        return attribute("classid", value);
+        return Attribute.quotedString("classid", value);
     }
 
     public static Attribute Codebase(String value)
     {
-        return attribute("codebase", value);
+        return Attribute.quotedString("codebase", value);
     }
 
     public static Attribute Codetype(String value)
     {
-        return attribute("codetype", value);
-    }
-
-    public static Attribute Cols(String value)
-    {
-        return attribute("cols", value);
+        return Attribute.quotedString("codetype", value);
     }
 
     public static Attribute Cols(Integer value)
     {
-        return attribute("cols", value);
-    }
-
-    public static Attribute Colspan(String value)
-    {
-        return attribute("colspan", value);
+        return Attribute.quotedString("cols", value);
     }
 
     public static Attribute Colspan(Integer value)
     {
-        return attribute("colspan", value);
+        return Attribute.quotedString("colspan", value);
     }
 
     public static Attribute Content(String value)
     {
-        return attribute("content", value);
+        return Attribute.quotedString("content", value);
     }
 
     public static Attribute Coords(String value)
     {
-        return attribute("coords", value);
+        return Attribute.quotedString("coords", value);
     }
 
     public static Attribute Data(String value)
     {
-        return attribute("data", value);
+        return Attribute.quotedString("data", value);
     }
 
     public static Attribute Datetime(String value)
     {
-        return attribute("datetime", value);
+        return Attribute.quotedString("datetime", value);
     }
 
-    public static Attribute Declare(String value)
+    public static Attribute Declare()
     {
-        return attribute("declare", value);
+        return Attribute.traditionalBoolean("declare", true);
     }
 
     public static Attribute Declare(Boolean value)
     {
-        return attribute("declare", value);
+        return Attribute.traditionalBoolean("declare", value);
     }
 
-    public static Attribute Defer(String value)
+    public static Attribute Defer()
     {
-        return attribute("defer", value);
+        return Attribute.traditionalBoolean("defer", true);
     }
 
     public static Attribute Defer(Boolean value)
     {
-        return attribute("defer", value);
+        return Attribute.traditionalBoolean("defer", value);
     }
 
     public static Attribute Dir(String value)
     {
-        return attribute("dir", value);
+        return Attribute.quotedString("dir", value);
     }
 
-    public static Attribute Disabled(String value)
+    public static Attribute Disabled()
     {
-        return attribute("disabled", value);
+        return Attribute.traditionalBoolean("disabled", true);
     }
 
     public static Attribute Disabled(Boolean value)
     {
-        return attribute("disabled", value);
+        return Attribute.traditionalBoolean("disabled", value);
     }
 
     public static Attribute Enctype(String value)
     {
-        return attribute("enctype", value);
+        return Attribute.quotedString("enctype", value);
     }
 
     public static Attribute For(String value)
     {
-        return attribute("for", value);
+        return Attribute.quotedString("for", value);
     }
 
     public static Attribute Frame(String value)
     {
-        return attribute("frame", value);
+        return Attribute.quotedString("frame", value);
     }
 
     public static Attribute Headers(String value)
     {
-        return attribute("headers", value);
+        return Attribute.quotedString("headers", value);
     }
 
     public static Attribute Height(String value)
     {
-        return attribute("height", value);
+        return Attribute.quotedString("height", value);
     }
 
     public static Attribute Href(String value)
     {
-        return attribute("href", value);
+        return Attribute.quotedString("href", value);
     }
 
     public static Attribute Hreflang(String value)
     {
-        return attribute("hreflang", value);
+        return Attribute.quotedString("hreflang", value);
     }
 
     public static Attribute HttpEquiv(String value)
     {
-        return attribute("http-equiv", value);
+        return Attribute.quotedString("http-equiv", value);
     }
 
     public static Attribute Id(String value)
     {
-        return attribute("id", value);
+        return Attribute.quotedString("id", value);
     }
 
-    public static Attribute Ismap(String value)
+    public static Attribute Ismap()
     {
-        return attribute("ismap", value);
+        return Attribute.traditionalBoolean("ismap", true);
     }
 
     public static Attribute Ismap(Boolean value)
     {
-        return attribute("ismap", value);
+        return Attribute.traditionalBoolean("ismap", value);
     }
 
     public static Attribute Label(String value)
     {
-        return attribute("label", value);
+        return Attribute.quotedString("label", value);
     }
 
     public static Attribute Lang(String value)
     {
-        return attribute("lang", value);
+        return Attribute.quotedString("lang", value);
     }
 
     public static Attribute Longdesc(String value)
     {
-        return attribute("longdesc", value);
-    }
-
-    public static Attribute Maxlength(String value)
-    {
-        return attribute("maxlength", value);
+        return Attribute.quotedString("longdesc", value);
     }
 
     public static Attribute Maxlength(Integer value)
     {
-        return attribute("maxlength", value);
+        return Attribute.quotedString("maxlength", value);
     }
 
     public static Attribute Media(String value)
     {
-        return attribute("media", value);
+        return Attribute.quotedString("media", value);
     }
 
     public static Attribute Method(String value)
     {
-        return attribute("method", value);
+        return Attribute.quotedString("method", value);
     }
 
-    public static Attribute Multiple(String value)
+    public static Attribute Multiple()
     {
-        return attribute("multiple", value);
+        return Attribute.traditionalBoolean("multiple", true);
     }
 
     public static Attribute Multiple(Boolean value)
     {
-        return attribute("multiple", value);
+        return Attribute.traditionalBoolean("multiple", value);
     }
 
     public static Attribute Name(String value)
     {
-        return attribute("name", value);
+        return Attribute.quotedString("name", value);
     }
 
-    public static Attribute Nohref(String value)
+    public static Attribute Nohref()
     {
-        return attribute("nohref", value);
+        return Attribute.traditionalBoolean("nohref", true);
     }
 
     public static Attribute Nohref(Boolean value)
     {
-        return attribute("nohref", value);
+        return Attribute.traditionalBoolean("nohref", value);
     }
 
     public static Attribute Onblur(String value)
     {
-        return attribute("onblur", value);
+        return Attribute.quotedString("onblur", value);
     }
 
     public static Attribute Onchange(String value)
     {
-        return attribute("onchange", value);
+        return Attribute.quotedString("onchange", value);
     }
 
     public static Attribute Onclick(String value)
     {
-        return attribute("onclick", value);
+        return Attribute.quotedString("onclick", value);
     }
 
     public static Attribute Ondblclick(String value)
     {
-        return attribute("ondblclick", value);
+        return Attribute.quotedString("ondblclick", value);
     }
 
     public static Attribute Onfocus(String value)
     {
-        return attribute("onfocus", value);
+        return Attribute.quotedString("onfocus", value);
     }
 
     public static Attribute Onkeydown(String value)
     {
-        return attribute("onkeydown", value);
+        return Attribute.quotedString("onkeydown", value);
     }
 
     public static Attribute Onkeypress(String value)
     {
-        return attribute("onkeypress", value);
+        return Attribute.quotedString("onkeypress", value);
     }
 
     public static Attribute Onkeyup(String value)
     {
-        return attribute("onkeyup", value);
+        return Attribute.quotedString("onkeyup", value);
     }
 
     public static Attribute Onload(String value)
     {
-        return attribute("onload", value);
+        return Attribute.quotedString("onload", value);
     }
 
     public static Attribute Onmousedown(String value)
     {
-        return attribute("onmousedown", value);
+        return Attribute.quotedString("onmousedown", value);
     }
 
     public static Attribute Onmousemove(String value)
     {
-        return attribute("onmousemove", value);
+        return Attribute.quotedString("onmousemove", value);
     }
 
     public static Attribute Onmouseout(String value)
     {
-        return attribute("onmouseout", value);
+        return Attribute.quotedString("onmouseout", value);
     }
 
     public static Attribute Onmouseover(String value)
     {
-        return attribute("onmouseover", value);
+        return Attribute.quotedString("onmouseover", value);
     }
 
     public static Attribute Onmouseup(String value)
     {
-        return attribute("onmouseup", value);
+        return Attribute.quotedString("onmouseup", value);
     }
 
     public static Attribute Onreset(String value)
     {
-        return attribute("onreset", value);
+        return Attribute.quotedString("onreset", value);
     }
 
     public static Attribute Onselect(String value)
     {
-        return attribute("onselect", value);
+        return Attribute.quotedString("onselect", value);
     }
 
     public static Attribute Onsubmit(String value)
     {
-        return attribute("onsubmit", value);
+        return Attribute.quotedString("onsubmit", value);
     }
 
     public static Attribute Onunload(String value)
     {
-        return attribute("onunload", value);
+        return Attribute.quotedString("onunload", value);
     }
 
     public static Attribute Profile(String value)
     {
-        return attribute("profile", value);
+        return Attribute.quotedString("profile", value);
     }
 
-    public static Attribute Readonly(String value)
+    public static Attribute Readonly()
     {
-        return attribute("readonly", value);
+        return Attribute.traditionalBoolean("readonly", true);
     }
 
     public static Attribute Readonly(Boolean value)
     {
-        return attribute("readonly", value);
+        return Attribute.traditionalBoolean("readonly", value);
     }
 
     public static Attribute Rel(String value)
     {
-        return attribute("rel", value);
+        return Attribute.quotedString("rel", value);
     }
 
     public static Attribute Rev(String value)
     {
-        return attribute("rev", value);
-    }
-
-    public static Attribute Rows(String value)
-    {
-        return attribute("rows", value);
+        return Attribute.quotedString("rev", value);
     }
 
     public static Attribute Rows(Integer value)
     {
-        return attribute("rows", value);
-    }
-
-    public static Attribute Rowspan(String value)
-    {
-        return attribute("rowspan", value);
+        return Attribute.quotedString("rows", value);
     }
 
     public static Attribute Rowspan(Integer value)
     {
-        return attribute("rowspan", value);
+        return Attribute.quotedString("rowspan", value);
     }
 
     public static Attribute Rules(String value)
     {
-        return attribute("rules", value);
+        return Attribute.quotedString("rules", value);
     }
 
     public static Attribute Scheme(String value)
     {
-        return attribute("scheme", value);
+        return Attribute.quotedString("scheme", value);
     }
 
     public static Attribute Scope(String value)
     {
-        return attribute("scope", value);
+        return Attribute.quotedString("scope", value);
     }
 
-    public static Attribute Selected(String value)
+    public static Attribute Selected()
     {
-        return attribute("selected", value);
+        return Attribute.traditionalBoolean("selected", true);
     }
 
     public static Attribute Selected(Boolean value)
     {
-        return attribute("selected", value);
+        return Attribute.traditionalBoolean("selected", value);
     }
 
     public static Attribute Shape(String value)
     {
-        return attribute("shape", value);
+        return Attribute.quotedString("shape", value);
     }
 
     public static Attribute Size(String value)
     {
-        return attribute("size", value);
+        return Attribute.quotedString("size", value);
     }
 
     public static Attribute Size(Integer value)
     {
-        return attribute("size", value);
-    }
-
-    public static Attribute Span(String value)
-    {
-        return attribute("span", value);
+        return Attribute.quotedString("size", value);
     }
 
     public static Attribute Span(Integer value)
     {
-        return attribute("span", value);
+        return Attribute.quotedString("span", value);
     }
 
     public static Attribute Src(String value)
     {
-        return attribute("src", value);
+        return Attribute.quotedString("src", value);
     }
 
     public static Attribute Standby(String value)
     {
-        return attribute("standby", value);
+        return Attribute.quotedString("standby", value);
     }
 
     public static Attribute Style(String value)
     {
-        return attribute("style", value);
+        return Attribute.quotedString("style", value);
     }
 
     public static Attribute Summary(String value)
     {
-        return attribute("summary", value);
-    }
-
-    public static Attribute Tabindex(String value)
-    {
-        return attribute("tabindex", value);
+        return Attribute.quotedString("summary", value);
     }
 
     public static Attribute Tabindex(Integer value)
     {
-        return attribute("tabindex", value);
+        return Attribute.quotedString("tabindex", value);
     }
 
     public static Attribute Title(String value)
     {
-        return attribute("title", value);
+        return Attribute.quotedString("title", value);
     }
 
     public static Attribute Type(String value)
     {
-        return attribute("type", value);
+        return Attribute.quotedString("type", value);
     }
 
     public static Attribute Usemap(String value)
     {
-        return attribute("usemap", value);
+        return Attribute.quotedString("usemap", value);
     }
 
     public static Attribute Valign(String value)
     {
-        return attribute("valign", value);
+        return Attribute.quotedString("valign", value);
     }
 
     public static Attribute Value(String value)
     {
-        return attribute("value", value);
+        return Attribute.quotedString("value", value);
     }
 
     public static Attribute Valuetype(String value)
     {
-        return attribute("valuetype", value);
+        return Attribute.quotedString("valuetype", value);
     }
 
     public static Attribute Width(String value)
     {
-        return attribute("width", value);
+        return Attribute.quotedString("width", value);
     }
 
     public static final String _AElig = String.valueOf((char) 198);

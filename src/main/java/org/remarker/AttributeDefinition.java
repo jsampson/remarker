@@ -57,24 +57,34 @@ class AttributeDefinition
 
     void generateCode()
     {
-        generateMethod("String");
+        if (allTypes.contains(AttributeType.STRING))
+        {
+            System.out.println();
+            System.out.println("    public static Attribute " + javaName() + "(String value)");
+            System.out.println("    {");
+            System.out.println("        return Attribute.quotedString(\"" + xmlName() + "\", value);");
+            System.out.println("    }");
+        }
         if (allTypes.contains(AttributeType.BOOLEAN))
         {
             System.out.println();
-            generateMethod("Boolean");
+            System.out.println("    public static Attribute " + javaName() + "()");
+            System.out.println("    {");
+            System.out.println("        return Attribute.traditionalBoolean(\"" + xmlName() + "\", true);");
+            System.out.println("    }");
+            System.out.println();
+            System.out.println("    public static Attribute " + javaName() + "(Boolean value)");
+            System.out.println("    {");
+            System.out.println("        return Attribute.traditionalBoolean(\"" + xmlName() + "\", value);");
+            System.out.println("    }");
         }
         if (allTypes.contains(AttributeType.NUMBER))
         {
             System.out.println();
-            generateMethod("Integer");
+            System.out.println("    public static Attribute " + javaName() + "(Integer value)");
+            System.out.println("    {");
+            System.out.println("        return Attribute.quotedString(\"" + xmlName() + "\", value);");
+            System.out.println("    }");
         }
-    }
-
-    private void generateMethod(String valueType)
-    {
-        System.out.println("    public static Attribute " + javaName() + "(" + valueType + " value)");
-        System.out.println("    {");
-        System.out.println("        return attribute(\"" + xmlName() + "\", value);");
-        System.out.println("    }");
     }
 }
