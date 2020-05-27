@@ -18,9 +18,8 @@ package org.remarker;
 
 import java.util.*;
 import junit.framework.*;
-import org.remarker.dom.*;
 
-import static org.remarker.dom.AttributeType.*;
+import static org.remarker.AttributeType.*;
 
 public class SpecificationParserTest extends TestCase
 {

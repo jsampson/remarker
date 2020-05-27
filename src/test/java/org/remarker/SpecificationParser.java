@@ -20,14 +20,13 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 import javax.xml.xpath.*;
-import org.remarker.dom.AttributeType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import static java.util.Arrays.*;
 import static javax.xml.xpath.XPathConstants.NODESET;
-import static org.remarker.dom.AttributeType.*;
+import static org.remarker.AttributeType.*;
 
 final class SpecificationParser
 {

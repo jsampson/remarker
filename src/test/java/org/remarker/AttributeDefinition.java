@@ -17,7 +17,6 @@
 package org.remarker;
 
 import java.util.*;
-import org.remarker.dom.AttributeType;
 
 class AttributeDefinition
 {

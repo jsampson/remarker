@@ -102,8 +102,7 @@ public class HtmlTest extends TestCase
         checkHtml(INPUT(Checked(true)), "<input checked />");
         checkHtml(INPUT(Checked(false)), "<input />");
         checkHtml(INPUT(Checked((Boolean) null)), "<input />");
-        checkHtml(INPUT(Checked("checked")), "<input checked=\"checked\" />");
-        checkHtml(INPUT(Checked((String) null)), "<input />");
+        checkHtml(INPUT(Checked()), "<input checked />");
     }
 
     public void testNumberAttribute()
@@ -111,9 +110,6 @@ public class HtmlTest extends TestCase
         checkHtml(TD(Colspan(42)), "<td colspan=\"42\" />");
         checkHtml(TD(Colspan(-17)), "<td colspan=\"-17\" />");
         checkHtml(TD(Colspan((Integer) null)), "<td />");
-        checkHtml(TD(Colspan("42")), "<td colspan=\"42\" />");
-        checkHtml(TD(Colspan("-17")), "<td colspan=\"-17\" />");
-        checkHtml(TD(Colspan((String) null)), "<td />");
     }
 
     public void testAttributeDisallowedInFragment()

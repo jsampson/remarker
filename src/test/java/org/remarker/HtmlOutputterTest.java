@@ -80,8 +80,8 @@ public class HtmlOutputterTest extends TestCase
                 "<P class=\"class\"><INPUT type=\"checkbox\"></P>\r\n");
         checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked(true))),
                 "<P class=\"class\"><INPUT type=\"checkbox\" checked></P>\r\n");
-        checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked("checked"))),
-                "<P class=\"class\"><INPUT type=\"checkbox\" checked=\"checked\"></P>\r\n");
+        checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked())),
+                "<P class=\"class\"><INPUT type=\"checkbox\" checked></P>\r\n");
     }
 
     public void testTableIndentation()

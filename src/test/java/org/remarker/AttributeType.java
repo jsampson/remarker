@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.remarker.dom;
+package org.remarker;
 
 public enum AttributeType
 {
