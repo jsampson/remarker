@@ -19,8 +19,6 @@ package org.remarker;
 import java.util.List;
 import org.remarker.dom.*;
 
-import static org.remarker.dom.AttributeType.BOOLEAN;
-
 public final class HtmlOutputter<X extends Exception>
 {
     @FunctionalInterface
@@ -170,10 +168,9 @@ public final class HtmlOutputter<X extends Exception>
 
     private void attribute(Attribute attribute, Element element) throws X
     {
-        AttributeType attributeType = attribute.getType(element.getName());
         raw(" ");
         raw(attribute.getName());
-        if (attributeType != BOOLEAN)
+        if (!attribute.isBoolean())
         {
             raw("=\"");
             escape(attribute.getValue(), true);

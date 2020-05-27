@@ -22,14 +22,12 @@ import org.remarker.dom.AttributeType;
 class AttributeDefinition
 {
     final String name;
-    final Map<String, AttributeType> typesByElement;
     final Set<AttributeType> allTypes;
 
-    AttributeDefinition(String name, Map<String, AttributeType> typesByElement)
+    AttributeDefinition(String name, EnumSet<AttributeType> types)
     {
         this.name = name.toLowerCase().intern();
-        this.typesByElement = Collections.unmodifiableMap(new HashMap<>(typesByElement));
-        this.allTypes = Collections.unmodifiableSet(new HashSet<>(typesByElement.values()));
+        this.allTypes = Collections.unmodifiableSet(types.clone());
         if (allTypes.isEmpty())
         {
             throw new IllegalArgumentException("Impossible! Attribute must have at least one type");
@@ -78,17 +76,5 @@ class AttributeDefinition
         System.out.println("    {");
         System.out.println("        return attribute(\"" + xmlName() + "\", value);");
         System.out.println("    }");
-    }
-
-    AttributeType getType(String elementName)
-    {
-        if (typesByElement.containsKey(elementName))
-        {
-            return typesByElement.get(elementName);
-        }
-        else
-        {
-            return typesByElement.get("*");
-        }
     }
 }

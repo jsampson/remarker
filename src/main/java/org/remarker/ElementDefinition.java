@@ -33,6 +33,12 @@ class ElementDefinition
 
     void generateCode()
     {
+        if (inline && empty)
+        {
+            System.out.println();
+            System.out.println(">>>>>>>>>>>>>> " + uppercase);
+            System.out.println();
+        }
         System.out.println("    public static Element " + uppercase + "(Object... contents)");
         System.out.println("    {");
         System.out.println("        return element(\"" + lowercase + "\", contents);");

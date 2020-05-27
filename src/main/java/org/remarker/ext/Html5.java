@@ -37,36 +37,36 @@ public final class Html5
 
     public static Attribute Autofocus(Boolean value)
     {
-        return Attribute.simple("autofocus", value);
+        return Attribute.traditionalBoolean("autofocus", value);
     }
 
     public static Attribute Form(String value)
     {
-        return Attribute.simple("form", value);
+        return Attribute.quotedString("form", value);
     }
 
     public static Attribute Max(String value)
     {
-        return Attribute.simple("max", value);
+        return Attribute.quotedString("max", value);
     }
 
     public static Attribute Min(String value)
     {
-        return Attribute.simple("min", value);
+        return Attribute.quotedString("min", value);
     }
 
     public static Attribute Pattern(String value)
     {
-        return Attribute.simple("pattern", value);
+        return Attribute.quotedString("pattern", value);
     }
 
     public static Attribute Placeholder(String value)
     {
-        return Attribute.simple("placeholder", value);
+        return Attribute.quotedString("placeholder", value);
     }
 
     public static Attribute Required(Boolean value)
     {
-        return Attribute.simple("required", value);
+        return Attribute.traditionalBoolean("required", value);
     }
 }

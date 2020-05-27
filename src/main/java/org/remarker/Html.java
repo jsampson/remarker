@@ -44,24 +44,17 @@ public final class Html
 
     private static Attribute attribute(String name, String value)
     {
-        if (value == null)
-        {
-            return null;
-        }
-        else
-        {
-            return new Attribute(name, value, SpecificationParser.ATTRIBUTES.get(name)::getType);
-        }
+        return Attribute.quotedString(name, value);
     }
 
     private static Attribute attribute(String name, Boolean value)
     {
-        return attribute(name, Boolean.TRUE.equals(value) ? name : null);
+        return Attribute.traditionalBoolean(name, value);
     }
 
     private static Attribute attribute(String name, Integer value)
     {
-        return attribute(name, value == null ? null : value.toString());
+        return Attribute.quotedString(name, value);
     }
 
     // BEGIN GENERATED CODE

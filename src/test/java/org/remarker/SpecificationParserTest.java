@@ -90,34 +90,20 @@ public class SpecificationParserTest extends TestCase
     {
         Map<String, AttributeDefinition> attributes = SpecificationParser.ATTRIBUTES;
         assertEquals(93, attributes.size());
-        checkAttribute(attributes, "abbr", new String[] { "td", "th" }, new AttributeType[] { STRING, STRING });
-        checkAttribute(attributes, "border", new String[] { "table" }, new AttributeType[] { STRING });
-        checkAttribute(attributes, "checked", new String[] { "input" }, new AttributeType[] { BOOLEAN });
-        checkAttribute(attributes, "cols", new String[] { "textarea" }, new AttributeType[] { NUMBER });
-        checkAttribute(attributes, "colspan", new String[] { "td", "th" }, new AttributeType[] { NUMBER, NUMBER });
-        checkAttribute(attributes, "class", new String[] { "*", "base", "basefont", "head", "html", "meta", "param", "script",
-                "style", "title" }, new AttributeType[] { STRING });
-        checkAttribute(attributes, "dir", new String[] { "*", "bdo", "applet", "base", "basefont", "br", "frame", "frameset",
-                "iframe", "param", "script" }, new AttributeType[] { STRING, STRING });
+        checkAttribute(attributes, "abbr", EnumSet.of(STRING));
+        checkAttribute(attributes, "border", EnumSet.of(STRING));
+        checkAttribute(attributes, "checked", EnumSet.of(BOOLEAN));
+        checkAttribute(attributes, "cols", EnumSet.of(NUMBER));
+        checkAttribute(attributes, "colspan", EnumSet.of(NUMBER));
+        checkAttribute(attributes, "class", EnumSet.of(STRING));
+        checkAttribute(attributes, "dir", EnumSet.of(STRING));
+        checkAttribute(attributes, "size", EnumSet.of(STRING, NUMBER));
     }
 
-    private void checkAttribute(Map<String, AttributeDefinition> attributes, String name, String[] elements, AttributeType[] types)
+    private void checkAttribute(Map<String, AttributeDefinition> attributes, String name, EnumSet<AttributeType> types)
     {
         AttributeDefinition attribute = attributes.get(name);
         assertSame(name, attribute.name);
-        assertEquals(elements.length, attribute.typesByElement.size());
-        for (int i = 0; i < elements.length; i++)
-        {
-            String element = elements[i].toUpperCase();
-            assertTrue(attribute.typesByElement.containsKey(element));
-            if (i < types.length)
-            {
-                assertSame(types[i], attribute.typesByElement.get(element));
-            }
-            else
-            {
-                assertNull(attribute.typesByElement.get(element));
-            }
-        }
+        assertEquals(types, attribute.allTypes);
     }
 }

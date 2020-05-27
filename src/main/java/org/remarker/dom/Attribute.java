@@ -24,35 +24,23 @@ public final class Attribute
 {
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-z]+(?:-[a-z]+)*");
 
-    public static Attribute simple(String name, String value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-        else
-        {
-            return new Attribute(name, value, AttributeTypeFunction.STRING);
-        }
-    }
-
-    public static Attribute simple(String name, Boolean value)
-    {
-        if (Boolean.TRUE.equals(value))
-        {
-            return new Attribute(name, name, AttributeTypeFunction.BOOLEAN);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public static Attribute trueFalse(String name, Boolean value)
+    public static Attribute quotedString(String name, Object value)
     {
         if (value != null)
         {
-            return new Attribute(name, value.toString(), AttributeTypeFunction.STRING);
+            return new Attribute(name, requireNonNull(value.toString(), "value.toString()"));
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static Attribute traditionalBoolean(String name, Boolean value)
+    {
+        if (Boolean.TRUE.equals(value))
+        {
+            return new Attribute(name, null);
         }
         else
         {
@@ -62,18 +50,16 @@ public final class Attribute
 
     private final String name;
     private final String value;
-    private final AttributeTypeFunction typeFunction;
 
-    public Attribute(String name, String value, AttributeTypeFunction typeFunction)
+    private Attribute(String name, String value)
     {
-        if (name != null && !NAME_PATTERN.matcher(name).matches())
+        if (!NAME_PATTERN.matcher(requireNonNull(name, "name")).matches())
         {
             throw new IllegalArgumentException("Attribute name should be lowercase with hyphens: " + name);
         }
 
-        this.name = requireNonNull(name);
-        this.value = requireNonNull(value);
-        this.typeFunction = requireNonNull(typeFunction);
+        this.name = name;
+        this.value = value;
     }
 
     public String getName()
@@ -83,11 +69,11 @@ public final class Attribute
 
     public String getValue()
     {
-        return value;
+        return requireNonNull(value, "value");
     }
 
-    public AttributeType getType(String elementName)
+    public boolean isBoolean()
     {
-        return typeFunction.getType(elementName);
+        return value == null;
     }
 }

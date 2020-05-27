@@ -31,106 +31,106 @@ public final class Htmx
 
     public static Attribute Boost(Boolean value)
     {
-        return Attribute.trueFalse("data-hx-boost", value);
+        return Attribute.quotedString("data-hx-boost", value);
     }
 
     public static Attribute Classes(String value)
     {
-        return Attribute.simple("data-hx-classes", value);
+        return Attribute.quotedString("data-hx-classes", value);
     }
 
     public static Attribute Confirm(String value)
     {
-        return Attribute.simple("data-hx-confirm", value);
+        return Attribute.quotedString("data-hx-confirm", value);
     }
 
     public static Attribute Delete(String value)
     {
-        return Attribute.simple("data-hx-delete", value);
+        return Attribute.quotedString("data-hx-delete", value);
     }
 
     public static Attribute ErrorUrl(String value)
     {
-        return Attribute.simple("data-hx-error-url", value);
+        return Attribute.quotedString("data-hx-error-url", value);
     }
 
     public static Attribute Get(String value)
     {
-        return Attribute.simple("data-hx-get", value);
+        return Attribute.quotedString("data-hx-get", value);
     }
 
     public static Attribute HistoryElt()
     {
-        return Attribute.simple("data-hx-history-elt", true);
+        return Attribute.quotedString("data-hx-history-elt", true);
     }
 
     public static Attribute Include(String value)
     {
-        return Attribute.simple("data-hx-include", value);
+        return Attribute.quotedString("data-hx-include", value);
     }
 
     public static Attribute Indicator(String value)
     {
-        return Attribute.simple("data-hx-indicator", value);
+        return Attribute.quotedString("data-hx-indicator", value);
     }
 
     public static Attribute Params(String value)
     {
-        return Attribute.simple("data-hx-params", value);
+        return Attribute.quotedString("data-hx-params", value);
     }
 
     public static Attribute Patch(String value)
     {
-        return Attribute.simple("data-hx-patch", value);
+        return Attribute.quotedString("data-hx-patch", value);
     }
 
     public static Attribute Post(String value)
     {
-        return Attribute.simple("data-hx-post", value);
+        return Attribute.quotedString("data-hx-post", value);
     }
 
     public static Attribute Prompt(String value)
     {
-        return Attribute.simple("data-hx-prompt", value);
+        return Attribute.quotedString("data-hx-prompt", value);
     }
 
     public static Attribute PushUrl(Boolean value)
     {
-        return Attribute.trueFalse("data-hx-push-url", value);
+        return Attribute.quotedString("data-hx-push-url", value);
     }
 
     public static Attribute Put(String value)
     {
-        return Attribute.simple("data-hx-put", value);
+        return Attribute.quotedString("data-hx-put", value);
     }
 
     public static Attribute Select(String value)
     {
-        return Attribute.simple("data-hx-select", value);
+        return Attribute.quotedString("data-hx-select", value);
     }
 
     public static Attribute SseSrc(String value)
     {
-        return Attribute.simple("data-hx-sse-src", value);
+        return Attribute.quotedString("data-hx-sse-src", value);
     }
 
     public static Attribute SwapOob(Boolean value)
     {
-        return Attribute.trueFalse("data-hx-swap-oob", value);
+        return Attribute.quotedString("data-hx-swap-oob", value);
     }
 
     public static Attribute Swap(String value)
     {
-        return Attribute.simple("data-hx-swap", value);
+        return Attribute.quotedString("data-hx-swap", value);
     }
 
     public static Attribute Target(String value)
     {
-        return Attribute.simple("data-hx-target", value);
+        return Attribute.quotedString("data-hx-target", value);
     }
 
     public static Attribute Trigger(String value)
     {
-        return Attribute.simple("data-hx-trigger", value);
+        return Attribute.quotedString("data-hx-trigger", value);
     }
 }

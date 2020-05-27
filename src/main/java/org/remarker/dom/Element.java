@@ -32,8 +32,6 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.remarker.dom.AttributeType.BOOLEAN;
-import static org.remarker.dom.AttributeType.NUMBER;
 
 public final class Element extends Content
 {
@@ -107,8 +105,15 @@ public final class Element extends Content
         else if (content instanceof Attribute)
         {
             Attribute attribute = (Attribute) content;
-            validateAttribute(attribute);
-            this.attributes.put(attribute.getName(), attribute);
+            if (isFragment())
+            {
+                throw new IllegalArgumentException(
+                        "Attribute '" + attribute.getName() + "' must be contained in an element");
+            }
+            else
+            {
+                this.attributes.put(attribute.getName(), attribute);
+            }
         }
         else if (content.getClass().isArray() && !content.getClass().getComponentType().isPrimitive())
         {
@@ -143,59 +148,6 @@ public final class Element extends Content
         {
             throw new IllegalArgumentException(content.getClass().getCanonicalName());
         }
-    }
-
-    private void validateAttribute(Attribute attribute)
-    {
-        AttributeType type = attribute.getType(name);
-        if (isFragment())
-        {
-            throw new IllegalArgumentException(
-                    "Attribute '" + attribute.getName() + "' must be contained in an element");
-        }
-        else if (type == null)
-        {
-            throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute is not allowed for the '" +
-                    getName() + "' element");
-        }
-        else if (type == NUMBER)
-        {
-            if (!isNumber(attribute.getValue()))
-            {
-                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be a number for the '" +
-                        getName() + "' element; got \"" + attribute.getValue() + "\"");
-            }
-        }
-        else if (type == BOOLEAN)
-        {
-            if (!attribute.getValue().equals(attribute.getName()))
-            {
-                throw new IllegalArgumentException("The '" + attribute.getName() + "' attribute must be boolean for the '" +
-                        getName() + "' element; got \"" + attribute.getValue() + "\"");
-            }
-        }
-    }
-
-    private static boolean isNumber(String value)
-    {
-        int n = value.length();
-        if (n == 0)
-        {
-            return false;
-        }
-        for (int i = 0; i < n; i++)
-        {
-            char c = value.charAt(i);
-            if (i == 0 && c == '-' && n > 1)
-            {
-                continue;
-            }
-            if (c < '0' || c > '9')
-            {
-                return false;
-            }
-        }
-        return true;
     }
 
     public boolean isFragment()

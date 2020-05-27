@@ -27,26 +27,26 @@ public final class Bootstrap
 
     public static Attribute AriaExpanded(String value)
     {
-        return Attribute.simple("aria-expanded", value);
+        return Attribute.quotedString("aria-expanded", value);
     }
 
     public static Attribute AriaHidden(String value)
     {
-        return Attribute.simple("aria-hidden", value);
+        return Attribute.quotedString("aria-hidden", value);
     }
 
     public static Attribute DataParent(String value)
     {
-        return Attribute.simple("data-parent", value);
+        return Attribute.quotedString("data-parent", value);
     }
 
     public static Attribute DataTarget(String value)
     {
-        return Attribute.simple("data-target", value);
+        return Attribute.quotedString("data-target", value);
     }
 
     public static Attribute DataToggle(String value)
     {
-        return Attribute.simple("data-toggle", value);
+        return Attribute.quotedString("data-toggle", value);
     }
 }

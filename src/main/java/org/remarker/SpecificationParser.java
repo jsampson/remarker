@@ -90,6 +90,7 @@ final class SpecificationParser
         inline.remove("BR");
         inline.remove("SCRIPT");
         inline.remove("SELECT");
+        // TODO: IMG & INPUT are the only ones with both inline & ampty (a.k.a. "void")
 
         Map<String, ElementDefinition> elements = new TreeMap<>();
         NodeList nodes = load("elements.html", "//tr[td[1]/@title='Name']");
@@ -109,9 +110,6 @@ final class SpecificationParser
 
     private static Map<String, AttributeDefinition> parseAttributes() throws Exception
     {
-        String elementNamesRegex = "([A-Z0-9]+(,[ \n\r]+[A-Z0-9]+)*)";
-        Pattern elementNamesPattern = Pattern.compile("^" + elementNamesRegex + "$");
-        Pattern allButElementNamesPattern = Pattern.compile("^All elements but " + elementNamesRegex + "$");
         Map<String, AttributeDefinition> attributes = new TreeMap<>();
         NodeList nodes = load("attributes.html", "//tr[td[1]/@title='Name']");
         for (int index = 0; index < nodes.getLength(); index++)
@@ -126,28 +124,13 @@ final class SpecificationParser
                 continue;
             }
             AttributeType type = typeCode.equals("(" + name + ")") ? BOOLEAN : typeCode.equals("NUMBER") ? NUMBER : STRING;
-            Map<String, AttributeType> typesByElement = new HashMap<>();
+            EnumSet<AttributeType> types = EnumSet.of(type);
             if (attributes.containsKey(name))
             {
                 AttributeDefinition oldDefinition = attributes.get(name);
-                typesByElement.putAll(oldDefinition.typesByElement);
+                types.addAll(oldDefinition.allTypes);
             }
-            Matcher elementNamesMatcher = elementNamesPattern.matcher(elements);
-            Matcher allButElementNamesMatcher = allButElementNamesPattern.matcher(elements);
-            if (elementNamesMatcher.matches())
-            {
-                putType(elementNamesMatcher, typesByElement, type);
-            }
-            else if (allButElementNamesMatcher.matches())
-            {
-                typesByElement.put("*", type);
-                putType(allButElementNamesMatcher, typesByElement, null);
-            }
-            else
-            {
-                throw new IllegalStateException(elements);
-            }
-            attributes.put(name, new AttributeDefinition(name, typesByElement));
+            attributes.put(name, new AttributeDefinition(name, types));
         }
         return attributes;
     }
@@ -181,20 +164,5 @@ final class SpecificationParser
     private static boolean isStrict(String dtd)
     {
         return !dtd.equals("L") && !dtd.equals("F");
-    }
-
-    private static void putType(Matcher elementNamesMatcher, Map<String, AttributeType> typesByElement, AttributeType type)
-    {
-        String[] elementNames = getElementNames(elementNamesMatcher);
-        for (String elementName : elementNames)
-        {
-            String elementNameInterned = elementName.toUpperCase().intern();
-            typesByElement.put(elementNameInterned, type);
-        }
-    }
-
-    private static String[] getElementNames(Matcher elementNamesMatcher)
-    {
-        return elementNamesMatcher.group(1).split(",[ \n\r]+");
     }
 }

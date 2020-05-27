@@ -76,8 +76,12 @@ public class HtmlOutputterTest extends TestCase
 
     public void testBooleanAttributes()
     {
-        checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked("checked"))),
+        checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked(false))),
+                "<P class=\"class\"><INPUT type=\"checkbox\"></P>\r\n");
+        checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked(true))),
                 "<P class=\"class\"><INPUT type=\"checkbox\" checked></P>\r\n");
+        checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked("checked"))),
+                "<P class=\"class\"><INPUT type=\"checkbox\" checked=\"checked\"></P>\r\n");
     }
 
     public void testTableIndentation()
@@ -184,28 +188,6 @@ public class HtmlOutputterTest extends TestCase
         assertThrowsIllegalArgumentException(
                 "Attribute 'class' must be contained in an element",
                 () -> outputter.output(Class("foo")));
-    }
-
-    public void testAttributeDTDValidation()
-    {
-        StringWriter writer = new StringWriter();
-        HtmlOutputter<RuntimeException> strict = new HtmlOutputter<>(writer::write);
-        // Id is okay in all DTDs
-        strict.output(P(Id("foo")));
-        // Align is not allowed in the strict DTD
-        assertThrowsIllegalArgumentException(
-                "The 'align' attribute is not allowed for the 'P' element",
-                () -> strict.output(P(Align("center"))));
-        // Name is allowed on A in the strict DTD, but on IFRAME only in the
-        // frameset DTD
-        strict.output(A(Name("foo")));
-        // don't throw a NullPointerException if the attribute isn't allowed at all
-        assertThrowsIllegalArgumentException(
-                "The 'checked' attribute is not allowed for the 'P' element",
-                () -> strict.output(P(Checked(true))));
-        assertThrowsIllegalArgumentException(
-                "The 'foo' attribute is not allowed for the 'P' element",
-                () -> strict.output(P(new Attribute("foo", "bar", elementName -> null))));
     }
 
     public void testDoctype()

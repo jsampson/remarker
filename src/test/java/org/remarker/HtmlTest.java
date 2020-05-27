@@ -99,14 +99,11 @@ public class HtmlTest extends TestCase
 
     public void testBooleanAttribute()
     {
-        checkHtml(INPUT(Checked(true)), "<input checked=\"checked\" />");
+        checkHtml(INPUT(Checked(true)), "<input checked />");
         checkHtml(INPUT(Checked(false)), "<input />");
         checkHtml(INPUT(Checked((Boolean) null)), "<input />");
         checkHtml(INPUT(Checked("checked")), "<input checked=\"checked\" />");
         checkHtml(INPUT(Checked((String) null)), "<input />");
-        assertThrowsIllegalArgumentException(
-                "The 'checked' attribute must be boolean for the 'INPUT' element; got \"foo\"",
-                () -> INPUT(Checked("foo")));
     }
 
     public void testNumberAttribute()
@@ -117,35 +114,13 @@ public class HtmlTest extends TestCase
         checkHtml(TD(Colspan("42")), "<td colspan=\"42\" />");
         checkHtml(TD(Colspan("-17")), "<td colspan=\"-17\" />");
         checkHtml(TD(Colspan((String) null)), "<td />");
-        assertThrowsIllegalArgumentException(
-                "The 'colspan' attribute must be a number for the 'TD' element; got \"foo\"",
-                () -> TD(Colspan("foo")));
     }
 
-    public void testAllowedAttributes()
-    {
-        // "action" is allowed only for "form"
-        checkHtml(FORM(Action("...")), "<form action=\"...\" />");
-        assertThrowsIllegalArgumentException(
-                "The 'action' attribute is not allowed for the 'BODY' element",
-                () -> BODY(Action("...")));
-        // "onclick" is allowed for *all elements but* a certain list
-        checkHtml(BODY(Onclick("...")), "<body onclick=\"...\" />");
-        assertThrowsIllegalArgumentException(
-                "The 'onclick' attribute is not allowed for the 'HEAD' element",
-                () -> HEAD(Onclick("...")));
-        // "cols" has a different type for "frameset" than for "textarea"
-        checkHtml(TEXTAREA(Cols("123")), "<textarea cols=\"123\" />");
-        assertThrowsIllegalArgumentException(
-                "The 'cols' attribute must be a number for the 'TEXTAREA' element; got \"1,2,3\"",
-                () -> TEXTAREA(Cols("1,2,3")));
-    }
-
-    public void testBogusAttribute()
+    public void testAttributeDisallowedInFragment()
     {
         assertThrowsIllegalArgumentException(
-                "The 'foo' attribute is not allowed for the 'P' element",
-                () -> P(new Attribute("foo", "bar", elementName -> null)));
+                "Attribute 'onclick' must be contained in an element",
+                () -> asHtml(Onclick("...")));
     }
 
     private void checkHtml(Element html, String expected)
@@ -160,7 +135,11 @@ public class HtmlTest extends TestCase
         builder.append("<").append(element.getName().toLowerCase());
         for (Attribute attribute : element.getAttributes())
         {
-            builder.append(" ").append(attribute.getName()).append("=\"").append(attribute.getValue()).append("\"");
+            builder.append(" ").append(attribute.getName());
+            if (!attribute.isBoolean())
+            {
+              builder.append("=\"").append(attribute.getValue()).append("\"");
+            }
         }
         if (element.getContents().isEmpty())
         {
@@ -189,7 +168,7 @@ public class HtmlTest extends TestCase
         try
         {
             runnable.run();
-            fail();
+            fail("Not thrown: <" + expectedMessage + ">");
         }
         catch (IllegalArgumentException actual)
         {
