@@ -40,7 +40,7 @@ public class XPathTest
     @Test
     public void complicatedIsIllegal()
     {
-        assertThrowsIllegalArgumentException("XPath not supported: <body/./text()>", () -> ROOT.evaluateXPath("body/./text()"));
+        assertThrowsIllegalArgumentException("XPath not supported: <//body/../text()>", () -> ROOT.evaluateXPath("//body/../text()"));
     }
 
     @Test
@@ -78,5 +78,43 @@ public class XPathTest
     public void filterByText()
     {
         assertEquals(singletonList("foo"), ROOT.evaluateXPath("body/div[text()='Foo Text']/@class"));
+    }
+
+    @Test
+    public void doubleQuotes()
+    {
+        assertEquals(singletonList("foo"), ROOT.evaluateXPath("body/div[text()=\"Foo Text\"]/@class"));
+    }
+
+    @Test
+    public void filterByAttributePresence()
+    {
+        Element root = DIV(
+                INPUT(Value("true"), Checked(true)),
+                INPUT(Value("false"), Checked(false)),
+                INPUT(Value("null"), Checked(null)),
+                INPUT(Value("void"), Checked()));
+        assertEquals(asList("true", "void"), root.evaluateXPath("input[@checked]/@value"));
+    }
+
+    @Test
+    public void dot()
+    {
+        Element root = BODY(DIV(SPAN("foo")), DIV(SPAN("bar")));
+        assertEquals(asList("foo", "bar"), root.evaluateXPath("./div/././span/./text()"));
+    }
+
+    @Test
+    public void star()
+    {
+        Element root = BODY(DIV(SPAN(Class("foo"))), DIV(P(Class("bar"))));
+        assertEquals(asList("foo", "bar"), root.evaluateXPath("div/*/@class"));
+    }
+
+    @Test
+    public void descendentsAndSelf()
+    {
+        Element root = BODY(Class("root"), DIV(Class("child"), SPAN(Class("foo"))), DIV(P(Class("bar"))));
+        assertEquals(asList("root", "child", "foo", "bar"), root.evaluateXPath(".//@class"));
     }
 }

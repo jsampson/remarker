@@ -180,62 +180,75 @@ public final class Element extends Content
         return unmodifiableCollection(attributes.values());
     }
 
-    private static final Pattern XPATH_PART_PATTERN =
-            Pattern.compile("([A-Za-z-]+)(?:\\[(?:text\\(\\)|@([A-Za-z-]+))='([^']*)'\\])?");
+    private static final Pattern XPATH_PART_PATTERN = Pattern.compile("([A-Za-z-]+|[*.])"
+            + "(?:\\[(?:(?:text\\(\\)|@([A-Za-z-]+))=(?:'([^']*)'|\"([^\"]*)\")|@([A-Za-z-]+))\\])?"
+            + "(//?)");
     private static final Pattern XPATH_LAST_PART_PATTERN = Pattern.compile("text\\(\\)|@([A-Za-z-]+)");
 
     public List<String> evaluateXPath(String xpath)
     {
-        EVALUATE:
+        Matcher partMatcher = XPATH_PART_PATTERN.matcher(xpath);
+        Stream<Element> elements = Stream.of(this);
+
+        while (partMatcher.lookingAt())
         {
-            String[] parts = xpath.split("/", -1);
-            Stream<Element> elements = Stream.of(this);
+            String childName = partMatcher.group(1);
+            String attributeName = partMatcher.group(2);
+            String expectedValue = partMatcher.group(3) != null ? partMatcher.group(3) : partMatcher.group(4);
+            String presentAttributeName = partMatcher.group(5);
+            String pathSeparator = partMatcher.group(6);
+            partMatcher.region(partMatcher.end(), partMatcher.regionEnd());
 
-            for (int i = 0; i < parts.length - 1; i++)
+            if ("*".equals(childName))
             {
-                Matcher partMatcher = XPATH_PART_PATTERN.matcher(parts[i]);
-                if (partMatcher.matches())
-                {
-                    String childName = partMatcher.group(1);
-                    String attributeName = partMatcher.group(2);
-                    String expectedValue = partMatcher.group(3);
-
-                    elements = elements.flatMap(Element::childStream)
-                            .filter(element -> childName.equalsIgnoreCase(element.getName()));
-
-                    if (attributeName != null)
-                    {
-                        elements = elements.filter(element -> element.attributeStream().anyMatch(
-                                attribute -> attributeName.equalsIgnoreCase(attribute.getName())
-                                        && expectedValue.equals(attribute.getValue())));
-                    }
-                    else if (expectedValue != null)
-                    {
-                        elements = elements.filter(element -> expectedValue.equals(element.getAllText()));
-                    }
-                }
-                else
-                {
-                    break EVALUATE;
-                }
+                elements = elements.flatMap(Element::childStream);
+            }
+            else if (!".".equals(childName))
+            {
+                elements = elements.flatMap(Element::childStream)
+                        .filter(element -> childName.equalsIgnoreCase(element.getName()));
             }
 
-            Matcher lastPartMatcher = XPATH_LAST_PART_PATTERN.matcher(parts[parts.length - 1]);
-            if (lastPartMatcher.matches())
+            if (attributeName != null)
             {
-                String attributeName = lastPartMatcher.group(1);
-                if (attributeName != null)
-                {
-                    return unmodifiableList(elements.flatMap(Element::attributeStream).filter(attribute ->
-                            attributeName.equalsIgnoreCase(attribute.getName())).map(Attribute::getValue).collect(toList()));
-                }
-                else
-                {
-                    return unmodifiableList(elements.map(Element::getAllText).collect(toList()));
-                }
+                elements = elements.filter(element -> element.attributeStream().anyMatch(
+                        attribute -> attributeName.equalsIgnoreCase(attribute.getName())
+                                && expectedValue.equals(attribute.getValue())));
+            }
+            else if (expectedValue != null)
+            {
+                elements = elements.filter(element -> expectedValue.equals(element.getAllText()));
+            }
+            else if (presentAttributeName != null)
+            {
+                elements = elements.filter(element -> element.attributeStream().anyMatch(
+                        attribute -> presentAttributeName.equalsIgnoreCase(attribute.getName())));
+            }
+
+            if ("//".equals(pathSeparator))
+            {
+                elements = elements.flatMap(Element::selfAndDescendentsStream);
             }
         }
-        throw new IllegalArgumentException("XPath not supported: <" + xpath + ">");
+
+        Matcher lastPartMatcher = XPATH_LAST_PART_PATTERN.matcher(xpath).region(partMatcher.regionStart(), partMatcher.regionEnd());
+        if (lastPartMatcher.matches())
+        {
+            String attributeName = lastPartMatcher.group(1);
+            if (attributeName != null)
+            {
+                return unmodifiableList(elements.flatMap(Element::attributeStream).filter(attribute ->
+                        attributeName.equalsIgnoreCase(attribute.getName())).map(Attribute::getValue).collect(toList()));
+            }
+            else
+            {
+                return unmodifiableList(elements.map(Element::getAllText).collect(toList()));
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException("XPath not supported: <" + xpath + ">");
+        }
     }
 
     public String getAllText()
@@ -259,5 +272,10 @@ public final class Element extends Content
     private Stream<Attribute> attributeStream()
     {
         return attributes.values().stream();
+    }
+
+    private Stream<Element> selfAndDescendentsStream()
+    {
+        return Stream.concat(Stream.of(this), childStream().flatMap(Element::selfAndDescendentsStream));
     }
 }
