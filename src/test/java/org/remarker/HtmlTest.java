@@ -132,7 +132,7 @@ public class HtmlTest extends TestCase
         for (Attribute attribute : element.getAttributes())
         {
             builder.append(" ").append(attribute.getName());
-            if (!attribute.isBoolean())
+            if (!attribute.getValue().isEmpty())
             {
               builder.append("=\"").append(attribute.getValue()).append("\"");
             }

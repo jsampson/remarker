@@ -17,6 +17,7 @@
 package org.remarker;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import org.remarker.dom.*;
 
 public final class HtmlOutputter<X extends Exception>
@@ -157,15 +158,26 @@ public final class HtmlOutputter<X extends Exception>
         escape(text.getValue(), false);
     }
 
+    private static final Pattern UNQUOTED_VALUE_PATTERN = Pattern.compile("[A-Za-z0-9_.+-]+");
+
     private void attribute(Attribute attribute, Element element) throws X
     {
         raw(" ");
         raw(attribute.getName());
-        if (!attribute.isBoolean())
+        String value = attribute.getValue();
+        if (!value.isEmpty())
         {
-            raw("=\"");
-            escape(attribute.getValue(), true);
-            raw('"');
+            if (UNQUOTED_VALUE_PATTERN.matcher(value).matches())
+            {
+                raw('=');
+                raw(value);
+            }
+            else
+            {
+                raw("=\"");
+                escape(value, true);
+                raw('"');
+            }
         }
     }
 

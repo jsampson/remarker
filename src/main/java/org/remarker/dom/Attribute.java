@@ -40,7 +40,7 @@ public final class Attribute
     {
         if (Boolean.TRUE.equals(value))
         {
-            return new Attribute(name, null);
+            return new Attribute(name, "");
         }
         else
         {
@@ -69,11 +69,6 @@ public final class Attribute
 
     public String getValue()
     {
-        return requireNonNull(value, "value");
-    }
-
-    public boolean isBoolean()
-    {
-        return value == null;
+        return value;
     }
 }

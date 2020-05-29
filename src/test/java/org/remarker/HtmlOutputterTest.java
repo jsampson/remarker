@@ -54,7 +54,7 @@ public class HtmlOutputterTest extends TestCase
                 "<P>",
                 "  <B></B>",
                 "  <BR>",
-                "  <INPUT type=\"text\">",
+                "  <INPUT type=text>",
                 "</P>");
     }
 
@@ -77,11 +77,11 @@ public class HtmlOutputterTest extends TestCase
     public void testBooleanAttributes()
     {
         checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked(false))),
-                "<P class=\"class\"><INPUT type=\"checkbox\"></P>\r\n");
+                "<P class=class><INPUT type=checkbox></P>\r\n");
         checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked(true))),
-                "<P class=\"class\"><INPUT type=\"checkbox\" checked></P>\r\n");
+                "<P class=class><INPUT type=checkbox checked></P>\r\n");
         checkHtml(P(Class("class"), INPUT(Type("checkbox"), Checked())),
-                "<P class=\"class\"><INPUT type=\"checkbox\" checked></P>\r\n");
+                "<P class=class><INPUT type=checkbox checked></P>\r\n");
     }
 
     public void testTableIndentation()
@@ -148,7 +148,7 @@ public class HtmlOutputterTest extends TestCase
     public void testNewlinesInAttribute()
     {
         checkHtml(INPUT(Type("hidden"), Value("first line\r\nsecond line")),
-                "<INPUT type=\"hidden\" value=\"first line&#13;&#10;second line\">");
+                "<INPUT type=hidden value=\"first line&#13;&#10;second line\">");
     }
 
     public void testSurrogatePairs()
