@@ -117,4 +117,11 @@ public class XPathTest
         Element root = BODY(Class("root"), DIV(Class("child"), SPAN(Class("foo"))), DIV(P(Class("bar"))));
         assertEquals(asList("root", "child", "foo", "bar"), root.evaluateXPath(".//@class"));
     }
+
+    @Test
+    public void relativeToFragment()
+    {
+        Fragment fragment = asHtml(ROOT);
+        assertEquals(asList("Foo Text", "Bar Text"), fragment.evaluateXPath("html/body/div/text()"));
+    }
 }

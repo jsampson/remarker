@@ -16,34 +16,43 @@
 
 package org.remarker.dom;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Collections.unmodifiableList;
 
-public final class Text extends Content
+public final class Fragment extends Node
 {
-    private final String value;
+    private final List<Content> contents;
 
-    Text(String value)
+    public Fragment(Object... contents)
     {
-        this.value = requireNonNull(value);
+        List<Content> processedContents = new ArrayList<>();
+
+        processContents(contents, processedContents::add, attribute -> {
+            throw new IllegalArgumentException(
+                    "Attribute '" + attribute.getName() + "' must be contained in an element");
+        });
+
+        this.contents = unmodifiableList(processedContents);
     }
 
-    public String getValue()
+    public List<Content> getContents()
     {
-        return value;
+        return contents;
     }
 
     @Override
     void appendTextTo(StringBuilder builder)
     {
-        builder.append(value);
+        contents.forEach(content -> content.appendTextTo(builder));
     }
 
     @Override
     Stream<Element> childStream()
     {
-        return Stream.empty();
+        return contents.stream().filter(Element.class::isInstance).map(Element.class::cast);
     }
 
     @Override

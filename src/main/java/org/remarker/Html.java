@@ -26,14 +26,14 @@ public final class Html
         // to prevent instantiation
     }
 
-    public static Element noHtml()
+    public static Fragment noHtml()
     {
-        return asHtml();
+        return new Fragment();
     }
 
-    public static Element asHtml(Object... contents)
+    public static Fragment asHtml(Object... contents)
     {
-        return new Element(null, true, false, contents);
+        return new Fragment(contents);
     }
 
     // BEGIN GENERATED CODE

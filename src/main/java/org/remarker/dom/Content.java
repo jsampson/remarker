@@ -16,12 +16,10 @@
 
 package org.remarker.dom;
 
-public abstract class Content
+public abstract class Content extends Node
 {
     Content()
     {
         // to prevent extension outside of package
     }
-
-    abstract void appendTextTo(StringBuilder builder);
 }

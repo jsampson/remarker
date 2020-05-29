@@ -58,15 +58,7 @@ public final class HtmlOutputter<X extends Exception>
     {
         if (content instanceof Element)
         {
-            Element element = (Element) content;
-            if (element.isFragment())
-            {
-                dispatch(element.getContents());
-            }
-            else
-            {
-                element(element);
-            }
+            element((Element) content);
         }
         else
         {
@@ -109,10 +101,9 @@ public final class HtmlOutputter<X extends Exception>
                 indentLevel++;
                 newLine();
             }
-            for (Content content : element.getContents())
-            {
-                dispatch(content);
-            }
+
+            dispatch(element.getContents());
+
             if (newLinesInside)
             {
                 newLine();
