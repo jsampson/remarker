@@ -18,6 +18,9 @@ package org.remarker;
 
 import org.remarker.dom.*;
 
+import static org.remarker.dom.BreakStyle.*;
+import static org.remarker.dom.ContentModel.*;
+
 @SuppressWarnings("unused")
 public final class Html
 {
@@ -40,387 +43,387 @@ public final class Html
 
     public static Element A(Object... contents)
     {
-        return new Element("A", true, false, contents);
+        return new Element("A", INLINE, MIXED, contents);
     }
 
     public static Element ABBR(Object... contents)
     {
-        return new Element("ABBR", true, false, contents);
+        return new Element("ABBR", INLINE, MIXED, contents);
     }
 
     public static Element ACRONYM(Object... contents)
     {
-        return new Element("ACRONYM", true, false, contents);
+        return new Element("ACRONYM", INLINE, MIXED, contents);
     }
 
     public static Element ADDRESS(Object... contents)
     {
-        return new Element("ADDRESS", false, false, contents);
+        return new Element("ADDRESS", BLOCK, MIXED, contents);
     }
 
     public static Element AREA(Object... contents)
     {
-        return new Element("AREA", false, true, contents);
+        return new Element("AREA", BLOCK, VOID, contents);
     }
 
     public static Element B(Object... contents)
     {
-        return new Element("B", true, false, contents);
+        return new Element("B", INLINE, MIXED, contents);
     }
 
     public static Element BASE(Object... contents)
     {
-        return new Element("BASE", false, true, contents);
+        return new Element("BASE", BLOCK, VOID, contents);
     }
 
     public static Element BDO(Object... contents)
     {
-        return new Element("BDO", true, false, contents);
+        return new Element("BDO", INLINE, MIXED, contents);
     }
 
     public static Element BIG(Object... contents)
     {
-        return new Element("BIG", true, false, contents);
+        return new Element("BIG", INLINE, MIXED, contents);
     }
 
     public static Element BLOCKQUOTE(Object... contents)
     {
-        return new Element("BLOCKQUOTE", false, false, contents);
+        return new Element("BLOCKQUOTE", BLOCK, MIXED, contents);
     }
 
     public static Element BODY(Object... contents)
     {
-        return new Element("BODY", false, false, contents);
+        return new Element("BODY", BLOCK, MIXED, contents);
     }
 
     public static Element BR(Object... contents)
     {
-        return new Element("BR", false, true, contents);
+        return new Element("BR", END, VOID, contents);
     }
 
     public static Element BUTTON(Object... contents)
     {
-        return new Element("BUTTON", true, false, contents);
+        return new Element("BUTTON", INLINE, MIXED, contents);
     }
 
     public static Element CAPTION(Object... contents)
     {
-        return new Element("CAPTION", false, false, contents);
+        return new Element("CAPTION", BLOCK, MIXED, contents);
     }
 
     public static Element CITE(Object... contents)
     {
-        return new Element("CITE", true, false, contents);
+        return new Element("CITE", INLINE, MIXED, contents);
     }
 
     public static Element CODE(Object... contents)
     {
-        return new Element("CODE", true, false, contents);
+        return new Element("CODE", INLINE, MIXED, contents);
     }
 
     public static Element COL(Object... contents)
     {
-        return new Element("COL", false, true, contents);
+        return new Element("COL", BLOCK, VOID, contents);
     }
 
     public static Element COLGROUP(Object... contents)
     {
-        return new Element("COLGROUP", false, false, contents);
+        return new Element("COLGROUP", BLOCK, MIXED, contents);
     }
 
     public static Element DD(Object... contents)
     {
-        return new Element("DD", false, false, contents);
+        return new Element("DD", BLOCK, MIXED, contents);
     }
 
     public static Element DEL(Object... contents)
     {
-        return new Element("DEL", false, false, contents);
+        return new Element("DEL", BLOCK, MIXED, contents);
     }
 
     public static Element DFN(Object... contents)
     {
-        return new Element("DFN", true, false, contents);
+        return new Element("DFN", INLINE, MIXED, contents);
     }
 
     public static Element DIV(Object... contents)
     {
-        return new Element("DIV", false, false, contents);
+        return new Element("DIV", BLOCK, MIXED, contents);
     }
 
     public static Element DL(Object... contents)
     {
-        return new Element("DL", false, false, contents);
+        return new Element("DL", BLOCK, MIXED, contents);
     }
 
     public static Element DT(Object... contents)
     {
-        return new Element("DT", false, false, contents);
+        return new Element("DT", BLOCK, MIXED, contents);
     }
 
     public static Element EM(Object... contents)
     {
-        return new Element("EM", true, false, contents);
+        return new Element("EM", INLINE, MIXED, contents);
     }
 
     public static Element FIELDSET(Object... contents)
     {
-        return new Element("FIELDSET", false, false, contents);
+        return new Element("FIELDSET", BLOCK, MIXED, contents);
     }
 
     public static Element FORM(Object... contents)
     {
-        return new Element("FORM", false, false, contents);
+        return new Element("FORM", BLOCK, MIXED, contents);
     }
 
     public static Element H1(Object... contents)
     {
-        return new Element("H1", false, false, contents);
+        return new Element("H1", BLOCK, MIXED, contents);
     }
 
     public static Element H2(Object... contents)
     {
-        return new Element("H2", false, false, contents);
+        return new Element("H2", BLOCK, MIXED, contents);
     }
 
     public static Element H3(Object... contents)
     {
-        return new Element("H3", false, false, contents);
+        return new Element("H3", BLOCK, MIXED, contents);
     }
 
     public static Element H4(Object... contents)
     {
-        return new Element("H4", false, false, contents);
+        return new Element("H4", BLOCK, MIXED, contents);
     }
 
     public static Element H5(Object... contents)
     {
-        return new Element("H5", false, false, contents);
+        return new Element("H5", BLOCK, MIXED, contents);
     }
 
     public static Element H6(Object... contents)
     {
-        return new Element("H6", false, false, contents);
+        return new Element("H6", BLOCK, MIXED, contents);
     }
 
     public static Element HEAD(Object... contents)
     {
-        return new Element("HEAD", false, false, contents);
+        return new Element("HEAD", BLOCK, MIXED, contents);
     }
 
     public static Element HR(Object... contents)
     {
-        return new Element("HR", false, true, contents);
+        return new Element("HR", BLOCK, VOID, contents);
     }
 
     public static Element HTML(Object... contents)
     {
-        return new Element("HTML", false, false, contents);
+        return new Element("HTML", BLOCK, MIXED, contents);
     }
 
     public static Element I(Object... contents)
     {
-        return new Element("I", true, false, contents);
+        return new Element("I", INLINE, MIXED, contents);
     }
 
     public static Element IMG(Object... contents)
     {
-        return new Element("IMG", true, true, contents);
+        return new Element("IMG", INLINE, VOID, contents);
     }
 
     public static Element INPUT(Object... contents)
     {
-        return new Element("INPUT", true, true, contents);
+        return new Element("INPUT", INLINE, VOID, contents);
     }
 
     public static Element INS(Object... contents)
     {
-        return new Element("INS", false, false, contents);
+        return new Element("INS", BLOCK, MIXED, contents);
     }
 
     public static Element KBD(Object... contents)
     {
-        return new Element("KBD", true, false, contents);
+        return new Element("KBD", INLINE, MIXED, contents);
     }
 
     public static Element LABEL(Object... contents)
     {
-        return new Element("LABEL", true, false, contents);
+        return new Element("LABEL", INLINE, MIXED, contents);
     }
 
     public static Element LEGEND(Object... contents)
     {
-        return new Element("LEGEND", false, false, contents);
+        return new Element("LEGEND", BLOCK, MIXED, contents);
     }
 
     public static Element LI(Object... contents)
     {
-        return new Element("LI", false, false, contents);
+        return new Element("LI", BLOCK, MIXED, contents);
     }
 
     public static Element LINK(Object... contents)
     {
-        return new Element("LINK", false, true, contents);
+        return new Element("LINK", BLOCK, VOID, contents);
     }
 
     public static Element MAP(Object... contents)
     {
-        return new Element("MAP", true, false, contents);
+        return new Element("MAP", INLINE, MIXED, contents);
     }
 
     public static Element META(Object... contents)
     {
-        return new Element("META", false, true, contents);
+        return new Element("META", BLOCK, VOID, contents);
     }
 
     public static Element NOSCRIPT(Object... contents)
     {
-        return new Element("NOSCRIPT", false, false, contents);
+        return new Element("NOSCRIPT", BLOCK, MIXED, contents);
     }
 
     public static Element OBJECT(Object... contents)
     {
-        return new Element("OBJECT", true, false, contents);
+        return new Element("OBJECT", INLINE, MIXED, contents);
     }
 
     public static Element OL(Object... contents)
     {
-        return new Element("OL", false, false, contents);
+        return new Element("OL", BLOCK, MIXED, contents);
     }
 
     public static Element OPTGROUP(Object... contents)
     {
-        return new Element("OPTGROUP", false, false, contents);
+        return new Element("OPTGROUP", BLOCK, MIXED, contents);
     }
 
     public static Element OPTION(Object... contents)
     {
-        return new Element("OPTION", false, false, contents);
+        return new Element("OPTION", BLOCK, MIXED, contents);
     }
 
     public static Element P(Object... contents)
     {
-        return new Element("P", false, false, contents);
+        return new Element("P", BLOCK, MIXED, contents);
     }
 
     public static Element PARAM(Object... contents)
     {
-        return new Element("PARAM", false, true, contents);
+        return new Element("PARAM", BLOCK, VOID, contents);
     }
 
     public static Element PRE(Object... contents)
     {
-        return new Element("PRE", false, false, contents);
+        return new Element("PRE", PRE, MIXED, contents);
     }
 
     public static Element Q(Object... contents)
     {
-        return new Element("Q", true, false, contents);
+        return new Element("Q", INLINE, MIXED, contents);
     }
 
     public static Element SAMP(Object... contents)
     {
-        return new Element("SAMP", true, false, contents);
+        return new Element("SAMP", INLINE, MIXED, contents);
     }
 
     public static Element SCRIPT(Object... contents)
     {
-        return new Element("SCRIPT", false, false, contents);
+        return new Element("SCRIPT", BLOCK, RAW_TEXT, contents);
     }
 
     public static Element SELECT(Object... contents)
     {
-        return new Element("SELECT", false, false, contents);
+        return new Element("SELECT", BLOCK, MIXED, contents);
     }
 
     public static Element SMALL(Object... contents)
     {
-        return new Element("SMALL", true, false, contents);
+        return new Element("SMALL", INLINE, MIXED, contents);
     }
 
     public static Element SPAN(Object... contents)
     {
-        return new Element("SPAN", true, false, contents);
+        return new Element("SPAN", INLINE, MIXED, contents);
     }
 
     public static Element STRONG(Object... contents)
     {
-        return new Element("STRONG", true, false, contents);
+        return new Element("STRONG", INLINE, MIXED, contents);
     }
 
     public static Element STYLE(Object... contents)
     {
-        return new Element("STYLE", false, false, contents);
+        return new Element("STYLE", BLOCK, RAW_TEXT, contents);
     }
 
     public static Element SUB(Object... contents)
     {
-        return new Element("SUB", true, false, contents);
+        return new Element("SUB", INLINE, MIXED, contents);
     }
 
     public static Element SUP(Object... contents)
     {
-        return new Element("SUP", true, false, contents);
+        return new Element("SUP", INLINE, MIXED, contents);
     }
 
     public static Element TABLE(Object... contents)
     {
-        return new Element("TABLE", false, false, contents);
+        return new Element("TABLE", BLOCK, MIXED, contents);
     }
 
     public static Element TBODY(Object... contents)
     {
-        return new Element("TBODY", false, false, contents);
+        return new Element("TBODY", BLOCK, MIXED, contents);
     }
 
     public static Element TD(Object... contents)
     {
-        return new Element("TD", false, false, contents);
+        return new Element("TD", BLOCK, MIXED, contents);
     }
 
     public static Element TEXTAREA(Object... contents)
     {
-        return new Element("TEXTAREA", true, false, contents);
+        return new Element("TEXTAREA", PRE, ESCAPABLE_RAW_TEXT, contents);
     }
 
     public static Element TFOOT(Object... contents)
     {
-        return new Element("TFOOT", false, false, contents);
+        return new Element("TFOOT", BLOCK, MIXED, contents);
     }
 
     public static Element TH(Object... contents)
     {
-        return new Element("TH", false, false, contents);
+        return new Element("TH", BLOCK, MIXED, contents);
     }
 
     public static Element THEAD(Object... contents)
     {
-        return new Element("THEAD", false, false, contents);
+        return new Element("THEAD", BLOCK, MIXED, contents);
     }
 
     public static Element TITLE(Object... contents)
     {
-        return new Element("TITLE", false, false, contents);
+        return new Element("TITLE", BLOCK, ESCAPABLE_RAW_TEXT, contents);
     }
 
     public static Element TR(Object... contents)
     {
-        return new Element("TR", false, false, contents);
+        return new Element("TR", BLOCK, MIXED, contents);
     }
 
     public static Element TT(Object... contents)
     {
-        return new Element("TT", true, false, contents);
+        return new Element("TT", INLINE, MIXED, contents);
     }
 
     public static Element UL(Object... contents)
     {
-        return new Element("UL", false, false, contents);
+        return new Element("UL", BLOCK, MIXED, contents);
     }
 
     public static Element VAR(Object... contents)
     {
-        return new Element("VAR", true, false, contents);
+        return new Element("VAR", INLINE, MIXED, contents);
     }
 
     public static Attribute Abbr(String value)

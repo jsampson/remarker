@@ -22,11 +22,15 @@ import java.util.regex.*;
 import javax.xml.xpath.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.remarker.dom.BreakStyle;
+import org.remarker.dom.ContentModel;
 import org.xml.sax.InputSource;
 
 import static java.util.Arrays.*;
 import static javax.xml.xpath.XPathConstants.NODESET;
 import static org.remarker.AttributeType.*;
+import static org.remarker.dom.BreakStyle.*;
+import static org.remarker.dom.ContentModel.*;
 
 final class SpecificationParser
 {
@@ -89,7 +93,10 @@ final class SpecificationParser
         inline.remove("BR");
         inline.remove("SCRIPT");
         inline.remove("SELECT");
-        // TODO: IMG & INPUT are the only ones with both inline & ampty (a.k.a. "void")
+
+        Set<String> prestyle = new HashSet<>(asList("PRE", "TEXTAREA"));
+        Set<String> rawtext = new HashSet<>(asList("SCRIPT", "STYLE"));
+        Set<String> escapablerawtext = new HashSet<>(asList("TEXTAREA", "TITLE"));
 
         Map<String, ElementDefinition> elements = new TreeMap<>();
         NodeList nodes = load("elements.html", "//tr[td[1]/@title='Name']");
@@ -101,7 +108,15 @@ final class SpecificationParser
             String dtd = getCellValue(tr, 5);
             if (isStrict(dtd))
             {
-                elements.put(name.toLowerCase().intern(), new ElementDefinition(name, inline.contains(name), empty.equals("E")));
+                BreakStyle breakStyle = "BR".equals(name) ? END
+                        : prestyle.contains(name) ? PRE
+                        : inline.contains(name) ? INLINE
+                        : BLOCK;
+                ContentModel contentModel = empty.equals("E") ? VOID
+                        : rawtext.contains(name) ? RAW_TEXT
+                        : escapablerawtext.contains(name) ? ESCAPABLE_RAW_TEXT
+                        : MIXED;
+                elements.put(name.toLowerCase().intern(), new ElementDefinition(name, breakStyle, contentModel));
             }
         }
         return elements;

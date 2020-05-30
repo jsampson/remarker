@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.remarker.dom.*;
 
+import static org.remarker.dom.BreakStyle.*;
+import static org.remarker.dom.ContentModel.*;
+
 public final class HtmlOutputter<X extends Exception>
 {
     @FunctionalInterface
@@ -73,9 +76,10 @@ public final class HtmlOutputter<X extends Exception>
         {
             append("<!DOCTYPE HTML>\r\n");
         }
-        boolean pre = element.getName().equals("PRE");
-        boolean newLinesOutside = !element.isInline();
-        boolean newLinesInside = !pre && !element.isInline() && hasNonInlineContents(element.getContents());
+        BreakStyle breakStyle = element.getBreakStyle();
+        ContentModel contentModel = element.getContentModel();
+        boolean newLinesOutside = breakStyle != INLINE;
+        boolean newLinesInside = breakStyle == BLOCK && hasNonInlineContents(element.getContents());
         if (newLinesOutside)
         {
             newLine();
@@ -86,14 +90,14 @@ public final class HtmlOutputter<X extends Exception>
         {
             attribute(attribute, element);
         }
-        if (element.isEmpty())
+        if (contentModel == VOID)
         {
             raw(">");
         }
         else
         {
             raw('>');
-            if (pre)
+            if (breakStyle == PRE)
             {
                 indentSuppressionLevel++;
             }
@@ -113,7 +117,7 @@ public final class HtmlOutputter<X extends Exception>
             raw("</");
             raw(element.getName());
             raw('>');
-            if (pre)
+            if (breakStyle == PRE)
             {
                 indentSuppressionLevel--;
             }
@@ -131,12 +135,12 @@ public final class HtmlOutputter<X extends Exception>
             if (child instanceof Element)
             {
                 Element element = (Element) child;
-                if (!element.isInline() || hasNonInlineContents(element.getContents()))
+                if (element.getBreakStyle() != INLINE || hasNonInlineContents(element.getContents()))
                 {
                     return true;
                 }
             }
-            else if (child instanceof Text)
+            else
             {
                 Text text = (Text) child;
                 if (hasLineBreaks(text.getValue()))
@@ -158,6 +162,8 @@ public final class HtmlOutputter<X extends Exception>
         escape(text.getValue(), false);
     }
 
+    // The HTML syntax allows more than these characters in unquoted attribute values,
+    // but these are the most common and therefore a reasonably conservative set.
     private static final Pattern UNQUOTED_VALUE_PATTERN = Pattern.compile("[A-Za-z0-9_.+-]+");
 
     private void attribute(Attribute attribute, Element element) throws X

@@ -16,17 +16,20 @@
 
 package org.remarker;
 
+import org.remarker.dom.BreakStyle;
+import org.remarker.dom.ContentModel;
+
 class ElementDefinition
 {
     final String uppercase;
-    final boolean inline;
-    final boolean empty;
+    final BreakStyle breakStyle;
+    final ContentModel contentModel;
 
-    ElementDefinition(String name, boolean inline, boolean empty)
+    ElementDefinition(String name, BreakStyle breakStyle, ContentModel contentModel)
     {
         this.uppercase = name.toUpperCase().intern();
-        this.inline = inline;
-        this.empty = empty;
+        this.breakStyle = breakStyle;
+        this.contentModel = contentModel;
     }
 
     void generateCode()
@@ -34,7 +37,7 @@ class ElementDefinition
         System.out.printf("%n");
         System.out.printf("    public static Element %s(Object... contents)%n", uppercase);
         System.out.printf("    {%n");
-        System.out.printf("        return new Element(\"%s\", %b, %b, contents);%n", uppercase, inline, empty);
+        System.out.printf("        return new Element(\"%s\", %s, %s, contents);%n", uppercase, breakStyle, contentModel);
         System.out.printf("    }%n");
     }
 }

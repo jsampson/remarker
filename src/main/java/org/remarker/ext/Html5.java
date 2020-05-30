@@ -19,6 +19,9 @@ package org.remarker.ext;
 import org.remarker.dom.Attribute;
 import org.remarker.dom.Element;
 
+import static org.remarker.dom.BreakStyle.*;
+import static org.remarker.dom.ContentModel.*;
+
 /**
  * @see <a href="https://www.w3.org/TR/html5-diff/">HTML5 Differences from HTML4</a>
  */
@@ -30,9 +33,29 @@ public final class Html5
         // to prevent instantiation
     }
 
+    public static Element EMBED(Object... contents)
+    {
+        return new Element("EMBED", BLOCK, VOID, contents);
+    }
+
+    public static Element SOURCE(Object... contents)
+    {
+        return new Element("SOURCE", BLOCK, VOID, contents);
+    }
+
     public static Element TEMPLATE(Object... contents)
     {
-        return new Element("TEMPLATE", false, false, contents);
+        return new Element("TEMPLATE", BLOCK, MIXED, contents);
+    }
+
+    public static Element TRACK(Object... contents)
+    {
+        return new Element("TRACK", BLOCK, VOID, contents);
+    }
+
+    public static Element WBR(Object... contents)
+    {
+        return new Element("WBR", INLINE, VOID, contents);
     }
 
     public static Attribute Autofocus(Boolean value)

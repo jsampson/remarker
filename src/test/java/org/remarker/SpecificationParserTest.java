@@ -20,6 +20,7 @@ import java.util.*;
 import junit.framework.*;
 
 import static org.remarker.AttributeType.*;
+import static org.remarker.dom.ContentModel.VOID;
 
 public class SpecificationParserTest extends TestCase
 {
@@ -76,7 +77,7 @@ public class SpecificationParserTest extends TestCase
     {
         ElementDefinition element = elements.get(lowercase);
         assertSame(uppercase, element.uppercase);
-        assertEquals(empty, element.empty);
+        assertEquals(empty, element.contentModel == VOID);
     }
 
     private void checkNoElement(Map<String, ElementDefinition> elements, String lowercase)

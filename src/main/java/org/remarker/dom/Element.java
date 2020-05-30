@@ -32,23 +32,33 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.remarker.dom.BreakStyle.*;
+import static org.remarker.dom.ContentModel.*;
 
 public final class Element extends Content
 {
     private static final Pattern NAME_PATTERN = Pattern.compile("[A-Z]+[0-9]?");
 
     private final String name;
-    private final boolean inline;
-    private final boolean empty;
+    private final BreakStyle breakStyle;
+    private final ContentModel contentModel;
     private final List<Content> contents;
     private final List<Attribute> attributes;
 
     public Element(String name, boolean inline, boolean empty, Object... contents)
     {
+        this(name, name.equals("PRE") ? PRE : inline ? INLINE : BLOCK, empty ? VOID : MIXED, contents);
+    }
+
+    public Element(String name, BreakStyle breakStyle, ContentModel contentModel, Object... contents)
+    {
         if (!NAME_PATTERN.matcher(requireNonNull(name, "name")).matches())
         {
             throw new IllegalArgumentException("Element name should be uppercase: " + name);
         }
+
+        requireNonNull(breakStyle, "breakStyle");
+        requireNonNull(contentModel, "contentModel");
 
         List<Content> processedContents = new ArrayList<>();
         Map<String, Attribute> processedAttributes = new LinkedHashMap<>();
@@ -64,31 +74,31 @@ public final class Element extends Content
             }
         });
 
-        if (empty && !processedContents.isEmpty())
+        if (contentModel == ContentModel.VOID && !processedContents.isEmpty())
         {
-            throw new IllegalArgumentException("Empty element must not have contents: " + name);
+            throw new IllegalArgumentException("Void element must not have contents: " + name);
         }
 
         this.name = name;
-        this.inline = inline;
-        this.empty = empty;
+        this.breakStyle = breakStyle;
+        this.contentModel = contentModel;
         this.contents = unmodifiableList(processedContents);
         this.attributes = unmodifiableList(new ArrayList<>(processedAttributes.values()));
-    }
-
-    public boolean isInline()
-    {
-        return inline;
-    }
-
-    public boolean isEmpty()
-    {
-        return empty;
     }
 
     public String getName()
     {
         return name;
+    }
+
+    public BreakStyle getBreakStyle()
+    {
+        return breakStyle;
+    }
+
+    public ContentModel getContentModel()
+    {
+        return contentModel;
     }
 
     public List<Content> getContents()
