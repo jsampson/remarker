@@ -74,9 +74,21 @@ public final class Element extends Content
             }
         });
 
-        if (contentModel == ContentModel.VOID && !processedContents.isEmpty())
+        if (contentModel == VOID && !processedContents.isEmpty())
         {
             throw new IllegalArgumentException("Void element must not have contents: " + name);
+        }
+
+        if (contentModel == RAW_TEXT || contentModel == ESCAPABLE_RAW_TEXT)
+        {
+            String rawText = consolidateRawText(name, processedContents);
+            processedContents.clear();
+            processedContents.add(new Text(rawText));
+
+            if (contentModel == RAW_TEXT && rawText.matches(".*</(?i:" + name + ").*"))
+            {
+                throw new IllegalArgumentException("Element '" + name + "' must not contain text like '</" + name + "'");
+            }
         }
 
         this.name = name;
@@ -84,6 +96,24 @@ public final class Element extends Content
         this.contentModel = contentModel;
         this.contents = unmodifiableList(processedContents);
         this.attributes = unmodifiableList(new ArrayList<>(processedAttributes.values()));
+    }
+
+    private static String consolidateRawText(String name, List<Content> processedContents)
+    {
+        StringBuilder rawText = new StringBuilder();
+        for (Content content : processedContents)
+        {
+            if (content instanceof Text)
+            {
+                rawText.append(((Text) content).getValue());
+            }
+            else
+            {
+                throw new IllegalArgumentException("Element '" + name + "' must not have child element '"
+                        + ((Element) content).getName() + "'");
+            }
+        }
+        return rawText.toString();
     }
 
     public String getName()

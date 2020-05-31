@@ -18,5 +18,5 @@ package org.remarker.dom;
 
 public enum BreakStyle
 {
-    PRE, BLOCK, INLINE, END
+    PRE, TEXTAREA, BLOCK, INLINE
 }

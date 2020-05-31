@@ -98,7 +98,7 @@ public final class Html
 
     public static Element BR(Object... contents)
     {
-        return new Element("BR", END, VOID, contents);
+        return new Element("BR", BLOCK, VOID, contents);
     }
 
     public static Element BUTTON(Object... contents)
@@ -333,7 +333,7 @@ public final class Html
 
     public static Element SELECT(Object... contents)
     {
-        return new Element("SELECT", BLOCK, MIXED, contents);
+        return new Element("SELECT", INLINE, MIXED, contents);
     }
 
     public static Element SMALL(Object... contents)
@@ -383,7 +383,7 @@ public final class Html
 
     public static Element TEXTAREA(Object... contents)
     {
-        return new Element("TEXTAREA", PRE, ESCAPABLE_RAW_TEXT, contents);
+        return new Element("TEXTAREA", TEXTAREA, ESCAPABLE_RAW_TEXT, contents);
     }
 
     public static Element TFOOT(Object... contents)

@@ -89,10 +89,9 @@ final class SpecificationParser
         inline.addAll(phrase);
         inline.addAll(special);
         inline.addAll(formctrl);
-        // remove BR, SCRIPT, and SELECT so that they are formatted on their own lines
+        // remove BR and SCRIPT so that they are formatted on their own lines
         inline.remove("BR");
         inline.remove("SCRIPT");
-        inline.remove("SELECT");
 
         Set<String> prestyle = new HashSet<>(asList("PRE", "TEXTAREA"));
         Set<String> rawtext = new HashSet<>(asList("SCRIPT", "STYLE"));
@@ -108,10 +107,8 @@ final class SpecificationParser
             String dtd = getCellValue(tr, 5);
             if (isStrict(dtd))
             {
-                BreakStyle breakStyle = "BR".equals(name) ? END
-                        : prestyle.contains(name) ? PRE
-                        : inline.contains(name) ? INLINE
-                        : BLOCK;
+                BreakStyle breakStyle = prestyle.contains(name) ? BreakStyle.valueOf(name)
+                        : inline.contains(name) ? INLINE : BLOCK;
                 ContentModel contentModel = empty.equals("E") ? VOID
                         : rawtext.contains(name) ? RAW_TEXT
                         : escapablerawtext.contains(name) ? ESCAPABLE_RAW_TEXT

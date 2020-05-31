@@ -123,14 +123,37 @@ public class HtmlOutputterTest extends TestCase
     public void testPreIndentation()
     {
         checkHtml(
-                HTML(BODY(PRE("First line.\nSecond line.\rThird line.\r\nFourth line."))),
+                HTML(BODY("Hello", PRE("First line.\nSecond line.\rThird line.\r\nFourth line.\r\n\r\nFifth line."), "World")),
                 "<!DOCTYPE HTML>",
                 "<HTML>",
                 "  <BODY>",
-                "    <PRE>First line.",
+                "    Hello",
+                "    <PRE>",
+                "First line.",
                 "Second line.",
                 "Third line.",
-                "Fourth line.</PRE>",
+                "Fourth line.",
+                "",
+                "Fifth line.</PRE>",
+                "    World",
+                "  </BODY>",
+                "</HTML>");
+    }
+
+    public void testTextareaIndentation()
+    {
+        checkHtml(
+                HTML(BODY("Hello", TEXTAREA("First line.\nSecond line.\rThird line.\r\nFourth line.\r\n\r\nFifth line."), "World")),
+                "<!DOCTYPE HTML>",
+                "<HTML>",
+                "  <BODY>",
+                "    Hello<TEXTAREA>",
+                "First line.",
+                "Second line.",
+                "Third line.",
+                "Fourth line.",
+                "",
+                "Fifth line.</TEXTAREA>World",
                 "  </BODY>",
                 "</HTML>");
     }
@@ -138,11 +161,13 @@ public class HtmlOutputterTest extends TestCase
     public void testSelectIndentation()
     {
         checkHtml(
-                SELECT(OPTION("One"), OPTION("Two")),
-                "<SELECT>",
-                "  <OPTION>One</OPTION>",
-                "  <OPTION>Two</OPTION>",
-                "</SELECT>");
+                P("Hello", SELECT(OPTION("One"), OPTION("Two")), "World"),
+                "<P>",
+                "  Hello<SELECT>",
+                "    <OPTION>One</OPTION>",
+                "    <OPTION>Two</OPTION>",
+                "  </SELECT>World",
+                "</P>");
     }
 
     public void testNewlinesInAttribute()
@@ -154,6 +179,54 @@ public class HtmlOutputterTest extends TestCase
     public void testSurrogatePairs()
     {
         checkHtml(P("\u6C34\u007A\uD834\uDD1E"), "<P>&#27700;z&#119070;</P>\r\n");
+    }
+
+    public void testRawText()
+    {
+        checkHtml(
+                HTML(HEAD(SCRIPT("var v = 1 < 2\n        && 3 > 4;"), STYLE(".foo > .bar {\n  ...\n}"))),
+                "<!DOCTYPE HTML>",
+                "<HTML>",
+                "  <HEAD>",
+                "    <SCRIPT>",
+                "      var v = 1 < 2",
+                "              && 3 > 4;",
+                "    </SCRIPT>",
+                "    <STYLE>",
+                "      .foo > .bar {",
+                "        ...",
+                "      }",
+                "    </STYLE>",
+                "  </HEAD>",
+                "</HTML>");
+    }
+
+    public void testEmptyRawText()
+    {
+        checkHtml(
+                HTML(HEAD(SCRIPT(), STYLE())),
+                "<!DOCTYPE HTML>",
+                "<HTML>",
+                "  <HEAD>",
+                "    <SCRIPT></SCRIPT>",
+                "    <STYLE></STYLE>",
+                "  </HEAD>",
+                "</HTML>");
+    }
+
+    public void testEscapableRawText()
+    {
+        checkHtml(
+                HTML(HEAD(TITLE("Hello & Goodbye")), BODY(P(TEXTAREA("1 < 2")))),
+                "<!DOCTYPE HTML>",
+                "<HTML>",
+                "  <HEAD>",
+                "    <TITLE>Hello &amp; Goodbye</TITLE>",
+                "  </HEAD>",
+                "  <BODY>",
+                "    <P><TEXTAREA>1 &lt; 2</TEXTAREA></P>",
+                "  </BODY>",
+                "</HTML>");
     }
 
     private void checkHtml(Element html, String... expectedLines)

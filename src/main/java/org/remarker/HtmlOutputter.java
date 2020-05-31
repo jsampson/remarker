@@ -31,9 +31,14 @@ public final class HtmlOutputter<X extends Exception>
         void accept(char[] buffer, int offset, int length) throws X;
     }
 
+    private enum EOL
+    {
+        NO, CR, LF, TAG,
+    }
+
     private final BufferConsumer<X> consumer;
     private boolean nothingWritten = true;
-    private boolean atStartOfLine = true;
+    private EOL eol = EOL.TAG;
     private int indentLevel = 0;
     private int indentSuppressionLevel = 0;
     private char[] buffer = new char[8192];
@@ -78,11 +83,15 @@ public final class HtmlOutputter<X extends Exception>
         }
         BreakStyle breakStyle = element.getBreakStyle();
         ContentModel contentModel = element.getContentModel();
-        boolean newLinesOutside = breakStyle != INLINE;
-        boolean newLinesInside = breakStyle == BLOCK && hasNonInlineContents(element.getContents());
+        boolean hasNonInlineContents = hasNonInlineContents(element.getContents());
+        boolean suppressIndentation = breakStyle == PRE || breakStyle == TEXTAREA;
+        boolean increaseIndentation = !suppressIndentation && hasNonInlineContents;
+        boolean newLinesOutside = breakStyle == BLOCK || breakStyle == PRE;
+        boolean newLineAfterStart = hasNonInlineContents && breakStyle != INLINE;
+        boolean newLineBeforeEnd = newLineAfterStart && breakStyle == BLOCK;
         if (newLinesOutside)
         {
-            newLine();
+            newLine(EOL.TAG);
         }
         raw('<');
         raw(element.getName());
@@ -97,34 +106,47 @@ public final class HtmlOutputter<X extends Exception>
         else
         {
             raw('>');
-            if (breakStyle == PRE)
+            if (suppressIndentation)
             {
                 indentSuppressionLevel++;
             }
-            if (newLinesInside)
+            if (increaseIndentation)
             {
                 indentLevel++;
-                newLine();
+            }
+            if (newLineAfterStart)
+            {
+                newLine(EOL.TAG);
             }
 
-            dispatch(element.getContents());
-
-            if (newLinesInside)
+            if (contentModel == RAW_TEXT)
             {
-                newLine();
+                dispatchRawText(element.getContents());
+            }
+            else
+            {
+                dispatch(element.getContents());
+            }
+
+            if (newLineBeforeEnd)
+            {
+                newLine(EOL.TAG);
+            }
+            if (increaseIndentation)
+            {
                 indentLevel--;
             }
             raw("</");
             raw(element.getName());
             raw('>');
-            if (breakStyle == PRE)
+            if (suppressIndentation)
             {
                 indentSuppressionLevel--;
             }
         }
         if (newLinesOutside)
         {
-            newLine();
+            newLine(EOL.TAG);
         }
     }
 
@@ -135,7 +157,8 @@ public final class HtmlOutputter<X extends Exception>
             if (child instanceof Element)
             {
                 Element element = (Element) child;
-                if (element.getBreakStyle() != INLINE || hasNonInlineContents(element.getContents()))
+                BreakStyle breakStyle = element.getBreakStyle();
+                if (breakStyle == BLOCK || breakStyle == PRE || hasNonInlineContents(element.getContents()))
                 {
                     return true;
                 }
@@ -155,6 +178,28 @@ public final class HtmlOutputter<X extends Exception>
     private boolean hasLineBreaks(String text)
     {
         return text.indexOf('\r') != -1 || text.indexOf('\n') != -1;
+    }
+
+    private void dispatchRawText(List<Content> contents) throws X
+    {
+        for (Content content : contents)
+        {
+            Text text = (Text) content;
+            String value = text.getValue();
+            int n = value.length();
+            for (int i = 0; i < n; i++)
+            {
+                int c = value.charAt(i);
+                if (c == '\r' || c == '\n')
+                {
+                    newLine(c == '\r' ? EOL.CR : EOL.LF);
+                }
+                else
+                {
+                    raw((char) c);
+                }
+            }
+        }
     }
 
     private void text(Text text) throws X
@@ -193,7 +238,7 @@ public final class HtmlOutputter<X extends Exception>
         {
             writeIndent();
             append(string);
-            atStartOfLine = false;
+            eol = EOL.NO;
         }
     }
 
@@ -201,28 +246,30 @@ public final class HtmlOutputter<X extends Exception>
     {
         writeIndent();
         append(character);
-        atStartOfLine = false;
+        eol = EOL.NO;
     }
 
     private void writeIndent() throws X
     {
-        if (atStartOfLine && indentLevel > 0 && indentSuppressionLevel == 0)
+        if (eol != EOL.NO && indentLevel > 0 && indentSuppressionLevel == 0)
         {
             for (int i = 0; i < indentLevel; i++)
             {
                 append("  ");
             }
-            atStartOfLine = false;
+            eol = EOL.NO;
         }
     }
 
-    private void newLine() throws X
+    private void newLine(EOL reason) throws X
     {
-        if (!atStartOfLine)
+        if (reason == EOL.TAG && eol != EOL.TAG
+                || reason == EOL.CR
+                || reason == EOL.LF && eol != EOL.CR)
         {
             append("\r\n");
-            atStartOfLine = true;
         }
+        eol = reason;
     }
 
     private void append(String s) throws X
@@ -289,7 +336,7 @@ public final class HtmlOutputter<X extends Exception>
                 }
                 else
                 {
-                    newLine();
+                    newLine(c == '\r' ? EOL.CR : EOL.LF);
                 }
                 break;
             default:

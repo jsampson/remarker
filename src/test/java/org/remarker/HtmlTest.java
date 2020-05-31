@@ -119,6 +119,48 @@ public class HtmlTest extends TestCase
                 () -> asHtml(Onclick("...")));
     }
 
+    public void testChildElementsDisallowedInRawTextElements()
+    {
+        assertThrowsIllegalArgumentException(
+                "Element 'SCRIPT' must not have child element 'B'",
+                () -> SCRIPT("Hello ", B("World")));
+        assertThrowsIllegalArgumentException(
+                "Element 'STYLE' must not have child element 'B'",
+                () -> STYLE("Hello ", B("World")));
+    }
+
+    public void testChildElementsDisallowedInEscapableRawTextElements()
+    {
+        assertThrowsIllegalArgumentException(
+                "Element 'TEXTAREA' must not have child element 'B'",
+                () -> TEXTAREA("Hello ", B("World")));
+        assertThrowsIllegalArgumentException(
+                "Element 'TITLE' must not have child element 'B'",
+                () -> TITLE("Hello ", B("World")));
+    }
+
+    public void testEndTagDisallowedInRawTextElements()
+    {
+        assertThrowsIllegalArgumentException(
+                "Element 'SCRIPT' must not contain text like '</SCRIPT'",
+                () -> SCRIPT("Hello </", "Script!"));
+        assertThrowsIllegalArgumentException(
+                "Element 'STYLE' must not contain text like '</STYLE'",
+                () -> STYLE("Hello </st", "yLe?"));
+    }
+
+    public void testOtherEndTagAllowedInEscapableRawTextElements()
+    {
+        assertEquals("Hello </STYLE>", SCRIPT("Hello </STYLE>").getAllText());
+        assertEquals("Hello </SCRIPT>", STYLE("Hello </SCRIPT>").getAllText());
+    }
+
+    public void testEndTagAllowedInEscapableRawTextElements()
+    {
+        assertEquals("Hello </TEXTAREA>", TEXTAREA("Hello </TEXTAREA>").getAllText());
+        assertEquals("Hello </TITLE>", TITLE("Hello </TITLE>").getAllText());
+    }
+
     private void checkHtml(Element html, String expected)
     {
         StringBuilder builder = new StringBuilder();
