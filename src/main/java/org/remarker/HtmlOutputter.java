@@ -306,57 +306,48 @@ public final class HtmlOutputter<X extends Exception>
         for (int i = 0; i < n; i++)
         {
             int c = string.charAt(i);
-            int d = (i < n - 1) ? string.charAt(i + 1) : -1;
-            switch (c)
+            if (inAttributeValue)
             {
-            case '<':
-                raw("&lt;");
-                break;
-            case '>':
-                raw("&gt;");
-                break;
-            case '&':
-                raw("&amp;");
-                break;
-            case '"':
-                if (inAttributeValue)
-                {
-                    raw("&quot;");
-                }
-                else
-                {
-                    raw('"');
-                }
-                break;
-            case '\r':
-            case '\n':
-                if (inAttributeValue)
-                {
-                    numericCharacterReference(c);
-                }
-                else
-                {
-                    newLine(c == '\r' ? EOL.CR : EOL.LF);
-                }
-                break;
-            default:
-                if (c >= ' ' && c <= '~')
-                {
-                    raw((char) c);
-                }
-                else if (c >= 0xD800 && c <= 0xDBFF && d >= 0xDC00 && d <= 0xDFFF)
-                {
-                    int highPart = c - 0xD800;
-                    int lowPart = d - 0xDC00;
-                    int character = (highPart << 10) + lowPart + 0x10000;
-                    numericCharacterReference(character);
-                    i++;
-                }
-                else
-                {
-                    numericCharacterReference(c);
-                }
-                break;
+              switch (c)
+              {
+              case '&':
+                  raw("&amp;");
+                  break;
+              case '"':
+                  raw("&quot;");
+                  break;
+              case '\r':
+              case '\n':
+                  numericCharacterReference(c);
+                  break;
+              default:
+                  raw((char) c);
+                  break;
+              }
+            }
+            else
+            {
+              switch (c)
+              {
+              case '<':
+                  raw("&lt;");
+                  break;
+              case '>':
+                  raw("&gt;");
+                  break;
+              case '&':
+                  raw("&amp;");
+                  break;
+              case '\r':
+                  newLine(EOL.CR);
+                  break;
+              case '\n':
+                  newLine(EOL.LF);
+                  break;
+              default:
+                  raw((char) c);
+                  break;
+              }
             }
         }
     }

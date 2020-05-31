@@ -37,15 +37,18 @@ public class HtmlOutputterTest extends TestCase
                 "  </HEAD>",
                 "  <BODY>",
                 "    <H1>Hello!</H1>",
-                "    <P>Look...&#160;<A href=\"http://...\" title=\"Somewhere Else\">Go There.</A></P>",
+                "    <P>Look...\u00A0<A href=\"http://...\" title=\"Somewhere Else\">Go There.</A></P>",
                 "  </BODY>",
                 "</HTML>");
     }
 
     public void testEscaping()
     {
-        checkHtml(P(Class("'\"<>&\u0009 ~\u007F"), "'\"<>&\u0009 ~\u007F"),
-                "<P class=\"'&quot;&lt;&gt;&amp;&#9; ~&#127;\">'\"&lt;&gt;&amp;&#9; ~&#127;</P>\r\n");
+        checkHtml(P(Class("'\"<>&\r\n\u0009 ~\u007F"), "'\"<>&\r\n\u0009 ~\u007F"),
+                "<P class=\"'&quot;<>&amp;&#13;&#10;\u0009 ~\u007F\">",
+                "  '\"&lt;&gt;&amp;",
+                "  \u0009 ~\u007F",
+                "</P>");
     }
 
     public void testEmptyTags()
@@ -178,7 +181,7 @@ public class HtmlOutputterTest extends TestCase
 
     public void testSurrogatePairs()
     {
-        checkHtml(P("\u6C34\u007A\uD834\uDD1E"), "<P>&#27700;z&#119070;</P>\r\n");
+        checkHtml(P("\u6C34\u007A\uD834\uDD1E"), "<P>\u6C34\u007A\uD834\uDD1E</P>\r\n");
     }
 
     public void testRawText()
